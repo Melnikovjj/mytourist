@@ -26,7 +26,7 @@ RUN ls -la dist/ && echo "✅ dist/main.js exists:" && test -f dist/main.js && e
 
 # Railway provides PORT env var dynamically
 # Railway provides PORT env var dynamically
-EXPOSE 3000
+# No EXPOSE needed — Railway handles routing
 
 # Start: run migrations then start server
 # NestJS compiles to dist/src/main.js (not dist/main.js)
