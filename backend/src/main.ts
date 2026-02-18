@@ -17,8 +17,7 @@ async function bootstrap() {
                 'https://frontend-i4ezq3lgc-sswwws-projects.vercel.app',
                 'http://localhost:3000',
                 'https://web.telegram.org',
-                /\.vercel\.app$/,
-                '*'
+                /\.vercel\.app$/
             ],
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
             credentials: true,
