@@ -1,16 +1,25 @@
-FROM node:20-alpine AS builder
+FROM node:18-alpine
+
 WORKDIR /app
+
+# Copy package files and prisma schema
 COPY package*.json ./
-RUN npm ci
+COPY prisma ./prisma/
+
+# Install dependencies provided in package.json
+RUN npm install
+
+# Copy the rest of the application
 COPY . .
+
+# Generate Prisma Client
 RUN npx prisma generate
+
+# Build the NestJS application
 RUN npm run build
 
-FROM node:20-alpine AS production
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/prisma ./prisma
+# Expose the application port
 EXPOSE 3000
+
+# Start the application with migrations
 CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
