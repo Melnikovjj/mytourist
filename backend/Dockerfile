@@ -25,8 +25,8 @@ RUN npm run build
 RUN ls -la dist/ && echo "✅ dist/main.js exists:" && test -f dist/main.js && echo "YES" || echo "NO — checking alternatives:" && find dist -name "main.js" -type f
 
 # Railway provides PORT env var dynamically
-ENV PORT=3000
-EXPOSE ${PORT}
+# Railway provides PORT env var dynamically
+EXPOSE 3000
 
 # Start: run migrations then start server
 # NestJS compiles to dist/src/main.js (not dist/main.js)
