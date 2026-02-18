@@ -7,6 +7,10 @@ npx prisma migrate deploy
 echo "✅ Migrations completed."
 
 echo "🔥 Starting NestJS Application..."
-ls -la
-ls -la dist || echo "dist not found"
+
+if [ ! -d "dist" ]; then
+  echo "⚠️ 'dist' directory not found. Running build..."
+  npm run build
+fi
+
 exec node dist/main.js
