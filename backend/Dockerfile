@@ -1,5 +1,8 @@
 FROM node:18-alpine
 
+# Install OpenSSL and libc6-compat for Prisma (required for Alpine)
+RUN apk add --no-cache openssl libc6-compat
+
 WORKDIR /app
 
 # Copy package files and prisma schema
@@ -8,9 +11,6 @@ COPY prisma ./prisma/
 
 # Install dependencies provided in package.json
 RUN npm install
-
-# Install OpenSSL and libc6-compat for Prisma
-RUN apk add --no-cache openssl libc6-compat
 
 # Copy the rest of the application
 COPY . .
