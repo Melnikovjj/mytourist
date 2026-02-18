@@ -1,0 +1,148 @@
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { PrismaService } from '../common/prisma/prisma.service';
+
+
+@Injectable()
+export class EquipmentService {
+    constructor(private prisma: PrismaService) { }
+
+    // ── Catalog ───────────────────────────────────────
+    async getCatalog() {
+        return this.prisma.equipmentItem.findMany({
+            orderBy: { category: 'asc' },
+        });
+    }
+
+    // ── Auto-generate gear list based on project type/season ──
+    async autoGenerate(projectId: string) {
+        const project = await this.prisma.project.findUnique({
+            where: { id: projectId },
+            include: { equipment: true },
+        });
+        if (!project) throw new NotFoundException('Project not found');
+
+        // Filter equipment by project type
+        const excludeCategories: string[] = [];
+        if (project.type !== 'ski') excludeCategories.push('Зимнее');
+        if (project.type !== 'water') excludeCategories.push('Водное');
+
+        const items = await this.prisma.equipmentItem.findMany({
+            where: {
+                category: { notIn: excludeCategories },
+            },
+        });
+
+        // Filter out winter-specific items for summer
+        const filteredItems = items.filter((item) => {
+            if (project.season === 'summer' && item.name.includes('зима')) return false;
+            if (project.season === 'winter' && item.name.includes('лето')) return false;
+            return true;
+        });
+
+        // Check existing equipment
+        const existingIds = new Set(project.equipment.map((e) => e.equipmentId));
+
+        const toCreate = filteredItems
+            .filter((item) => !existingIds.has(item.id))
+            .map((item) => ({
+                projectId,
+                equipmentId: item.id,
+                status: 'planned',
+            }));
+
+        if (toCreate.length > 0) {
+            await this.prisma.projectEquipment.createMany({ data: toCreate });
+        }
+
+        return this.getProjectEquipment(projectId);
+    }
+
+    // ── Project Equipment CRUD ────────────────────────
+    async getProjectEquipment(projectId: string) {
+        return this.prisma.projectEquipment.findMany({
+            where: { projectId },
+            include: { equipment: true, assignedTo: true },
+            orderBy: { equipment: { category: 'asc' } },
+        });
+    }
+
+    async addToProject(projectId: string, equipmentId: string) {
+        return this.prisma.projectEquipment.create({
+            data: { projectId, equipmentId },
+            include: { equipment: true },
+        });
+    }
+
+    async removeFromProject(id: string) {
+        return this.prisma.projectEquipment.delete({ where: { id } });
+    }
+
+    async assignToUser(id: string, userId: string, projectId: string) {
+        // Check for group item duplication
+        const pe = await this.prisma.projectEquipment.findUnique({
+            where: { id },
+            include: { equipment: true },
+        });
+        if (!pe) throw new NotFoundException();
+
+        if (pe.equipment.isGroupItem) {
+            const alreadyAssigned = await this.prisma.projectEquipment.findFirst({
+                where: {
+                    projectId,
+                    equipmentId: pe.equipmentId,
+                    assignedToId: { not: null },
+                    id: { not: id },
+                },
+            });
+            if (alreadyAssigned) {
+                throw new ConflictException('Group item already assigned to another member');
+            }
+        }
+
+        return this.prisma.projectEquipment.update({
+            where: { id },
+            data: { assignedToId: userId },
+            include: { equipment: true, assignedTo: true },
+        });
+    }
+
+    async updateStatus(id: string, status: string) {
+        return this.prisma.projectEquipment.update({
+            where: { id },
+            data: { status },
+            include: { equipment: true },
+        });
+    }
+
+    // ── Weight redistribution suggestion ──────────────
+    async suggestRedistribution(projectId: string) {
+        const members = await this.prisma.projectMember.findMany({
+            where: { projectId },
+            include: { user: true },
+        });
+
+        const equipment = await this.prisma.projectEquipment.findMany({
+            where: { projectId, assignedToId: { not: null } },
+            include: { equipment: true },
+        });
+
+        const memberWeights = members.map((m) => {
+            const userEquipment = equipment.filter((e) => e.assignedToId === m.userId);
+            const totalWeight = userEquipment.reduce(
+                (sum, e) => sum + (e.customWeight || e.equipment.weight),
+                0,
+            );
+            const maxWeight = (m.user.weight || 70) * 0.25;
+            return {
+                userId: m.userId,
+                userName: m.user.firstName || m.user.username || 'Unknown',
+                currentWeight: totalWeight,
+                maxWeight,
+                overloaded: totalWeight > maxWeight,
+                percentage: Math.round((totalWeight / maxWeight) * 100),
+            };
+        });
+
+        return { members: memberWeights };
+    }
+}
