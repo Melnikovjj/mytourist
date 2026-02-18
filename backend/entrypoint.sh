@@ -8,9 +8,11 @@ echo "✅ Migrations completed."
 
 echo "🔥 Starting NestJS Application..."
 
-if [ ! -d "dist" ]; then
-  echo "⚠️ 'dist' directory not found. Running build..."
-  npm run build
-fi
+# Always run build to ensure dist exists in runtime
+echo "⚠️ Running build to ensure dist exists..."
+npm run build
+
+echo "✅ Build completed. Checking dist..."
+ls -la dist
 
 exec node dist/main.js
