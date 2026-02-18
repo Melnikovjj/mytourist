@@ -73,7 +73,7 @@ export function ProfilePage() {
     if (!profile) return null;
 
     const displayName = [profile.firstName, profile.lastName].filter(Boolean).join(' ') || 'Турист';
-    const avatarUrl = profile.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=0ea5e9&color=fff&size=128`;
+    const avatarUrl = profile.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=0ea5e9&color=fff&size=128`;
     const projectCount = profile.memberships?.length || 0;
 
     return (
