@@ -59,11 +59,15 @@ export class BotService implements OnModuleInit {
             await ctx.reply(`📋 Ваши проекты:\n\n${lines.join('\n')}`);
         });
 
+        // TEMPORARY DEBUG: Disable bot launch to isolate 502 error
+        /*
         this.bot.launch().then(() => {
             this.logger.log('🤖 Telegram bot launched');
         }).catch((error) => {
             this.logger.error('Failed to launch bot:', error);
         });
+        */
+        this.logger.warn('⚠️ Bot launch SKIPPED for debugging 502 error');
     }
 
     async sendNotification(telegramId: bigint, message: string) {
