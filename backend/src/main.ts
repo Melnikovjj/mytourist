@@ -57,12 +57,19 @@ async function bootstrap() {
         // Add simple health check for Railway (binds to root /)
         const httpAdapter = app.getHttpAdapter();
         httpAdapter.get('/', (req, res) => {
+            console.log('GET / health check hit');
             res.send('OK');
         });
 
+        // Add logging middleware to see if requests reach us
+        app.use((req: any, res: any, next: any) => {
+            console.log(`Request: ${req.method} ${req.url}`);
+            next();
+        });
+
         const port = parseInt(process.env.PORT || '3000', 10);
-        console.log(`Attempting to listen on port ${port} (0.0.0.0)...`);
-        await app.listen(port, '0.0.0.0');
+        console.log(`Attempting to listen on port ${port} (::)...`);
+        await app.listen(port, '::');
         console.log(`🚀 Server running on port ${port}`);
     } catch (error) {
         console.error('❌ Error starting NestJS application:', error);
