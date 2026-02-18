@@ -21,12 +21,13 @@ COPY . .
 # Build NestJS
 RUN npm run build
 
-# Remove dev dependencies to slim image
-RUN npm prune --production && npx prisma generate
+# Debug: verify build output exists
+RUN ls -la dist/ && echo "✅ dist/main.js exists:" && test -f dist/main.js && echo "YES" || echo "NO — checking alternatives:" && find dist -name "main.js" -type f
 
 # Railway provides PORT env var dynamically
 ENV PORT=3000
 EXPOSE ${PORT}
 
 # Start: run migrations then start server
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+# Use shell form so $PORT is expanded at runtime
+CMD sh -c "npx prisma migrate deploy && node dist/main.js"
