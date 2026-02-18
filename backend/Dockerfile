@@ -29,5 +29,5 @@ ENV PORT=3000
 EXPOSE ${PORT}
 
 # Start: run migrations then start server
-# Use shell form so $PORT is expanded at runtime
-CMD sh -c "npx prisma migrate deploy && node dist/main.js"
+# NestJS compiles to dist/src/main.js (not dist/main.js)
+CMD sh -c "npx prisma migrate deploy && node dist/src/main.js"
