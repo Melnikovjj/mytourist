@@ -13,10 +13,14 @@ async function bootstrap() {
         app.enableCors({
             origin: [
                 process.env.WEBAPP_URL || 'http://localhost:5173',
+                'https://frontend-three-sandy-65.vercel.app',
+                'https://frontend-i4ezq3lgc-sswwws-projects.vercel.app',
+                'http://localhost:3000',
                 'https://web.telegram.org',
                 /\.vercel\.app$/,
                 '*'
             ],
+            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
             credentials: true,
         });
 
