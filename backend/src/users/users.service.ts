@@ -6,7 +6,16 @@ export class UsersService {
     constructor(private prisma: PrismaService) { }
 
     async findById(id: string) {
-        const user = await this.prisma.user.findUnique({ where: { id } });
+        const user = await this.prisma.user.findUnique({
+            where: { id },
+            include: {
+                memberships: {
+                    include: {
+                        project: true
+                    }
+                }
+            }
+        });
         if (!user) throw new NotFoundException('User not found');
         return this.serializeUser(user);
     }

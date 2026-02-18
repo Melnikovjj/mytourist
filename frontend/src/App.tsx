@@ -9,6 +9,7 @@ import { MealsPage } from './pages/Meals/MealsPage';
 import { WeightPage } from './pages/Weight/WeightPage';
 import { ChecklistPage } from './pages/Checklist/ChecklistPage';
 import { ReferencePage } from './pages/Reference/ReferencePage';
+import { ProfilePage } from './pages/Profile/ProfilePage';
 import { LoadingScreen } from './components/ui/LoadingScreen';
 
 function AppContent() {
@@ -47,6 +48,8 @@ function AppContent() {
                 <Route path="/project/:projectId/meals" element={<MealsPage />} />
                 <Route path="/project/:projectId/weight" element={<WeightPage />} />
                 <Route path="/project/:projectId/checklist" element={<ChecklistPage />} />
+                <Route path="/project/:projectId/checklist" element={<ChecklistPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/reference" element={<ReferencePage />} />
             </Routes>
             {showNav && <BottomNav />}

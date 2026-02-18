@@ -1,8 +1,9 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { House, Backpack, Compass } from '@phosphor-icons/react';
+import { House, Backpack, Compass, User } from '@phosphor-icons/react';
 
 const navItems = [
     { path: '/', label: 'Проекты', icon: House },
+    { path: '/profile', label: 'Профиль', icon: User },
     { path: '/reference', label: 'Справочник', icon: Compass },
 ];
 
