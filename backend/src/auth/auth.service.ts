@@ -45,6 +45,15 @@ export class AuthService {
         return JSON.parse(userStr);
     }
 
+    private generateInviteCode(): string {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let code = '';
+        for (let i = 0; i < 8; i++) {
+            code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return code;
+    }
+
     async authenticateUser(initData: string) {
         let tgUser: TelegramUser;
 
@@ -72,9 +81,11 @@ export class AuthService {
                     firstName: tgUser.first_name,
                     lastName: tgUser.last_name,
                     avatarUrl: tgUser.photo_url,
+                    inviteCode: this.generateInviteCode(),
                 },
             });
         } else {
+            // Update existing user data and generate inviteCode if missing
             user = await this.prisma.user.update({
                 where: { id: user.id },
                 data: {
@@ -82,6 +93,7 @@ export class AuthService {
                     firstName: tgUser.first_name,
                     lastName: tgUser.last_name,
                     avatarUrl: tgUser.photo_url,
+                    inviteCode: user.inviteCode || this.generateInviteCode(),
                 },
             });
         }

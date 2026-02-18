@@ -18,6 +18,7 @@ model User {
   lastName   String?  @map("last_name")
   avatarUrl  String?  @map("avatar_url")
   weight     Float?   @default(70)
+  inviteCode String?  @unique @map("invite_code")
   createdAt  DateTime @default(now()) @map("created_at")
 
   ownedProjects    Project[]          @relation("ProjectOwner")

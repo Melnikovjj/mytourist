@@ -9,8 +9,9 @@ interface UserProfile {
     username: string;
     firstName: string;
     lastName?: string;
-    photoUrl?: string;
+    avatarUrl?: string;
     weight: number;
+    inviteCode?: string;
     memberships: { project: any }[];
 }
 
@@ -20,6 +21,19 @@ export function ProfilePage() {
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [copied, setCopied] = useState<'link' | 'code' | null>(null);
+
+    const botUsername = 'TuristProPlanner_bot';
+    const inviteLink = profile?.inviteCode
+        ? `https://t.me/${botUsername}?start=ref_${profile.inviteCode}`
+        : `https://t.me/${botUsername}`;
+
+    const handleCopy = (text: string, type: 'link' | 'code') => {
+        navigator.clipboard.writeText(text).then(() => {
+            setCopied(type);
+            setTimeout(() => setCopied(null), 2000);
+        });
+    };
 
     useEffect(() => {
         apiClient.get('/users/me')
@@ -83,21 +97,54 @@ export function ProfilePage() {
                 </p>
             </div>
 
-            {/* Stats Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
-                <div className="glass-card-static" style={{ padding: 16, textAlign: 'center' }}>
-                    <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--color-primary)' }}>
-                        {projectCount}
-                    </div>
-                    <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Походов</div>
+            {/* Referral Section */}
+            <div className="glass-card-static" style={{ padding: 20, marginBottom: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                    <span style={{ fontSize: 20 }}>🎁</span>
+                    <h2 style={{ fontSize: 16, fontWeight: 600 }}>Пригласить друзей</h2>
                 </div>
-                <div className="glass-card-static" style={{ padding: 16, textAlign: 'center' }}>
-                    <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--color-accent)' }}>
-                        0
+
+                <div style={{ marginBottom: 16 }}>
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>Ваша ссылка:</div>
+                    <div style={{
+                        display: 'flex', gap: 8, background: 'rgba(255,255,255,0.05)',
+                        padding: '8px 12px', borderRadius: 12, border: '1px solid var(--glass-border)'
+                    }}>
+                        <div style={{
+                            flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                            fontSize: 13, color: 'var(--color-primary)'
+                        }}>
+                            {inviteLink}
+                        </div>
+                        <button
+                            onClick={() => handleCopy(inviteLink, 'link')}
+                            style={{ background: 'none', border: 'none', color: 'var(--color-primary)', fontSize: 18, cursor: 'pointer', padding: 0 }}
+                        >
+                            {copied === 'link' ? '✅' : '📋'}
+                        </button>
                     </div>
-                    <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Км пройдено</div>
+                </div>
+
+                <div>
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>Код приглашения:</div>
+                    <div style={{
+                        display: 'flex', gap: 8, background: 'rgba(255,255,255,0.05)',
+                        padding: '8px 12px', borderRadius: 12, border: '1px solid var(--glass-border)'
+                    }}>
+                        <div style={{ flex: 1, fontWeight: 700, letterSpacing: '2px', color: 'var(--color-accent)' }}>
+                            {profile.inviteCode || '--------'}
+                        </div>
+                        <button
+                            onClick={() => profile.inviteCode && handleCopy(profile.inviteCode, 'code')}
+                            style={{ background: 'none', border: 'none', color: 'var(--color-accent)', fontSize: 18, cursor: 'pointer', padding: 0 }}
+                        >
+                            {copied === 'code' ? '✅' : '📋'}
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            {/* Stats Grid */}
 
             {/* Settings */}
             <div className="glass-card-static" style={{ overflow: 'hidden' }}>
