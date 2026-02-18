@@ -7,5 +7,6 @@ npx prisma migrate deploy
 echo "✅ Migrations completed."
 
 echo "🔥 Starting NestJS Application..."
-# Using exec to replace shell with node process to catch signals correctly
+ls -la
+ls -la dist || echo "dist not found"
 exec node dist/main.js
