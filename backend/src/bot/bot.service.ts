@@ -59,12 +59,11 @@ export class BotService implements OnModuleInit {
             await ctx.reply(`📋 Ваши проекты:\n\n${lines.join('\n')}`);
         });
 
-        try {
-            await this.bot.launch();
+        this.bot.launch().then(() => {
             this.logger.log('🤖 Telegram bot launched');
-        } catch (error) {
+        }).catch((error) => {
             this.logger.error('Failed to launch bot:', error);
-        }
+        });
     }
 
     async sendNotification(telegramId: bigint, message: string) {
