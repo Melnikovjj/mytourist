@@ -68,8 +68,8 @@ async function bootstrap() {
         });
 
         const port = parseInt(process.env.PORT || '3000', 10);
-        console.log(`Attempting to listen on port ${port} (::)...`);
-        await app.listen(port, '::');
+        console.log(`Attempting to listen on port ${port} (0.0.0.0)...`);
+        await app.listen(port, '0.0.0.0');
         console.log(`🚀 Server running on port ${port}`);
     } catch (error) {
         console.error('❌ Error starting NestJS application:', error);
