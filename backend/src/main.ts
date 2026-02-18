@@ -11,14 +11,28 @@ async function bootstrap() {
 
         app.setGlobalPrefix('api');
         app.enableCors({
-            origin: [
-                process.env.WEBAPP_URL || 'http://localhost:5173',
-                'https://frontend-three-sandy-65.vercel.app',
-                'https://frontend-i4ezq3lgc-sswwws-projects.vercel.app',
-                'http://localhost:3000',
-                'https://web.telegram.org',
-                /\.vercel\.app$/
-            ],
+            origin: (origin, callback) => {
+                console.log('Incoming request from origin:', origin);
+                if (!origin) return callback(null, true);
+
+                const allowedOrigins = [
+                    'https://web.telegram.org',
+                    'http://localhost:3000',
+                    'http://localhost:5173'
+                ];
+
+                // Allow Vercel deployments
+                if (origin.endsWith('.vercel.app')) return callback(null, true);
+
+                // Allow known origins
+                if (allowedOrigins.includes(origin)) return callback(null, true);
+
+                // Allow specific frontend
+                if (origin === 'https://frontend-three-sandy-65.vercel.app') return callback(null, true);
+
+                console.log('Allowed context-aware origin:', origin);
+                callback(null, true);
+            },
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
             credentials: true,
         });
