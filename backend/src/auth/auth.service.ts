@@ -46,7 +46,19 @@ export class AuthService {
     }
 
     async authenticateUser(initData: string) {
-        const tgUser = this.validateInitData(initData);
+        let tgUser: TelegramUser;
+
+        // Dev fallback for browser testing (outside Telegram)
+        if (initData === 'dev_mode=true') {
+            tgUser = {
+                id: 123456789,
+                first_name: 'Тест',
+                last_name: 'Пользователь',
+                username: 'test_user',
+            };
+        } else {
+            tgUser = this.validateInitData(initData);
+        }
 
         let user = await this.prisma.user.findUnique({
             where: { telegramId: BigInt(tgUser.id) },

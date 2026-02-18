@@ -1,28 +1,32 @@
 FROM node:18-alpine
 
-# Install OpenSSL and libc6-compat for Prisma (required for Alpine)
+# Prisma needs openssl and libc6-compat on Alpine
 RUN apk add --no-cache openssl libc6-compat
 
 WORKDIR /app
 
-# Copy package files and prisma schema
+# Copy package files first for layer caching
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies provided in package.json
-RUN npm install
-
-# Copy the rest of the application
-COPY . .
+# Install ALL dependencies (need devDeps for build)
+RUN npm ci
 
 # Generate Prisma Client
 RUN npx prisma generate
 
-# Build the NestJS application
+# Copy source code
+COPY . .
+
+# Build NestJS
 RUN npm run build
 
-# Expose the application port
-EXPOSE 3000
+# Remove dev dependencies to slim image
+RUN npm prune --production && npx prisma generate
 
-# Start the application with migrations
+# Railway provides PORT env var dynamically
+ENV PORT=3000
+EXPOSE ${PORT}
+
+# Start: run migrations then start server
 CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]

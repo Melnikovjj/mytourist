@@ -1,12 +1,17 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+// VITE_API_URL should be the full base, e.g. "https://mytourist-production.up.railway.app/api"
+// In dev mode, Vite proxy handles /api -> localhost:3000
+const API_URL = import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL.replace(/\/+$/, '')}/api`
+    : '/api';
 
 const api = axios.create({
     baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json',
     },
+    timeout: 10000,
 });
 
 api.interceptors.request.use((config) => {
@@ -22,7 +27,7 @@ api.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem('token');
-            window.location.reload();
+            // Don't reload in a loop — only reload if we have no token stored
         }
         return Promise.reject(error);
     },

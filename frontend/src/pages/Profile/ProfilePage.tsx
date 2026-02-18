@@ -19,77 +19,124 @@ export function ProfilePage() {
     const navigate = useNavigate();
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         apiClient.get('/users/me')
             .then(res => setProfile(res.data))
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error('Profile fetch error:', err);
+                setError('Не удалось загрузить профиль');
+            })
             .finally(() => setLoading(false));
     }, []);
 
     if (loading) return (
-        <div className="min-h-screen bg-gray-900 flex items-center justify-center text-white">
-            <div className="loading loading-spinner loading-lg text-primary"></div>
+        <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+            <div style={{
+                width: 48, height: 48, borderRadius: '50%',
+                border: '3px solid rgba(255,255,255,0.1)',
+                borderTopColor: 'var(--color-primary)',
+                animation: 'spin 1s linear infinite'
+            }} />
+            <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
         </div>
     );
 
-    if (!user || !profile) return null;
-
-    return (
-        <div className="min-h-screen bg-gray-900 text-white pb-20">
-            {/* Header / Cover */}
-            <div className="bg-gradient-to-b from-primary/20 to-gray-900 pt-10 pb-6 px-6 text-center">
-                <div className="avatar mb-4">
-                    <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                        <img src={profile.photoUrl || `https://ui-avatars.com/api/?name=${profile.firstName}&background=random`} alt="avatar" />
-                    </div>
-                </div>
-                <h1 className="text-2xl font-bold">{profile.firstName} {profile.lastName}</h1>
-                <p className="text-gray-400">@{profile.username || 'unknown'}</p>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 px-4 mb-6">
-                <div className="bg-gray-800 p-4 rounded-2xl text-center">
-                    <div className="text-3xl font-bold text-primary">{profile.memberships?.length || 0}</div>
-                    <div className="text-sm text-gray-400">Походов</div>
-                </div>
-                <div className="bg-gray-800 p-4 rounded-2xl text-center">
-                    <div className="text-3xl font-bold text-secondary">0</div>
-                    <div className="text-sm text-gray-400">Км пройдено</div>
-                </div>
-            </div>
-
-            {/* Menu */}
-            <div className="px-4 space-y-2">
-                <h2 className="text-lg font-semibold mb-2 px-1">Настройки</h2>
-                <div className="bg-gray-800 rounded-2xl overflow-hidden">
-                    <button className="w-full text-left p-4 flex items-center justify-between active:bg-gray-700 transition" onClick={() => { }}>
-                        <div className="flex items-center gap-3">
-                            <span className="text-xl">⚖️</span>
-                            <span>Мой вес снаряжения</span>
-                        </div>
-                        <span className="text-gray-500">Soon</span>
-                    </button>
-                    <div className="h-px bg-gray-700 mx-4"></div>
-                    <button className="w-full text-left p-4 flex items-center justify-between active:bg-gray-700 transition" onClick={() => { }}>
-                        <div className="flex items-center gap-3">
-                            <span className="text-xl">🔔</span>
-                            <span>Уведомления</span>
-                        </div>
-                        <span className="text-gray-500">Вкл</span>
-                    </button>
-                </div>
-            </div>
-
-            <div className="mt-8 px-4">
-                <button
-                    onClick={() => navigate('/')}
-                    className="btn btn-outline btn-block text-gray-400 border-gray-700 hover:border-gray-500 hover:text-white"
-                >
-                    Вернуться к проектам
+    if (error) return (
+        <div className="page">
+            <div className="empty-state">
+                <div className="empty-state-icon">⚠️</div>
+                <div className="empty-state-title">{error}</div>
+                <div className="empty-state-text">Попробуйте открыть приложение через Telegram</div>
+                <button className="btn btn-primary" style={{ marginTop: 16 }} onClick={() => navigate('/')}>
+                    На главную
                 </button>
             </div>
+        </div>
+    );
+
+    if (!profile) return null;
+
+    const displayName = [profile.firstName, profile.lastName].filter(Boolean).join(' ') || 'Турист';
+    const avatarUrl = profile.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=0ea5e9&color=fff&size=128`;
+    const projectCount = profile.memberships?.length || 0;
+
+    return (
+        <div className="page">
+            {/* Profile Header */}
+            <div className="glass-card-static" style={{ padding: 24, textAlign: 'center', marginBottom: 16 }}>
+                <div style={{
+                    width: 88, height: 88, borderRadius: '50%', margin: '0 auto 16px',
+                    border: '3px solid var(--color-primary)',
+                    overflow: 'hidden', boxShadow: '0 0 24px rgba(14,165,233,0.3)'
+                }}>
+                    <img
+                        src={avatarUrl}
+                        alt="avatar"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                </div>
+                <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>{displayName}</h1>
+                <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
+                    @{profile.username || 'user'}
+                </p>
+            </div>
+
+            {/* Stats Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+                <div className="glass-card-static" style={{ padding: 16, textAlign: 'center' }}>
+                    <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--color-primary)' }}>
+                        {projectCount}
+                    </div>
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Походов</div>
+                </div>
+                <div className="glass-card-static" style={{ padding: 16, textAlign: 'center' }}>
+                    <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--color-accent)' }}>
+                        0
+                    </div>
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Км пройдено</div>
+                </div>
+            </div>
+
+            {/* Settings */}
+            <div className="glass-card-static" style={{ overflow: 'hidden' }}>
+                <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--glass-border)' }}>
+                    <h2 style={{ fontSize: 15, fontWeight: 600 }}>Настройки</h2>
+                </div>
+                <button style={{
+                    width: '100%', textAlign: 'left', padding: '14px 16px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    background: 'none', border: 'none', color: 'var(--text-primary)',
+                    fontFamily: 'var(--font-family)', fontSize: 14, cursor: 'pointer',
+                    borderBottom: '1px solid var(--glass-border)'
+                }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span>⚖️</span><span>Мой вес снаряжения</span>
+                    </span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>Soon</span>
+                </button>
+                <button style={{
+                    width: '100%', textAlign: 'left', padding: '14px 16px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    background: 'none', border: 'none', color: 'var(--text-primary)',
+                    fontFamily: 'var(--font-family)', fontSize: 14, cursor: 'pointer'
+                }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span>🔔</span><span>Уведомления</span>
+                    </span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>Вкл</span>
+                </button>
+            </div>
+
+            {/* Back Button */}
+            <button
+                className="btn btn-ghost btn-full"
+                style={{ marginTop: 20 }}
+                onClick={() => navigate('/')}
+            >
+                Вернуться к проектам
+            </button>
         </div>
     );
 }
