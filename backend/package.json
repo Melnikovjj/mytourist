@@ -1,6 +1,9 @@
 {
   "name": "hiking-planner-backend",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "description": "Походный Сборщик — Backend API",
   "private": true,
   "scripts": {
