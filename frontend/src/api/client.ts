@@ -3,7 +3,7 @@ import axios from 'axios';
 // VITE_API_URL should be the full base, e.g. "https://mytourist-production.up.railway.app/api"
 // In dev mode, Vite proxy handles /api -> localhost:3000
 const API_URL = import.meta.env.VITE_API_URL
-    ? `${import.meta.env.VITE_API_URL.replace(/\/+$/, '')}/api`
+    ? import.meta.env.VITE_API_URL.replace(/\/+$/, '')
     : '/api';
 
 const api = axios.create({
