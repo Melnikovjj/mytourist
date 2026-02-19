@@ -82,26 +82,31 @@ export function ProjectDetailPage() {
 
                 {/* Invite section */}
                 {currentProject.inviteCode && (
-                    <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-                        <div className="flex items-center gap-2 mb-3">
-                            <LinkSimple size={16} className="text-secondary" />
-                            <span className="text-sm font-semibold">Поделиться планом</span>
-                        </div>
-                        <div className="flex gap-2">
-                            <div style={{
-                                flex: 1, background: 'rgba(0,0,0,0.2)', padding: '8px 12px', borderRadius: '8px',
-                                fontSize: '12px', color: 'var(--color-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
-                            }}>
-                                {`t.me/TuristProPlanner_bot?start=proj_${currentProject.inviteCode}`}
-                            </div>
-                            <button className="btn btn-primary btn-sm" onClick={() => {
+                    <div style={{ marginTop: '20px' }}>
+                        <button
+                            className="btn btn-primary btn-full"
+                            style={{
+                                background: 'linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%)',
+                                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                                height: '50px',
+                                fontSize: '16px',
+                                fontWeight: 600,
+                                borderRadius: '16px'
+                            }}
+                            onClick={() => {
                                 const link = `https://t.me/TuristProPlanner_bot?start=proj_${currentProject.inviteCode}`;
-                                navigator.clipboard.writeText(link);
-                                window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');
-                            }}>
-                                📋
-                            </button>
-                        </div>
+                                const text = `Присоединяйся к походу «${currentProject.title}»! 🏔`;
+                                const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+
+                                if (window.Telegram?.WebApp) {
+                                    window.Telegram.WebApp.openTelegramLink(shareUrl);
+                                } else {
+                                    window.open(shareUrl, '_blank');
+                                }
+                            }}
+                        >
+                            Поделиться планом 🚀
+                        </button>
                     </div>
                 )}
             </div>
