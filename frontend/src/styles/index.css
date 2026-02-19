@@ -2,9 +2,14 @@
    Походный Сборщик — Glassmorphism Design System
    ────────────────────────────────────────────────────── */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import './theme.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Legacy styles below will be overridden or unused by new components */
 
 :root {
   /* ── Colors ────────────────────────────── */

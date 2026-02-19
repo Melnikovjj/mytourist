@@ -37,173 +37,180 @@ export function ProjectsPage() {
 
     return (
         <div className="page">
-            <div className="page-header">
-                <h1 className="page-title">🏔 Походный Сборщик</h1>
-                <p className="page-subtitle">Совместное планирование походов</p>
-            </div>
+            <div className="space-y-8 pb-24 page px-4 pt-6">
+                {/* Header */}
+                <header className="flex justify-between items-center">
+                    <div>
+                        <h1 className="text-2xl font-semibold text-[#1C1C1E]">Hello, {user?.firstName || user?.username || 'Traveler'}</h1>
+                        <p className="text-[#1C1C1E]/60 text-sm">Ready for your next adventure?</p>
+                    </div>
+                    <Avatar src={user?.avatarUrl} fallback={user?.username?.[0] || 'U'} glow />
+                </header>
 
-            <div className="flex gap-3 mb-3">
-                <button className="btn btn-primary btn-sm" style={{ flex: 1 }} onClick={() => setShowCreate(true)}>
-                    <Plus size={16} /> Создать
-                </button>
-                <button className="btn btn-ghost btn-sm" style={{ flex: 1 }} onClick={() => setShowJoin(true)}>
-                    Присоединиться
-                </button>
-            </div>
+                {/* Actions */}
+                <div className="grid grid-cols-2 gap-4">
+                    <GlassCard
+                        className="p-4 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform cursor-pointer"
+                        onClick={() => setShowCreate(true)}
+                    >
+                        <div className="w-10 h-10 rounded-full bg-[#4AC7FA]/10 flex items-center justify-center text-[#4AC7FA]">
+                            <Plus size={24} />
+                        </div>
+                        <span className="font-medium text-sm">New Trip</span>
+                    </GlassCard>
 
-            <div className="list-gap">
-                <AnimatePresence>
-                    {projects.map((project, i) => {
-                        const Icon = typeIcons[project.type] || Mountains;
-                        return (
-                            <motion.div
-                                key={project.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.08 }}
-                                className="glass-card"
-                                style={{ padding: '20px', cursor: 'pointer' }}
-                                onClick={() => navigate(`/project/${project.id}`)}
-                            >
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-3">
-                                        <div style={{
-                                            width: 40, height: 40, borderRadius: 12,
-                                            background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        }}>
-                                            <Icon size={20} color="#fff" weight="bold" />
+                    <GlassCard
+                        className="p-4 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform cursor-pointer"
+                        onClick={() => setShowJoin(true)}
+                    >
+                        <div className="w-10 h-10 rounded-full bg-[#34C759]/10 flex items-center justify-center text-[#34C759]">
+                            <Users size={24} />
+                        </div>
+                        <span className="font-medium text-sm">Join Party</span>
+                    </GlassCard>
+                </div>
+
+                {/* Projects List */}
+                <section className="space-y-4">
+                    <div className="flex justify-between items-end">
+                        <h2 className="text-xl font-semibold">My Trips</h2>
+                        {projects.length > 0 && <span className="text-[#2F80ED] text-sm font-medium">{projects.length} Active</span>}
+                    </div>
+
+                    <div className="space-y-4">
+                        {loading ? (
+                            <div className="text-center py-10 text-gray-400">Loading trips...</div>
+                        ) : projects.length === 0 ? (
+                            <div className="text-center py-10 text-gray-500">No trips yet. Create or join one!</div>
+                        ) : (
+                            projects.map((project) => (
+                                <GlassCard
+                                    key={project.id}
+                                    className="p-0 overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
+                                    onClick={() => navigate(`/project/${project.id}`)}
+                                >
+                                    <div className="relative h-32">
+                                        <img src={getProjectImage(project.type)} alt={project.title} className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                                        <div className="absolute bottom-3 left-4 text-white">
+                                            <Badge status="neutral" className="mb-2 backdrop-blur-md bg-white/20 border-white/30 text-white">
+                                                {project.type.charAt(0).toUpperCase() + project.type.slice(1)}
+                                            </Badge>
+                                            <h3 className="text-lg font-semibold leading-tight">{project.title}</h3>
                                         </div>
-                                        <div>
-                                            <div className="font-semibold">{project.title}</div>
-                                            <div className="text-xs text-muted">
-                                                {typeLabels[project.type]} • {seasonLabels[project.season]}
+                                    </div>
+
+                                    <div className="p-4 space-y-4">
+                                        <div className="flex justify-between text-sm text-[#1C1C1E]/70">
+                                            <div className="flex items-center gap-1.5">
+                                                <Calendar size={16} />
+                                                <span>{project.season === 'summer' ? 'Summer' : project.season === 'winter' ? 'Winter' : 'Any'}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1.5">
+                                                <Users size={16} />
+                                                <span>{project.members?.length || 1} people</span>
                                             </div>
                                         </div>
-                                    </div>
-                                    <CaretRight size={18} className="text-muted" />
-                                </div>
 
-                                <div className="flex items-center justify-between mt-3">
-                                    <div className="flex items-center gap-2">
-                                        <Users size={14} className="text-secondary" />
-                                        <span className="text-sm text-secondary">{project.members?.length || 0}</span>
-                                        {project.startDate && (
-                                            <>
-                                                <CalendarBlank size={14} className="text-secondary" style={{ marginLeft: 8 }} />
-                                                <span className="text-sm text-secondary">
-                                                    {new Date(project.startDate).toLocaleDateString('ru')}
-                                                </span>
-                                            </>
-                                        )}
+                                        <div className="space-y-1.5">
+                                            <div className="flex justify-between text-xs font-medium text-[#1C1C1E]/60">
+                                                <span>Preparation</span>
+                                                {/* Mock progress for now, implementation would require backend logic */}
+                                                <span>30%</span>
+                                            </div>
+                                            <ProgressBar progress={30} />
+                                        </div>
                                     </div>
-                                    {project.readiness !== undefined && (
-                                        <span className={`badge ${project.readiness === 100 ? 'badge-accent' : 'badge-primary'}`}>
-                                            {project.readiness}%
-                                        </span>
-                                    )}
-                                </div>
+                                </GlassCard>
+                            ))
+                        )}
+                    </div>
+                </section>
 
-                                {project.readiness !== undefined && (
-                                    <div className="progress-bar mt-2">
-                                        <div className="progress-fill" style={{ width: `${project.readiness}%` }} />
+                {/* Create Modal */}
+                <AnimatePresence>
+                    {showCreate && (
+                        <motion.div className="modal-overlay fixed inset-0 bg-black/50 z-50 flex items-end"
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            onClick={() => setShowCreate(false)}>
+                            <motion.div
+                                className="bg-white rounded-t-[32px] w-full p-6 pb-12"
+                                initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+                                transition={{ type: 'spring', damping: 25 }}
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6" />
+                                <h2 className="text-xl font-bold mb-6">Create New Trip</h2>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-500 mb-1 block">Trip Name</label>
+                                        <input className="input w-full p-3 rounded-xl bg-gray-50 border border-gray-200"
+                                            placeholder="e.g., Elbrus Ascent"
+                                            value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                        />
                                     </div>
-                                )}
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-500 mb-1 block">Type</label>
+                                            <select className="input w-full p-3 rounded-xl bg-gray-50 border border-gray-200"
+                                                value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}>
+                                                <option value="hiking">Hiking</option>
+                                                <option value="ski">Skiing</option>
+                                                <option value="water">Water</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium text-gray-500 mb-1 block">Season</label>
+                                            <select className="input w-full p-3 rounded-xl bg-gray-50 border border-gray-200"
+                                                value={formData.season} onChange={(e) => setFormData({ ...formData, season: e.target.value })}>
+                                                <option value="summer">Summer</option>
+                                                <option value="winter">Winter</option>
+                                                <option value="spring">Spring</option>
+                                                <option value="autumn">Autumn</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <Button className="w-full mt-4" onClick={handleCreate}>
+                                        Create Project
+                                    </Button>
+                                </div>
                             </motion.div>
-                        );
-                    })}
+                        </motion.div>
+                    )}
                 </AnimatePresence>
 
-                {!loading && projects.length === 0 && (
-                    <div className="empty-state">
-                        <div className="empty-state-icon">🏕</div>
-                        <div className="empty-state-title">Пока нет проектов</div>
-                        <div className="empty-state-text">Создайте первый поход или присоединитесь по приглашению</div>
-                    </div>
-                )}
+                {/* Join Modal */}
+                <AnimatePresence>
+                    {showJoin && (
+                        <motion.div className="modal-overlay fixed inset-0 bg-black/50 z-50 flex items-end"
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            onClick={() => setShowJoin(false)}>
+                            <motion.div
+                                className="bg-white rounded-t-[32px] w-full p-6 pb-12"
+                                initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+                                transition={{ type: 'spring', damping: 25 }}
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6" />
+                                <h2 className="text-xl font-bold mb-6">Join a Trip</h2>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-500 mb-1 block">Invite Code</label>
+                                        <input className="input w-full p-3 rounded-xl bg-gray-50 border border-gray-200"
+                                            placeholder="Enter code"
+                                            value={inviteCode} onChange={(e) => setInviteCode(e.target.value)}
+                                        />
+                                    </div>
+                                    <Button className="w-full mt-4" onClick={handleJoin}>
+                                        Join Project
+                                    </Button>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
-
-            {/* Create Modal */}
-            <AnimatePresence>
-                {showCreate && (
-                    <motion.div className="modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        onClick={() => setShowCreate(false)}>
-                        <motion.div className="modal-sheet" initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
-                            transition={{ type: 'spring', damping: 25 }} onClick={(e) => e.stopPropagation()}>
-                            <div className="modal-handle" />
-                            <h2 className="modal-title">Новый поход</h2>
-                            <div className="form-group">
-                                <label className="input-label">Название</label>
-                                <input className="input" placeholder="Например: Алтай 2026" value={formData.title}
-                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
-                            </div>
-                            <div className="form-group">
-                                <label className="input-label">Описание</label>
-                                <input className="input" placeholder="Краткое описание маршрута" value={formData.description}
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
-                            </div>
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label className="input-label">Тип похода</label>
-                                    <select className="select" value={formData.type}
-                                        onChange={(e) => setFormData({ ...formData, type: e.target.value })}>
-                                        <option value="hiking">🥾 Пеший</option>
-                                        <option value="ski">⛷ Лыжный</option>
-                                        <option value="water">🚣 Водный</option>
-                                    </select>
-                                </div>
-                                <div className="form-group">
-                                    <label className="input-label">Сезон</label>
-                                    <select className="select" value={formData.season}
-                                        onChange={(e) => setFormData({ ...formData, season: e.target.value })}>
-                                        <option value="summer">☀️ Лето</option>
-                                        <option value="autumn">🍂 Осень</option>
-                                        <option value="winter">❄️ Зима</option>
-                                        <option value="spring">🌱 Весна</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label className="input-label">Начало</label>
-                                    <input className="input" type="date" value={formData.startDate}
-                                        onChange={(e) => setFormData({ ...formData, startDate: e.target.value })} />
-                                </div>
-                                <div className="form-group">
-                                    <label className="input-label">Конец</label>
-                                    <input className="input" type="date" value={formData.endDate}
-                                        onChange={(e) => setFormData({ ...formData, endDate: e.target.value })} />
-                                </div>
-                            </div>
-                            <button className="btn btn-primary btn-full btn-lg mt-4" onClick={handleCreate}>
-                                Создать проект
-                            </button>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Join Modal */}
-            <AnimatePresence>
-                {showJoin && (
-                    <motion.div className="modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        onClick={() => setShowJoin(false)}>
-                        <motion.div className="modal-sheet" initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
-                            transition={{ type: 'spring', damping: 25 }} onClick={(e) => e.stopPropagation()}>
-                            <div className="modal-handle" />
-                            <h2 className="modal-title">Присоединиться</h2>
-                            <div className="form-group">
-                                <label className="input-label">Код приглашения</label>
-                                <input className="input" placeholder="Введите код" value={inviteCode}
-                                    onChange={(e) => setInviteCode(e.target.value)} />
-                            </div>
-                            <button className="btn btn-primary btn-full btn-lg mt-4" onClick={handleJoin}>
-                                Присоединиться
-                            </button>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
-    );
+            );
 }
