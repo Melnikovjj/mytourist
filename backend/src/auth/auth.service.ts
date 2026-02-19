@@ -111,6 +111,9 @@ export class AuthService {
                 lastName: user.lastName,
                 avatarUrl: user.avatarUrl,
                 weight: user.weight,
+                inviteCode: user.inviteCode,
+                isOnboarded: user.isOnboarded,
+                experienceLevel: user.experienceLevel,
             },
         };
     }

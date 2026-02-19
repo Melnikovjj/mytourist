@@ -17,7 +17,12 @@ export class UsersController {
     }
 
     @Patch('me')
-    updateProfile(@CurrentUser() user: any, @Body() data: { weight?: number; username?: string }) {
+    updateProfile(@CurrentUser() user: any, @Body() data: { weight?: number; username?: string; experienceLevel?: string }) {
         return this.usersService.updateProfile(user.id, data);
+    }
+
+    @Patch('complete-onboarding')
+    completeOnboarding(@CurrentUser() user: any, @Body() data: { weight: number; username: string; experienceLevel: string }) {
+        return this.usersService.completeOnboarding(user.id, data);
     }
 }

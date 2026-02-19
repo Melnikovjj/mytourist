@@ -20,10 +20,21 @@ export class UsersService {
         return this.serializeUser(user);
     }
 
-    async updateProfile(id: string, data: { weight?: number; username?: string }) {
+    async updateProfile(id: string, data: { weight?: number; username?: string; experienceLevel?: string }) {
         const user = await this.prisma.user.update({
             where: { id },
             data,
+        });
+        return this.serializeUser(user);
+    }
+
+    async completeOnboarding(id: string, data: { weight: number; username: string; experienceLevel: string }) {
+        const user = await this.prisma.user.update({
+            where: { id },
+            data: {
+                ...data,
+                isOnboarded: true,
+            },
         });
         return this.serializeUser(user);
     }
@@ -32,6 +43,9 @@ export class UsersService {
         return {
             ...user,
             telegramId: user.telegramId.toString(),
+            isOnboarded: user.isOnboarded,
+            experienceLevel: user.experienceLevel,
+            inviteCode: user.inviteCode,
         };
     }
 }

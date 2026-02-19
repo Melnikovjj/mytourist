@@ -18,6 +18,8 @@ model User {
   lastName   String?  @map("last_name")
   avatarUrl  String?  @map("avatar_url")
   weight     Float?   @default(70)
+  experienceLevel String? @map("experience_level")
+  isOnboarded    Boolean @default(false) @map("is_onboarded")
   inviteCode String?  @unique @map("invite_code")
   createdAt  DateTime @default(now()) @map("created_at")
 
