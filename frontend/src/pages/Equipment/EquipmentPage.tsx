@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Lightning, UserCircle, Package, Trash } from '@phosphor-icons/react';
+import { ArrowLeft, Lightning, UserCircle, Trash } from '@phosphor-icons/react';
 import { useEquipmentStore } from '../../store/equipmentStore';
 import { useProjectStore } from '../../store/projectStore';
+import { GlassCard } from '../../components/ui/GlassCard';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
 import type { ProjectEquipment } from '../../types';
 
 export function EquipmentPage() {
@@ -40,37 +43,48 @@ export function EquipmentPage() {
     };
 
     return (
-        <div className="page">
-            <button className="btn btn-ghost btn-sm mb-3" onClick={() => navigate(`/project/${projectId}`)}>
-                <ArrowLeft size={16} /> Назад
+        <div className="min-h-screen pb-24 pt-4 px-4 space-y-4">
+            <button
+                onClick={() => navigate(`/project/${projectId}`)}
+                className="p-2 -ml-2 rounded-full hover:bg-white/20 transition-colors text-white mb-2"
+            >
+                <ArrowLeft size={24} />
             </button>
 
-            <div className="page-header">
-                <h1 className="page-title">🎒 Снаряжение</h1>
-                <p className="page-subtitle">
+            <div className="mb-6">
+                <h1 className="text-2xl font-bold text-[#1C1C1E] mb-1">🎒 Снаряжение</h1>
+                <p className="text-[#1C1C1E]/60 text-sm">
                     {projectEquipment.length} предметов • {totalWeight.toFixed(1)} кг • {packedCount} собрано
                 </p>
             </div>
 
-            <button className="btn btn-accent btn-sm btn-full mb-3" onClick={handleAutoGenerate}>
+            <Button variant="secondary" size="sm" className="w-full gap-2 mb-4" onClick={handleAutoGenerate}>
                 <Lightning size={16} /> Автогенерация списка
-            </button>
+            </Button>
 
             {/* Category tabs */}
-            <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', marginBottom: '16px', paddingBottom: '4px' }}>
-                <button className={`btn btn-sm ${filter === 'all' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setFilter('all')}>
+            <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar mb-2">
+                <button
+                    className={`px-4 py-1.5 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${filter === 'all' ? 'bg-[#2F80ED] text-white' : 'bg-white/40 text-gray-600 hover:bg-white/60'
+                        }`}
+                    onClick={() => setFilter('all')}
+                >
                     Все
                 </button>
                 {categories.map((cat) => (
-                    <button key={cat} className={`btn btn-sm ${filter === cat ? 'btn-primary' : 'btn-ghost'}`}
-                        onClick={() => setFilter(cat)} style={{ whiteSpace: 'nowrap' }}>
+                    <button
+                        key={cat}
+                        className={`px-4 py-1.5 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${filter === cat ? 'bg-[#2F80ED] text-white' : 'bg-white/40 text-gray-600 hover:bg-white/60'
+                            }`}
+                        onClick={() => setFilter(cat)}
+                    >
                         {cat}
                     </button>
                 ))}
             </div>
 
-            <div className="list-gap">
-                <AnimatePresence>
+            <div className="space-y-2">
+                <AnimatePresence mode="popLayout">
                     {filtered.map((item, i) => (
                         <motion.div
                             key={item.id}
@@ -78,43 +92,49 @@ export function EquipmentPage() {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 20 }}
                             transition={{ delay: i * 0.03 }}
-                            className={`checkbox-item ${item.status === 'packed' ? 'checked' : ''}`}
-                            onClick={() => toggleStatus(item)}
                         >
-                            <div className={`checkbox-box ${item.status === 'packed' ? 'checked' : ''}`}>
-                                {item.status === 'packed' && <span style={{ color: '#fff', fontSize: 14 }}>✓</span>}
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                                <div className="checkbox-label">{item.equipment.name}</div>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-xs text-muted">{(item.customWeight || item.equipment.weight).toFixed(1)} кг</span>
-                                    {item.equipment.isGroupItem && (
-                                        <span className="badge badge-warning" style={{ fontSize: '10px', padding: '2px 6px' }}>Групповое</span>
-                                    )}
-                                    {item.assignedTo && (
-                                        <span className="text-xs text-secondary">
-                                            <UserCircle size={12} style={{ verticalAlign: 'middle' }} /> {item.assignedTo.firstName || item.assignedTo.username}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                            <button
-                                className="btn btn-ghost btn-sm"
-                                style={{ padding: '6px' }}
-                                onClick={(e) => { e.stopPropagation(); removeFromProject(item.id); }}
+                            <GlassCard
+                                className={`p-3 flex items-center gap-3 cursor-pointer border transition-colors ${item.status === 'packed' ? 'bg-[#34C759]/10 border-[#34C759]/30' : 'bg-white/40 border-white/40'
+                                    }`}
+                                onClick={() => toggleStatus(item)}
                             >
-                                <Trash size={14} />
-                            </button>
+                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${item.status === 'packed' ? 'bg-[#34C759] border-[#34C759]' : 'border-gray-400'
+                                    }`}>
+                                    {item.status === 'packed' && <span className="text-white text-[10px] font-bold">✓</span>}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className={`font-medium text-sm truncate ${item.status === 'packed' ? 'text-gray-500 line-through' : 'text-[#1C1C1E]'}`}>
+                                        {item.equipment.name}
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                        <span className="text-xs text-[#1C1C1E]/60">{(item.customWeight || item.equipment.weight).toFixed(1)} кг</span>
+                                        {item.equipment.isGroupItem && (
+                                            <Badge status="warning" className="px-1.5 py-0 text-[10px]">Групповое</Badge>
+                                        )}
+                                        {item.assignedTo && (
+                                            <span className="text-xs text-[#2F80ED] flex items-center gap-1">
+                                                <UserCircle size={12} weight="fill" /> {item.assignedTo.firstName || item.assignedTo.username}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                                <button
+                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                                    onClick={(e) => { e.stopPropagation(); removeFromProject(item.id); }}
+                                >
+                                    <Trash size={16} />
+                                </button>
+                            </GlassCard>
                         </motion.div>
                     ))}
                 </AnimatePresence>
             </div>
 
             {projectEquipment.length === 0 && !loading && (
-                <div className="empty-state">
-                    <div className="empty-state-icon">🎒</div>
-                    <div className="empty-state-title">Список пуст</div>
-                    <div className="empty-state-text">Нажмите «Автогенерация» для создания списка</div>
+                <div className="text-center py-8">
+                    <div className="text-4xl mb-2">🎒</div>
+                    <div className="text-lg font-medium text-gray-900">Список пуст</div>
+                    <p className="text-sm text-gray-500">Нажмите «Автогенерация» для создания списка</p>
                 </div>
             )}
         </div>

@@ -41,7 +41,7 @@ export function GearTab() {
     return (
         <div className="space-y-4">
             <Button variant="secondary" size="sm" className="w-full gap-2" onClick={handleAutoGenerate}>
-                <Lightning size={16} /> Auto-Generate List
+                <Lightning size={16} /> Авто-генерация
             </Button>
 
             {/* Category tabs */}
@@ -51,7 +51,7 @@ export function GearTab() {
                         }`}
                     onClick={() => setFilter('all')}
                 >
-                    All
+                    Все
                 </button>
                 {categories.map((cat) => (
                     <button
@@ -90,9 +90,9 @@ export function GearTab() {
                                         {item.equipment.name}
                                     </div>
                                     <div className="flex items-center gap-2 mt-0.5">
-                                        <span className="text-xs text-[#1C1C1E]/60">{(item.customWeight || item.equipment.weight).toFixed(1)} kg</span>
+                                        <span className="text-xs text-[#1C1C1E]/60">{(item.customWeight || item.equipment.weight).toFixed(1)} кг</span>
                                         {item.equipment.isGroupItem && (
-                                            <Badge status="warning" className="px-1.5 py-0 text-[10px]">Group</Badge>
+                                            <Badge status="warning" className="px-1.5 py-0 text-[10px]">Групповое</Badge>
                                         )}
                                         {item.assignedTo && (
                                             <span className="text-xs text-[#2F80ED] flex items-center gap-1">
@@ -117,8 +117,8 @@ export function GearTab() {
             {projectEquipment.length === 0 && !loading && (
                 <div className="text-center py-8">
                     <div className="text-4xl mb-2">🎒</div>
-                    <div className="text-lg font-medium text-gray-900">List is empty</div>
-                    <p className="text-sm text-gray-500">Tap Auto-Generate to start</p>
+                    <div className="text-lg font-medium text-gray-900">Список пуст</div>
+                    <p className="text-sm text-gray-500">Нажми Авто-генерация для начала</p>
                 </div>
             )}
         </div>

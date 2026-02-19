@@ -5,10 +5,10 @@ import { GlassCard } from '../../components/ui/GlassCard';
 import { Button } from '../../components/ui/Button';
 
 const firstAidItems = [
-    'Sterile Bandage', 'Elastic Bandage', 'Plasters (Assorted)', 'Antiseptic',
-    'Hydrogen Peroxide', 'Painkillers', 'Antipyretic', 'Antihistamine',
-    'Anti-diarrheal', 'Activated Charcoal', 'Thermal Blanket',
-    'Medical Scissors', 'Tweezers', 'Disposable Gloves',
+    'Стерильный бинт', 'Эластичный бинт', 'Пластыри (набор)', 'Антисептик',
+    'Перекись водорода', 'Обезболивающее', 'Жаропонижающее', 'Антигистаминное',
+    'От диареи', 'Активированный уголь', 'Одеяло спасателя',
+    'Медицинские ножницы', 'Пинцет', 'Перчатки',
 ];
 
 export function ReferencePage() {
@@ -36,43 +36,49 @@ export function ReferencePage() {
         setDiaryText('');
     };
 
+    const intensityLabels: Record<string, string> = {
+        light: 'Легкий',
+        medium: 'Средний',
+        heavy: 'Высокий'
+    };
+
     return (
         <div className="min-h-screen pb-24 pt-6 px-4 space-y-6">
             <header>
-                <h1 className="text-2xl font-bold text-[#1C1C1E]">Guidebook</h1>
-                <p className="text-[#1C1C1E]/60 text-sm">Useful tools & Reference</p>
+                <h1 className="text-2xl font-bold text-[#1C1C1E]">Справочник</h1>
+                <p className="text-[#1C1C1E]/60 text-sm">Полезные инструменты</p>
             </header>
 
             <div className="flex p-1 bg-gray-100/50 backdrop-blur-sm rounded-[14px]">
                 <button
                     onClick={() => setActiveTab('aid')}
                     className={`flex-1 py-2 text-sm font-semibold rounded-[10px] transition-all flex items-center justify-center gap-1.5 ${activeTab === 'aid'
-                            ? 'bg-white text-[#2F80ED] shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
+                        ? 'bg-white text-[#2F80ED] shadow-sm'
+                        : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
                     <FirstAid size={18} weight={activeTab === 'aid' ? 'fill' : 'regular'} />
-                    First Aid
+                    Аптечка
                 </button>
                 <button
                     onClick={() => setActiveTab('water')}
                     className={`flex-1 py-2 text-sm font-semibold rounded-[10px] transition-all flex items-center justify-center gap-1.5 ${activeTab === 'water'
-                            ? 'bg-white text-[#2F80ED] shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
+                        ? 'bg-white text-[#2F80ED] shadow-sm'
+                        : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
                     <Drop size={18} weight={activeTab === 'water' ? 'fill' : 'regular'} />
-                    Water
+                    Вода
                 </button>
                 <button
                     onClick={() => setActiveTab('diary')}
                     className={`flex-1 py-2 text-sm font-semibold rounded-[10px] transition-all flex items-center justify-center gap-1.5 ${activeTab === 'diary'
-                            ? 'bg-white text-[#2F80ED] shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
+                        ? 'bg-white text-[#2F80ED] shadow-sm'
+                        : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
                     <Notebook size={18} weight={activeTab === 'diary' ? 'fill' : 'regular'} />
-                    Diary
+                    Дневник
                 </button>
             </div>
 
@@ -85,9 +91,9 @@ export function ReferencePage() {
                         exit={{ opacity: 0, y: -10 }}
                     >
                         <GlassCard className="p-5">
-                            <h3 className="font-semibold mb-2 text-lg">🏥 Basic First Aid Kit</h3>
+                            <h3 className="font-semibold mb-2 text-lg">🏥 Базовая аптечка</h3>
                             <p className="text-xs text-gray-400 mb-4 bg-yellow-50 text-yellow-700 p-2 rounded-lg">
-                                Warning: Basic recommendation only. Not medical advice.
+                                Внимание: Это лишь базовые рекомендации. Не является медицинской консультацией.
                             </p>
                             <div className="space-y-2">
                                 {firstAidItems.map((item, i) => (
@@ -114,24 +120,24 @@ export function ReferencePage() {
                                     <Drop size={24} weight="fill" />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold text-lg">Water Calculator</h3>
-                                    <p className="text-xs text-gray-500">Daily intake estimation</p>
+                                    <h3 className="font-semibold text-lg">Калькулятор воды</h3>
+                                    <p className="text-xs text-gray-500">Расчет дневной нормы</p>
                                 </div>
                             </div>
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">Weight (kg)</label>
+                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">Вес (кг)</label>
                                     <input className="input w-full p-3 rounded-xl bg-gray-50 border-gray-200" type="number"
                                         value={waterWeight} onChange={(e) => setWaterWeight(parseFloat(e.target.value))} />
                                 </div>
                                 <div>
-                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">Temperature (°C)</label>
+                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">Температура (°C)</label>
                                     <input className="input w-full p-3 rounded-xl bg-gray-50 border-gray-200" type="number"
                                         value={waterTemp} onChange={(e) => setWaterTemp(parseFloat(e.target.value))} />
                                 </div>
                                 <div>
-                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">Activity Level</label>
+                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">Уровень активности</label>
                                     <div className="flex p-1 bg-gray-100 rounded-lg">
                                         {(['light', 'medium', 'heavy'] as const).map((val) => (
                                             <button key={val}
@@ -139,7 +145,7 @@ export function ReferencePage() {
                                                     }`}
                                                 onClick={() => setWaterIntensity(val)}
                                             >
-                                                {val.charAt(0).toUpperCase() + val.slice(1)}
+                                                {intensityLabels[val]}
                                             </button>
                                         ))}
                                     </div>
@@ -147,9 +153,9 @@ export function ReferencePage() {
                             </div>
 
                             <div className="bg-blue-50 p-6 rounded-2xl text-center border border-blue-100">
-                                <div className="text-sm text-blue-600 mb-1">Recommended Intake</div>
+                                <div className="text-sm text-blue-600 mb-1">Рекомендуемая норма</div>
                                 <div className="text-4xl font-bold text-blue-500">
-                                    {waterCalc()} <span className="text-lg font-medium text-blue-400">L/day</span>
+                                    {waterCalc()} <span className="text-lg font-medium text-blue-400">л/день</span>
                                 </div>
                             </div>
                         </GlassCard>
@@ -164,14 +170,14 @@ export function ReferencePage() {
                         exit={{ opacity: 0, y: -10 }}
                     >
                         <GlassCard className="p-5 mb-4">
-                            <h3 className="font-semibold mb-3">📝 Trip Diary</h3>
+                            <h3 className="font-semibold mb-3">📝 Дневник похода</h3>
                             <textarea
                                 className="input w-full p-3 rounded-xl bg-gray-50 border-gray-200 min-h-[100px] mb-3"
-                                placeholder="Write about your day..."
+                                placeholder="Опиши свой день..."
                                 value={diaryText} onChange={(e) => setDiaryText(e.target.value)}
                             />
                             <Button fullWidth onClick={addDiaryEntry} disabled={!diaryText.trim()}>
-                                Add Entry
+                                Добавить запись
                             </Button>
                         </GlassCard>
 
@@ -184,7 +190,7 @@ export function ReferencePage() {
                             ))}
                             {diaryEntries.length === 0 && (
                                 <div className="text-center py-8 text-gray-400 italic">
-                                    No entries yet. Start writing!
+                                    Записей нет. Начни писать!
                                 </div>
                             )}
                         </div>

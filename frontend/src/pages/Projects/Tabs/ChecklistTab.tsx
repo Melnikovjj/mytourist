@@ -52,8 +52,8 @@ export function ChecklistTab() {
             <GlassCard className="p-4 bg-white/40">
                 <div className="flex justify-between items-end mb-2">
                     <div>
-                        <h3 className="font-semibold text-gray-800">Checklist Progress</h3>
-                        <p className="text-xs text-gray-500">{checkedCount} of {items.length} completed</p>
+                        <h3 className="font-semibold text-gray-800">Прогресс сборов</h3>
+                        <p className="text-xs text-gray-500">{checkedCount} из {items.length} готово</p>
                     </div>
                     <span className="text-xl font-bold text-[#2F80ED]">{progress}%</span>
                 </div>
@@ -89,7 +89,7 @@ export function ChecklistTab() {
                                         )}
                                     </div>
                                     {item.weight && (
-                                        <span className="text-xs text-gray-400 font-mono">{(item.weight).toFixed(1)}kg</span>
+                                        <span className="text-xs text-gray-400 font-mono">{(item.weight).toFixed(1)}кг</span>
                                     )}
                                 </GlassCard>
                             </motion.div>
@@ -101,8 +101,8 @@ export function ChecklistTab() {
             {items.length === 0 && !loading && (
                 <div className="text-center py-8">
                     <div className="text-4xl mb-2">✅</div>
-                    <div className="text-lg font-medium text-gray-900">Checklist Empty</div>
-                    <p className="text-sm text-gray-500">Add gear to populate the checklist</p>
+                    <div className="text-lg font-medium text-gray-900">Чек-лист пуст</div>
+                    <p className="text-sm text-gray-500">Добавьте снаряжение, чтобы создать список</p>
                 </div>
             )}
         </div>

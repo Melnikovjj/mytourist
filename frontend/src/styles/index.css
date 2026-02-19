@@ -24,16 +24,16 @@
   --color-error-light: #f87171;
   --color-success: #10b981;
 
-  /* ── Background gradient ───────────────── */
-  --bg-gradient: linear-gradient(135deg, #0c1426 0%, #1a2744 30%, #0f2027 60%, #1a1a3e 100%);
-  --bg-color: #0c1426;
+  /* ── Background gradient (Deep Black/Liquid) ── */
+  --bg-gradient: linear-gradient(135deg, #000000 0%, #0a0a0a 40%, #111 100%);
+  --bg-color: #000000;
 
-  /* ── Glass ──────────────────────────────── */
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-bg-hover: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --glass-blur: blur(20px);
+  /* ── Glass (Liquid Dark) ────────────────── */
+  --glass-bg: rgba(20, 20, 20, 0.4);
+  --glass-bg-hover: rgba(40, 40, 40, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --glass-blur: blur(40px);
   --glass-radius: 24px;
   --glass-radius-sm: 16px;
   --glass-radius-xs: 12px;

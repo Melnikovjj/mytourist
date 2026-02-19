@@ -17,9 +17,9 @@ const seasonLabels: Record<string, string> = { winter: 'Зима', spring: 'Ве
 
 const getProjectImage = (type: string) => {
     switch (type) {
-        case 'ski': return 'https://images.unsplash.com/photo-1551524559-8af4e6624178?auto=format&fit=crop&q=80&w=800';
-        case 'water': return 'https://images.unsplash.com/photo-1544551763-46a813d9ca9d?auto=format&fit=crop&q=80&w=800';
-        default: return 'https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=800';
+        case 'ski': return 'https://images.unsplash.com/photo-1551524559-8af4e6624178?auto=format&fit=crop&q=80&w=800'; // Skiing
+        case 'water': return 'https://images.unsplash.com/photo-1544551763-46a813d9ca9d?auto=format&fit=crop&q=80&w=800'; // Kayak
+        default: return 'https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=800'; // Hiking
     }
 };
 
@@ -53,11 +53,10 @@ export function ProjectsPage() {
     return (
         <div className="page">
             <div className="space-y-8 pb-24 page px-4 pt-6">
-                {/* Header */}
                 <header className="flex justify-between items-center">
                     <div>
-                        <h1 className="text-2xl font-semibold text-[#1C1C1E]">Hello, {user?.firstName || user?.username || 'Traveler'}</h1>
-                        <p className="text-[#1C1C1E]/60 text-sm">Ready for your next adventure?</p>
+                        <h1 className="text-2xl font-semibold text-[var(--text-primary)]">Привет, {user?.firstName || user?.username || 'Турист'}</h1>
+                        <p className="text-[var(--text-primary)] opacity-60 text-sm">Готов к приключениям?</p>
                     </div>
                     <Avatar src={user?.avatarUrl} fallback={user?.username?.[0] || 'U'} glow />
                 </header>
@@ -65,75 +64,95 @@ export function ProjectsPage() {
                 {/* Actions */}
                 <div className="grid grid-cols-2 gap-4">
                     <GlassCard
-                        className="p-4 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform cursor-pointer"
+                        className="p-4 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform cursor-pointer hover:bg-white/10"
                         onClick={() => setShowCreate(true)}
                     >
-                        <div className="w-10 h-10 rounded-full bg-[#4AC7FA]/10 flex items-center justify-center text-[#4AC7FA]">
+                        <div className="w-10 h-10 rounded-full bg-[#4AC7FA]/20 flex items-center justify-center text-[#4AC7FA]">
                             <Plus size={24} />
                         </div>
-                        <span className="font-medium text-sm">New Trip</span>
+                        <span className="font-medium text-sm text-white/90">Создать</span>
                     </GlassCard>
 
                     <GlassCard
-                        className="p-4 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform cursor-pointer"
+                        className="p-4 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform cursor-pointer hover:bg-white/10"
                         onClick={() => setShowJoin(true)}
                     >
-                        <div className="w-10 h-10 rounded-full bg-[#34C759]/10 flex items-center justify-center text-[#34C759]">
+                        <div className="w-10 h-10 rounded-full bg-[#34C759]/20 flex items-center justify-center text-[#34C759]">
                             <Users size={24} />
                         </div>
-                        <span className="font-medium text-sm">Join Party</span>
+                        <span className="font-medium text-sm text-white/90">Вступить</span>
                     </GlassCard>
                 </div>
 
                 {/* Projects List */}
                 <section className="space-y-4">
                     <div className="flex justify-between items-end">
-                        <h2 className="text-xl font-semibold">My Trips</h2>
-                        {projects.length > 0 && <span className="text-[#2F80ED] text-sm font-medium">{projects.length} Active</span>}
+                        <h2 className="text-xl font-semibold text-[var(--text-primary)]">Мои Походы</h2>
+                        {projects.length > 0 && <span className="text-[#2F80ED] text-sm font-medium">{projects.length} Активных</span>}
                     </div>
 
                     <div className="space-y-4">
                         {loading ? (
-                            <div className="text-center py-10 text-gray-400">Loading trips...</div>
+                            <div className="text-center py-10 text-white/40">Загрузка походов...</div>
                         ) : projects.length === 0 ? (
-                            <div className="text-center py-10 text-gray-500">No trips yet. Create or join one!</div>
+                            <div className="text-center py-10 text-white/50">Пока нет походов. Создай или присоединись!</div>
                         ) : (
                             projects.map((project) => (
                                 <GlassCard
                                     key={project.id}
-                                    className="p-0 overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
+                                    className="p-0 overflow-hidden cursor-pointer active:scale-[0.98] transition-transform border-white/10"
                                     onClick={() => navigate(`/project/${project.id}`)}
                                 >
-                                    <div className="relative h-32">
+                                    <div className="relative h-36">
                                         <img src={getProjectImage(project.type)} alt={project.title} className="w-full h-full object-cover" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                                        <div className="absolute bottom-3 left-4 text-white">
-                                            <Badge status="neutral" className="mb-2 backdrop-blur-md bg-white/20 border-white/30 text-white">
-                                                {project.type.charAt(0).toUpperCase() + project.type.slice(1)}
-                                            </Badge>
-                                            <h3 className="text-lg font-semibold leading-tight">{project.title}</h3>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                                        <div className="absolute bottom-3 left-4 text-white right-4">
+                                            <div className="flex justify-between items-start mb-1">
+                                                <Badge status="neutral" className="backdrop-blur-md bg-white/20 border-white/30 text-white">
+                                                    {typeLabels[project.type] || project.type}
+                                                </Badge>
+                                                {/* Facepile */}
+                                                <div className="flex -space-x-2">
+                                                    {project.members?.slice(0, 3).map((m: any) => (
+                                                        <div key={m.id || m.userId} className="w-6 h-6 rounded-full border border-black/50 bg-gray-600 flex items-center justify-center text-[10px] text-white overflow-hidden">
+                                                            {m.user?.avatarUrl ? (
+                                                                <img src={m.user.avatarUrl} alt="" className="w-full h-full object-cover" />
+                                                            ) : (
+                                                                <span>{m.user?.firstName?.[0] || '?'}</span>
+                                                            )}
+                                                        </div>
+                                                    ))}
+                                                    {(project.members?.length || 0) > 3 && (
+                                                        <div className="w-6 h-6 rounded-full border border-black/50 bg-gray-700 flex items-center justify-center text-[8px] font-medium text-white">
+                                                            +{project.members!.length - 3}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <h3 className="text-xl font-bold leading-tight mb-0.5">{project.title}</h3>
+                                            {project.startDate && (
+                                                <p className="text-xs text-white/70">
+                                                    {new Date(project.startDate).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}
+                                                    {project.endDate ? ` — ${new Date(project.endDate).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}` : ''}
+                                                </p>
+                                            )}
                                         </div>
                                     </div>
 
-                                    <div className="p-4 space-y-4">
-                                        <div className="flex justify-between text-sm text-[#1C1C1E]/70">
+                                    <div className="p-4 space-y-3 bg-white/5">
+                                        <div className="flex justify-between text-sm text-white/70">
                                             <div className="flex items-center gap-1.5">
                                                 <Calendar size={16} />
-                                                <span>{project.season === 'summer' ? 'Summer' : project.season === 'winter' ? 'Winter' : 'Any'}</span>
-                                            </div>
-                                            <div className="flex items-center gap-1.5">
-                                                <Users size={16} />
-                                                <span>{project.members?.length || 1} people</span>
+                                                <span>{seasonLabels[project.season] || project.season}</span>
                                             </div>
                                         </div>
 
                                         <div className="space-y-1.5">
-                                            <div className="flex justify-between text-xs font-medium text-[#1C1C1E]/60">
-                                                <span>Preparation</span>
-                                                {/* Mock progress for now, implementation would require backend logic */}
-                                                <span>30%</span>
+                                            <div className="flex justify-between text-xs font-medium text-white/60">
+                                                <span>Подготовка</span>
+                                                <span>{project.readiness || 0}%</span>
                                             </div>
-                                            <ProgressBar progress={30} />
+                                            <ProgressBar progress={project.readiness || 0} />
                                         </div>
                                     </div>
                                 </GlassCard>
@@ -155,39 +174,39 @@ export function ProjectsPage() {
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6" />
-                                <h2 className="text-xl font-bold mb-6">Create New Trip</h2>
+                                <h2 className="text-xl font-bold mb-6">Создать Новый Поход</h2>
 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="text-sm font-medium text-gray-500 mb-1 block">Trip Name</label>
+                                        <label className="text-sm font-medium text-gray-500 mb-1 block">Название</label>
                                         <input className="input w-full p-3 rounded-xl bg-gray-50 border border-gray-200"
-                                            placeholder="e.g., Elbrus Ascent"
+                                            placeholder="Например: Эльбрус 2024"
                                             value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label className="text-sm font-medium text-gray-500 mb-1 block">Type</label>
+                                            <label className="text-sm font-medium text-gray-500 mb-1 block">Тип</label>
                                             <select className="input w-full p-3 rounded-xl bg-gray-50 border border-gray-200"
                                                 value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}>
-                                                <option value="hiking">Hiking</option>
-                                                <option value="ski">Skiing</option>
-                                                <option value="water">Water</option>
+                                                <option value="hiking">Пеший</option>
+                                                <option value="ski">Лыжный</option>
+                                                <option value="water">Водный</option>
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="text-sm font-medium text-gray-500 mb-1 block">Season</label>
+                                            <label className="text-sm font-medium text-gray-500 mb-1 block">Сезон</label>
                                             <select className="input w-full p-3 rounded-xl bg-gray-50 border border-gray-200"
                                                 value={formData.season} onChange={(e) => setFormData({ ...formData, season: e.target.value })}>
-                                                <option value="summer">Summer</option>
-                                                <option value="winter">Winter</option>
-                                                <option value="spring">Spring</option>
-                                                <option value="autumn">Autumn</option>
+                                                <option value="summer">Лето</option>
+                                                <option value="winter">Зима</option>
+                                                <option value="spring">Весна</option>
+                                                <option value="autumn">Осень</option>
                                             </select>
                                         </div>
                                     </div>
                                     <Button className="w-full mt-4" onClick={handleCreate}>
-                                        Create Project
+                                        Создать Поход
                                     </Button>
                                 </div>
                             </motion.div>
@@ -208,18 +227,18 @@ export function ProjectsPage() {
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6" />
-                                <h2 className="text-xl font-bold mb-6">Join a Trip</h2>
+                                <h2 className="text-xl font-bold mb-6">Вступить в Поход</h2>
 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="text-sm font-medium text-gray-500 mb-1 block">Invite Code</label>
+                                        <label className="text-sm font-medium text-gray-500 mb-1 block">Код Приглашения</label>
                                         <input className="input w-full p-3 rounded-xl bg-gray-50 border border-gray-200"
-                                            placeholder="Enter code"
+                                            placeholder="Введите код"
                                             value={inviteCode} onChange={(e) => setInviteCode(e.target.value)}
                                         />
                                     </div>
                                     <Button className="w-full mt-4" onClick={handleJoin}>
-                                        Join Project
+                                        Вступить
                                     </Button>
                                 </div>
                             </motion.div>

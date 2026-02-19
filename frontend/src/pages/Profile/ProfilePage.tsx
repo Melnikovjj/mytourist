@@ -134,7 +134,7 @@ export function ProfilePage() {
                     <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <span>⚖️</span><span>Мой вес снаряжения</span>
                     </span>
-                    <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>Soon</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>Скоро</span>
                 </button>
                 <button style={{
                     width: '100%', textAlign: 'left', padding: '14px 16px',

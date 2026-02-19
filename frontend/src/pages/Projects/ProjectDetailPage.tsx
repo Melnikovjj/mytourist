@@ -33,7 +33,7 @@ export function ProjectDetailPage() {
 
     const handleDelete = async () => {
         if (projectId) {
-            if (window.confirm('Are you sure you want to delete this project?')) {
+            if (window.confirm('Вы уверены, что хотите удалить этот поход?')) {
                 await deleteProject(projectId);
                 navigate('/');
             }
@@ -44,7 +44,7 @@ export function ProjectDetailPage() {
         if (!currentProject?.inviteCode) return;
 
         const link = `https://t.me/TuristProPlanner_bot?start=proj_${currentProject.inviteCode}`;
-        const text = `Join my trip «${currentProject.title}»! 🏔`;
+        const text = `Присоединяйся к походу «${currentProject.title}»! 🏔`;
         const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
 
         const tg = window.Telegram?.WebApp as any;
@@ -88,79 +88,92 @@ export function ProjectDetailPage() {
             </div>
 
             {/* Project Card */}
-            <GlassCard className="p-5 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
-                    <Gear size={120} weight="duotone" />
+            <GlassCard className="p-6 relative overflow-hidden border-white/20 dark:border-white/10 bg-white/60 dark:bg-white/5 shadow-xl dark:shadow-2xl">
+                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                    <Gear size={160} weight="duotone" className="text-[var(--text-primary)]" />
                 </div>
 
                 <div className="relative z-10">
-                    <h1 className="text-2xl font-bold text-[#1C1C1E] mb-2">{currentProject.title}</h1>
+                    <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2 tracking-tight">{currentProject.title}</h1>
                     {currentProject.description && (
-                        <p className="text-sm text-[#1C1C1E]/60 mb-4 line-clamp-2">
+                        <p className="text-sm text-[var(--text-secondary)] mb-4 line-clamp-2 leading-relaxed">
                             {currentProject.description}
                         </p>
                     )}
 
-                    <div className="flex flex-wrap gap-2 mb-4">
-                        <Badge variant="outline" className="bg-white/50 border-white/50">
-                            {currentProject.type === 'hiking' ? '🥾 Hiking' : currentProject.type === 'ski' ? '⛷ Skiing' : '🚣 Water'}
+                    {currentProject.startDate && (
+                        <div className="flex items-center gap-2 mb-4 text-[var(--text-secondary)] text-sm">
+                            <div className="w-1 h-1 rounded-full bg-[var(--text-primary)] opacity-50" />
+                            {new Date(currentProject.startDate).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}
+                            {currentProject.endDate ? ` — ${new Date(currentProject.endDate).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}` : ''}
+                        </div>
+                    )}
+
+                    <div className="flex flex-wrap gap-2 mb-5">
+                        <Badge variant="outline" className="bg-white/50 dark:bg-white/10 border-white/40 dark:border-white/20 text-[var(--text-primary)] backdrop-blur-md">
+                            {currentProject.type === 'hiking' ? '🥾 Пеший' : currentProject.type === 'ski' ? '⛷ Лыжный' : '🚣 Водный'}
                         </Badge>
-                        <Badge variant="outline" className="bg-white/50 border-white/50">
-                            {currentProject.season === 'summer' ? '☀️ Summer' : currentProject.season === 'winter' ? '❄️ Winter' : currentProject.season === 'spring' ? '🌱 Spring' : '🍂 Autumn'}
+                        <Badge variant="outline" className="bg-white/50 dark:bg-white/10 border-white/40 dark:border-white/20 text-[var(--text-primary)] backdrop-blur-md">
+                            {currentProject.season === 'summer' ? '☀️ Лето' : currentProject.season === 'winter' ? '❄️ Зима' : currentProject.season === 'spring' ? '🌱 Весна' : '🍂 Осень'}
                         </Badge>
                     </div>
 
-                    <div className="flex items-center gap-2" onClick={handleCopyInvite}>
-                        <div className="flex -space-x-2">
-                            {currentProject.members?.slice(0, 3).map((m) => (
-                                <div key={m.id} className="w-8 h-8 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
-                                    {m.user.firstName?.[0] || m.user.username?.[0] || '?'}
+                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/40 dark:bg-white/5 border border-white/20 dark:border-white/5 backdrop-blur-sm" onClick={handleCopyInvite}>
+                        <div className="flex -space-x-3">
+                            {currentProject.members?.slice(0, 4).map((m) => (
+                                <div key={m.id} className="w-9 h-9 rounded-full border-2 border-white dark:border-black/30 bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-xs font-bold text-gray-700 dark:text-white overflow-hidden shadow-sm">
+                                    {m.user.avatarUrl ? (
+                                        <img src={m.user.avatarUrl} alt="" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span>{m.user.firstName?.[0] || m.user.username?.[0] || '?'}</span>
+                                    )}
                                 </div>
                             ))}
-                            {(currentProject.members?.length || 0) > 3 && (
-                                <div className="w-8 h-8 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center text-xs font-medium text-gray-500">
-                                    +{currentProject.members!.length - 3}
+                            {(currentProject.members?.length || 0) > 4 && (
+                                <div className="w-9 h-9 rounded-full border-2 border-white dark:border-black/30 bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-xs font-medium text-gray-500 dark:text-white shadow-sm">
+                                    +{currentProject.members!.length - 4}
                                 </div>
                             )}
                         </div>
-                        <div className="text-xs text-[#2F80ED] font-medium ml-1">
-                            Invite Code: <span className="font-mono">{currentProject.inviteCode}</span>
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-semibold">Код доступа</span>
+                            <span className="text-sm font-mono text-[#4AC7FA] tracking-wider">{currentProject.inviteCode}</span>
                         </div>
                     </div>
                 </div>
             </GlassCard>
 
             {/* Tabs */}
-            <div className="flex p-1 bg-gray-100/50 backdrop-blur-sm rounded-[14px]">
+            <div className="flex p-1.5 bg-gray-100/50 dark:bg-white/5 border border-white/20 dark:border-white/10 backdrop-blur-xl rounded-[18px]">
                 <button
                     onClick={() => setActiveTab('gear')}
-                    className={`flex-1 py-2 text-sm font-semibold rounded-[10px] transition-all flex items-center justify-center gap-1.5 ${activeTab === 'gear'
-                            ? 'bg-white text-[#2F80ED] shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
+                    className={`flex-1 py-2.5 text-sm font-semibold rounded-[14px] transition-all flex items-center justify-center gap-2 ${activeTab === 'gear'
+                        ? 'bg-white dark:bg-white/15 text-[var(--color-primary)] dark:text-white shadow-md dark:shadow-lg border border-black/5 dark:border-white/10'
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-white/50 dark:hover:bg-white/5'
                         }`}
                 >
                     <Gear size={18} weight={activeTab === 'gear' ? 'fill' : 'regular'} />
-                    Gear
+                    Снаряжение
                 </button>
                 <button
                     onClick={() => setActiveTab('food')}
-                    className={`flex-1 py-2 text-sm font-semibold rounded-[10px] transition-all flex items-center justify-center gap-1.5 ${activeTab === 'food'
-                            ? 'bg-white text-[#2F80ED] shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
+                    className={`flex-1 py-2.5 text-sm font-semibold rounded-[14px] transition-all flex items-center justify-center gap-2 ${activeTab === 'food'
+                        ? 'bg-white dark:bg-white/15 text-[var(--color-primary)] dark:text-white shadow-md dark:shadow-lg border border-black/5 dark:border-white/10'
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-white/50 dark:hover:bg-white/5'
                         }`}
                 >
                     <ForkKnife size={18} weight={activeTab === 'food' ? 'fill' : 'regular'} />
-                    Food
+                    Еда
                 </button>
                 <button
                     onClick={() => setActiveTab('checklist')}
-                    className={`flex-1 py-2 text-sm font-semibold rounded-[10px] transition-all flex items-center justify-center gap-1.5 ${activeTab === 'checklist'
-                            ? 'bg-white text-[#2F80ED] shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'
+                    className={`flex-1 py-2.5 text-sm font-semibold rounded-[14px] transition-all flex items-center justify-center gap-2 ${activeTab === 'checklist'
+                        ? 'bg-white dark:bg-white/15 text-[var(--color-primary)] dark:text-white shadow-md dark:shadow-lg border border-black/5 dark:border-white/10'
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-white/50 dark:hover:bg-white/5'
                         }`}
                 >
                     <CheckSquare size={18} weight={activeTab === 'checklist' ? 'fill' : 'regular'} />
-                    Checklist
+                    Чек-лист
                 </button>
             </div>
 

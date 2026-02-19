@@ -25,7 +25,7 @@ export default function OnboardingPage() {
             await completeOnboarding(form);
             navigate('/');
         } catch (err: any) {
-            setError('Failed to save. Please try again.');
+            setError('Ошибка сохранения. Попробуйте снова.');
             setLoading(false);
         }
     };
@@ -36,12 +36,12 @@ export default function OnboardingPage() {
                 return (
                     <GlassCard className="p-8 text-center">
                         <div className="text-6xl mb-6">👋</div>
-                        <h1 className="text-2xl font-bold mb-4 text-[#1C1C1E]">Welcome!</h1>
+                        <h1 className="text-2xl font-bold mb-4 text-[#1C1C1E]">Добро пожаловать!</h1>
                         <p className="text-[#1C1C1E]/60 mb-8">
-                            Let's set up your profile. What should we call you?
+                            Давай настроим твой профиль. Как тебя зовут?
                         </p>
                         <div className="mb-8">
-                            <label className="block text-left text-sm font-medium text-gray-500 mb-2">Username</label>
+                            <label className="block text-left text-sm font-medium text-gray-500 mb-2">Имя пользователя</label>
                             <input
                                 type="text"
                                 className="input w-full p-4 rounded-xl bg-gray-50 border border-gray-200 focus:border-[#2F80ED] transition-colors"
@@ -55,7 +55,7 @@ export default function OnboardingPage() {
                             disabled={!form.username}
                             onClick={() => setStep(2)}
                         >
-                            Continue
+                            Продолжить
                         </Button>
                     </GlassCard>
                 );
@@ -63,9 +63,9 @@ export default function OnboardingPage() {
                 return (
                     <GlassCard className="p-8 text-center">
                         <div className="text-6xl mb-6">⚖️</div>
-                        <h1 className="text-2xl font-bold mb-4 text-[#1C1C1E]">Your Weight</h1>
+                        <h1 className="text-2xl font-bold mb-4 text-[#1C1C1E]">Твой вес</h1>
                         <p className="text-[#1C1C1E]/60 mb-8">
-                            This helps calculate gear load and pack weight distribution.
+                            Нужен для расчета нагрузки и подбора снаряжения.
                         </p>
                         <input
                             type="range"
@@ -77,11 +77,11 @@ export default function OnboardingPage() {
                             className="w-full mb-6 accent-[#2F80ED]"
                         />
                         <div className="text-4xl font-bold text-[#2F80ED] mb-8">
-                            {form.weight} kg
+                            {form.weight} кг
                         </div>
                         <div className="flex gap-4">
-                            <Button variant="ghost" onClick={() => setStep(1)} className="flex-1">Back</Button>
-                            <Button className="flex-1" onClick={() => setStep(3)}>Next</Button>
+                            <Button variant="ghost" onClick={() => setStep(1)} className="flex-1">Назад</Button>
+                            <Button className="flex-1" onClick={() => setStep(3)}>Далее</Button>
                         </div>
                     </GlassCard>
                 );
@@ -89,9 +89,9 @@ export default function OnboardingPage() {
                 return (
                     <GlassCard className="p-8 text-center">
                         <div className="text-6xl mb-6">🏔️</div>
-                        <h1 className="text-2xl font-bold mb-4 text-[#1C1C1E]">Experience</h1>
+                        <h1 className="text-2xl font-bold mb-4 text-[#1C1C1E]">Твой опыт</h1>
                         <p className="text-[#1C1C1E]/60 mb-8">
-                            Select your hiking experience level.
+                            Уровень подготовки для персональных советов.
                         </p>
                         <div className="space-y-3 mb-8">
                             {['beginner', 'intermediate', 'pro'].map(level => (
@@ -104,7 +104,7 @@ export default function OnboardingPage() {
                                     onClick={() => setForm({ ...form, experienceLevel: level })}
                                 >
                                     <span className="font-semibold text-[#1C1C1E]">
-                                        {level === 'beginner' ? 'Beginner' : level === 'intermediate' ? 'Enthusiast' : 'Pro'}
+                                        {level === 'beginner' ? 'Новичок' : level === 'intermediate' ? 'Любитель' : 'Профи'}
                                     </span>
                                     {form.experienceLevel === level && <span className="text-[#2F80ED]">●</span>}
                                 </div>
@@ -112,13 +112,13 @@ export default function OnboardingPage() {
                         </div>
                         {error && <div className="text-red-500 mb-4 text-sm">{error}</div>}
                         <div className="flex gap-4">
-                            <Button variant="ghost" onClick={() => setStep(2)} className="flex-1">Back</Button>
+                            <Button variant="ghost" onClick={() => setStep(2)} className="flex-1">Назад</Button>
                             <Button
                                 className="flex-1"
                                 isLoading={loading}
                                 onClick={handleFinish}
                             >
-                                Let's Go!
+                                Погнали!
                             </Button>
                         </div>
                     </GlassCard>
