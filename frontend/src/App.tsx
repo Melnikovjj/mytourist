@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
+import { useProjectStore } from './store/projectStore';
 import { BottomNav } from './components/layout/BottomNav';
 import { ProjectsPage } from './pages/Projects/ProjectsPage';
 import { ProjectDetailPage } from './pages/Projects/ProjectDetailPage';
