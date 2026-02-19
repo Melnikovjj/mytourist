@@ -98,8 +98,9 @@ export function ProjectDetailPage() {
                                 const text = `Присоединяйся к походу «${currentProject.title}»! 🏔`;
                                 const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
 
-                                if (window.Telegram?.WebApp) {
-                                    window.Telegram.WebApp.openTelegramLink(shareUrl);
+                                const tg = window.Telegram?.WebApp as any;
+                                if (tg && tg.openTelegramLink) {
+                                    tg.openTelegramLink(shareUrl);
                                 } else {
                                     window.open(shareUrl, '_blank');
                                 }
