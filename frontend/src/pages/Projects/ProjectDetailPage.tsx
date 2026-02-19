@@ -91,7 +91,8 @@ export function ProjectDetailPage() {
                                 height: '50px',
                                 fontSize: '16px',
                                 fontWeight: 600,
-                                borderRadius: '16px'
+                                borderRadius: '16px',
+                                marginBottom: '12px'
                             }}
                             onClick={() => {
                                 const link = `https://t.me/TuristProPlanner_bot?start=proj_${currentProject.inviteCode}`;
@@ -108,6 +109,24 @@ export function ProjectDetailPage() {
                         >
                             Поделиться планом 🚀
                         </button>
+                        <div
+                            style={{
+                                textAlign: 'center',
+                                fontSize: '13px',
+                                color: 'var(--text-secondary)',
+                                padding: '8px',
+                                background: 'rgba(255,255,255,0.05)',
+                                borderRadius: '12px',
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => {
+                                navigator.clipboard.writeText(currentProject.inviteCode || '');
+                                window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');
+                            }}
+                        >
+                            Код проекта: <span style={{ color: 'var(--color-primary)', fontWeight: 600, marginLeft: '4px' }}>{currentProject.inviteCode}</span>
+                            <span style={{ marginLeft: '6px', opacity: 0.7 }}>📋</span>
+                        </div>
                     </div>
                 )}
             </div>
