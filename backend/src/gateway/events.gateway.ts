@@ -64,7 +64,7 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         try {
             const message = await this.messagesService.create(data.userId, data.projectId, data.content);
-            this.server.to(`project:${data.projectId}`).emit('new_message', message);
+            client.broadcast.to(`project:${data.projectId}`).emit('new_message', message);
 
             // Notify offline members via Telegram
             const members = await this.prisma.projectMember.findMany({

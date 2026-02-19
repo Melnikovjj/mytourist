@@ -62,15 +62,25 @@ export function ChatTab() {
     const handleSend = () => {
         if (!input.trim() || !projectId || !user) return;
 
+        const content = input.trim();
+        setInput('');
+
+        const newMsg: Message = {
+            id: `temp_${Date.now()}` as any,
+            projectId,
+            senderId: user.id,
+            content,
+            createdAt: new Date().toISOString() as any,
+            sender: user
+        };
+        setMessages(prev => [...prev, newMsg]);
+
         const socket = getSocket();
-        // Emit message to server. Server will save to DB and broadcast 'new_message'
         socket.emit('send_message', {
             projectId,
             userId: user.id,
-            content: input.trim()
+            content
         });
-
-        setInput('');
     };
 
     // Wait, I need to implement POST /messages in backend first if I go that route.
