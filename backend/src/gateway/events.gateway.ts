@@ -9,6 +9,8 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { MessagesService } from '../messages/messages.service';
+import { BotService } from '../bot/bot.service';
+import { PrismaService } from '../common/prisma/prisma.service';
 
 @WebSocketGateway({
     cors: { origin: '*' },
@@ -49,6 +51,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     constructor(
         private readonly messagesService: MessagesService,
+        private readonly botService: BotService,
+        private readonly prisma: PrismaService,
     ) { }
 
     @SubscribeMessage('send_message')
@@ -61,8 +65,22 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         try {
             const message = await this.messagesService.create(data.userId, data.projectId, data.content);
             this.server.to(`project:${data.projectId}`).emit('new_message', message);
+
+            // Notify offline members via Telegram
+            const members = await this.prisma.projectMember.findMany({
+                where: { projectId: data.projectId },
+                include: { user: true, project: true },
+            });
+
+            for (const member of members) {
+                if (member.userId !== data.userId && member.user.telegramId) {
+                    const notifyText = `💬 <b>Новое сообщение</b> в походе «${member.project.title}»\n\nОт ${message.sender.firstName || 'Участника'}:\n<i>${data.content}</i>\n\n<a href="${process.env.WEBAPP_URL}?start_param=proj_${member.project.inviteCode}">Открыть чат</a>`;
+                    await this.botService.sendNotification(member.user.telegramId, notifyText);
+                }
+            }
+
         } catch (error) {
-            console.error('Error saving message:', error);
+            console.error('Error saving/sending message:', error);
             // Optionally emit error back to sender
         }
     }

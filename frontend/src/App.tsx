@@ -28,7 +28,7 @@ function AppContent() {
             // Set theme
             document.documentElement.setAttribute(
                 'data-theme',
-                tg.colorScheme || 'dark',
+                tg.colorScheme || 'light',
             );
         }
 

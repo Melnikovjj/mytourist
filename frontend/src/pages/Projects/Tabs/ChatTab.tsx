@@ -36,62 +36,41 @@ export function ChatTab() {
                 .catch(() => setLoading(false));
 
             const socket = getSocket();
-            // Ensure we are in the room - ProjectDetailPage should handle joining, but safe to ensure
 
             const handleNewMessage = (msg: Message) => {
-                setMessages((prev) => [...prev, msg]);
-                window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');
+                setMessages((prev) => {
+                    // Prevent duplicates
+                    if (prev.some(m => m.id === msg.id)) return prev;
+                    return [...prev, msg];
+                });
+                // Haptic feedback for new messages
+                if (msg.senderId !== user?.id) {
+                    window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');
+                }
             };
 
             socket.on('new_message', handleNewMessage);
 
             return () => {
                 socket.off('new_message', handleNewMessage);
+                // Optional: leave room
+                socket.emit('leave_project', { projectId });
             };
         }
-    }, [projectId]);
+    }, [projectId, user]);
 
-    const handleSend = async () => {
+    const handleSend = () => {
         if (!input.trim() || !projectId || !user) return;
 
-        // Optimistic update? No, let's wait for socket/response to avoid dupes
-        // Actually, we can emit socket event which server broadcasts, 
-        // AND server saves to DB. 
-        // In our backend implementation, we emit from gateway but also want to save.
-        // Let's call the Gateway via socket to send message effectively?
-        // Wait, the backend implementation of handleSendMessage in gateway emits 'new_message'.
-        // It should also save to DB.
-
         const socket = getSocket();
+        // Emit message to server. Server will save to DB and broadcast 'new_message'
         socket.emit('send_message', {
             projectId,
             userId: user.id,
             content: input.trim()
         });
 
-        // We also need to persist it. Our gateway implementation assumed "frontend calls API to save".
-        // Let's fix that discrepancy. I will call an API endpoint to save, 
-        // AND the API will trigger the gateway emission.
-        // But my gateway implementation has a 'send_message' handler that emits back.
-        // Let's use the socket for now as I implemented the handler in Gateway.
-        // BUT, the handler in Gateway DOES NOT save to DB in my previous `events.gateway.ts` edit (it had a comment).
-        // I need to fix backend to save message to DB if I use socket.
-        // OR I create a POST endpoint in MessagesController and use that.
-        // Using POST endpoint is robust.
-
-        try {
-            // We need a POST endpoint. I didn't create one in MessagesController!
-            // I only created GET.
-            // Quick fix: I'll use the socket emission which I implemented in Gateway 
-            // AND I will add the saving logic to the Gateway (injecting Service).
-            // OR simpler: I'll add a POST endpoint to MessagesController now.
-            // It's cleaner.
-
-            await api.post('/messages', { projectId, content: input.trim() });
-            setInput('');
-        } catch (e) {
-            console.error(e);
-        }
+        setInput('');
     };
 
     // Wait, I need to implement POST /messages in backend first if I go that route.
@@ -103,11 +82,7 @@ export function ChatTab() {
     // unless I fix the backend. I will fix the backend in a moment.
     // Let's write the frontend assuming the socket sends the message.
 
-    const sendMessage = () => {
-        if (!input.trim() || !projectId || !user) return;
-        getSocket().emit('send_message', { projectId, userId: user.id, content: input.trim() });
-        setInput('');
-    };
+
 
     return (
         <div className="flex flex-col h-[60vh]">
@@ -169,10 +144,10 @@ export function ChatTab() {
                         placeholder="Сообщение..."
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                     />
                     <button
-                        onClick={sendMessage}
+                        onClick={handleSend}
                         className="p-2 bg-[#2F80ED] rounded-xl text-white active:scale-95 transition-transform"
                     >
                         <PaperPlaneRight size={20} weight="fill" />

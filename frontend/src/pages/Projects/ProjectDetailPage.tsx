@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ShareNetwork, Trash, Gear, ForkKnife, CheckSquare, Users, Calendar, ChatCircle, PencilSimple } from '@phosphor-icons/react';
+import { ArrowLeft, ShareNetwork, Trash, Gear, ForkKnife, CheckSquare, Users, Calendar, ChatTeardropText, PencilSimple } from '@phosphor-icons/react';
 import { useProjectStore } from '../../store/projectStore';
 import { useAuthStore } from '../../store/authStore';
 import { GlassCard } from '../../components/ui/GlassCard';
@@ -14,6 +14,8 @@ import { ChatTab } from './Tabs/ChatTab';
 import { CalendarTab } from './Tabs/CalendarTab';
 import { ParticipantsTab } from './Tabs/ParticipantsTab';
 import api from '../../api/client';
+import { getSocket } from '../../api/socket';
+import type { Message } from '../../types';
 
 type TabType = 'gear' | 'food' | 'checklist' | 'chat' | 'calendar' | 'participants';
 
@@ -25,10 +27,39 @@ export function ProjectDetailPage() {
     const [activeTab, setActiveTab] = useState<TabType>('gear');
     const [showEdit, setShowEdit] = useState(false);
     const [editForm, setEditForm] = useState({ title: '', description: '', startDate: '', endDate: '' });
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    const activeTabRef = useRef(activeTab);
+    useEffect(() => {
+        activeTabRef.current = activeTab;
+        if (activeTab === 'chat') setUnreadCount(0);
+    }, [activeTab]);
 
     useEffect(() => {
         if (projectId) fetchProject(projectId);
     }, [projectId]);
+
+    useEffect(() => {
+        if (projectId && user) {
+            const socket = getSocket();
+            socket.emit('join_project', { projectId, userId: user.id });
+
+            const handleNewMessage = (msg: Message) => {
+                if (activeTabRef.current !== 'chat' && msg.senderId !== user.id) {
+                    setUnreadCount(prev => prev + 1);
+                    window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');
+                }
+            };
+
+            socket.on('new_message', handleNewMessage);
+
+            return () => {
+                socket.off('new_message', handleNewMessage);
+                // We leave project ONLY when completely leaving the page
+                socket.emit('leave_project', { projectId });
+            };
+        }
+    }, [projectId, user]);
 
     useEffect(() => {
         if (currentProject) {
@@ -93,7 +124,6 @@ export function ProjectDetailPage() {
         { id: 'gear', label: 'Снаряжение', icon: Gear },
         { id: 'food', label: 'Еда', icon: ForkKnife },
         { id: 'checklist', label: 'Чек-лист', icon: CheckSquare },
-        { id: 'chat', label: 'Чат', icon: ChatCircle },
         { id: 'calendar', label: 'Календарь', icon: Calendar },
         { id: 'participants', label: 'Участники', icon: Users },
     ];
@@ -125,6 +155,17 @@ export function ProjectDetailPage() {
                             </button>
                         </>
                     )}
+                    <button
+                        onClick={() => setActiveTab('chat')}
+                        className={`p-2 rounded-full backdrop-blur-md transition-colors relative flex items-center justify-center ${activeTab === 'chat' ? 'bg-[#2F80ED] text-white shadow-lg shadow-blue-500/30' : 'bg-white/20 text-[var(--text-primary)] hover:bg-white/30'}`}
+                    >
+                        <ChatTeardropText size={22} weight={activeTab === 'chat' ? 'fill' : 'duotone'} />
+                        {unreadCount > 0 && (
+                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-[#1c1c1e]">
+                                {unreadCount > 9 ? '9+' : unreadCount}
+                            </span>
+                        )}
+                    </button>
                     <button
                         onClick={handleShare}
                         className="p-2 rounded-full bg-white/20 backdrop-blur-md text-[var(--text-primary)] hover:bg-white/30 transition-colors"

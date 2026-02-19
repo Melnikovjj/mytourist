@@ -15,11 +15,17 @@ const typeIcons: Record<string, any> = { hiking: Mountains, ski: Snowflake, wate
 const typeLabels: Record<string, string> = { hiking: 'Пеший', ski: 'Лыжный', water: 'Водный' };
 const seasonLabels: Record<string, string> = { winter: 'Зима', spring: 'Весна', summer: 'Лето', autumn: 'Осень' };
 
-const getProjectImage = (type: string) => {
-    switch (type) {
-        case 'ski': return 'https://images.unsplash.com/photo-1551524559-8af4e6624178?auto=format&fit=crop&q=80&w=800'; // Skiing
-        case 'water': return 'https://images.unsplash.com/photo-1544551763-46a813d9ca9d?auto=format&fit=crop&q=80&w=800'; // Kayak
-        default: return 'https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=800'; // Hiking
+const getProjectImage = (type: string, season: string) => {
+    switch (`${type}_${season}`) {
+        case 'ski_winter':
+        case 'ski_spring':
+        case 'ski_autumn': return '/images/ski.png';
+        case 'water_summer':
+        case 'water_spring': return '/images/water.png';
+        case 'hiking_winter': return '/images/hiking_winter.png';
+        case 'hiking_autumn': return '/images/hiking_autumn.png';
+        case 'hiking_spring': return '/images/hiking_spring.png';
+        default: return `/images/${type}.png`; // Fallback (e.g. hiking_summer -> hiking.png)
     }
 };
 
@@ -62,27 +68,25 @@ export function ProjectsPage() {
                 </header>
 
                 {/* Actions */}
-                <div className="grid grid-cols-2 gap-4">
-                    <GlassCard
-                        className="p-4 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform cursor-pointer hover:bg-white/10"
-                        onClick={() => setShowCreate(true)}
-                    >
-                        <div className="w-10 h-10 rounded-full bg-[#4AC7FA]/20 flex items-center justify-center text-[#4AC7FA]">
-                            <Plus size={24} />
-                        </div>
-                        <span className="font-medium text-sm text-white/90">Создать</span>
-                    </GlassCard>
+                <GlassCard
+                    className="p-4 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform cursor-pointer hover:bg-gray-50/50"
+                    onClick={() => setShowCreate(true)}
+                >
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
+                        <Plus size={24} weight="bold" />
+                    </div>
+                    <span className="font-semibold text-sm text-gray-700">Создать</span>
+                </GlassCard>
 
-                    <GlassCard
-                        className="p-4 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform cursor-pointer hover:bg-white/10"
-                        onClick={() => setShowJoin(true)}
-                    >
-                        <div className="w-10 h-10 rounded-full bg-[#34C759]/20 flex items-center justify-center text-[#34C759]">
-                            <Users size={24} />
-                        </div>
-                        <span className="font-medium text-sm text-white/90">Вступить</span>
-                    </GlassCard>
-                </div>
+                <GlassCard
+                    className="p-4 flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform cursor-pointer hover:bg-gray-50/50"
+                    onClick={() => setShowJoin(true)}
+                >
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-500">
+                        <Users size={24} weight="bold" />
+                    </div>
+                    <span className="font-semibold text-sm text-gray-700">Вступить</span>
+                </GlassCard>
 
                 {/* Projects List */}
                 <section className="space-y-4">
@@ -93,9 +97,9 @@ export function ProjectsPage() {
 
                     <div className="space-y-4">
                         {loading ? (
-                            <div className="text-center py-10 text-white/40">Загрузка походов...</div>
+                            <div className="text-center py-10 text-gray-400">Загрузка походов...</div>
                         ) : projects.length === 0 ? (
-                            <div className="text-center py-10 text-white/50">Пока нет походов. Создай или присоединись!</div>
+                            <div className="text-center py-10 text-gray-500">Пока нет походов. Создай или присоединись!</div>
                         ) : (
                             projects.map((project) => (
                                 <GlassCard
@@ -104,7 +108,7 @@ export function ProjectsPage() {
                                     onClick={() => navigate(`/project/${project.id}`)}
                                 >
                                     <div className="relative h-36">
-                                        <img src={getProjectImage(project.type)} alt={project.title} className="w-full h-full object-cover" />
+                                        <img src={getProjectImage(project.type, project.season)} alt={project.title} className="w-full h-full object-cover" />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                                         <div className="absolute bottom-3 left-4 text-white right-4">
                                             <div className="flex justify-between items-start mb-1">
@@ -139,18 +143,18 @@ export function ProjectsPage() {
                                         </div>
                                     </div>
 
-                                    <div className="p-4 space-y-3 bg-white/5">
-                                        <div className="flex justify-between text-sm text-white/70">
+                                    <div className="p-4 space-y-3">
+                                        <div className="flex justify-between text-sm text-gray-600">
                                             <div className="flex items-center gap-1.5">
-                                                <Calendar size={16} />
+                                                <Calendar size={16} className="text-gray-400" />
                                                 <span>{seasonLabels[project.season] || project.season}</span>
                                             </div>
                                         </div>
 
                                         <div className="space-y-1.5">
-                                            <div className="flex justify-between text-xs font-medium text-white/60">
+                                            <div className="flex justify-between text-xs font-medium text-gray-500">
                                                 <span>Подготовка</span>
-                                                <span>{project.readiness || 0}%</span>
+                                                <span className="text-gray-700">{project.readiness || 0}%</span>
                                             </div>
                                             <ProgressBar progress={project.readiness || 0} />
                                         </div>

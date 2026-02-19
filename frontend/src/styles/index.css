@@ -12,36 +12,48 @@
 /* Legacy styles below will be overridden or unused by new components */
 
 :root {
-  /* ── Colors ────────────────────────────── */
+  /* ── Colors (Tourism Palette) ───────────── */
   --color-primary: #0ea5e9;
+  /* Sky Blue */
   --color-primary-light: #38bdf8;
   --color-primary-dark: #0284c7;
-  --color-accent: #06d6a0;
+
+  --color-nature: #10b981;
+  /* Emerald */
+  --color-nature-light: #34d399;
+
+  --color-sun: #f59e0b;
+  /* Amber */
+  --color-sun-light: #fbbf24;
+
+  --color-accent: #10b981;
   --color-accent-light: #34d399;
-  --color-warning: #f59e0b;
-  --color-warning-light: #fbbf24;
-  --color-error: #ef4444;
-  --color-error-light: #f87171;
-  --color-success: #10b981;
 
-  /* ── Background gradient (Deep Black/Liquid) ── */
-  --bg-gradient: linear-gradient(135deg, #000000 0%, #0a0a0a 40%, #111 100%);
-  --bg-color: #000000;
+  /* ── Background (Light & Airy) ──────────── */
+  --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  /* Pale Sky */
+  --bg-color: #f0f9ff;
 
-  /* ── Glass (Liquid Dark) ────────────────── */
-  --glass-bg: rgba(20, 20, 20, 0.4);
-  --glass-bg-hover: rgba(40, 40, 40, 0.5);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --glass-blur: blur(40px);
+  /* ── Glass (Solid White / Crystal Clear) ── */
+  --glass-bg: #ffffff;
+  --glass-bg-hover: #ffffff;
+  --glass-border: #e2e8f0;
+  /* Slate 200 */
+  --glass-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.1), 0 2px 4px -1px rgba(14, 165, 233, 0.06);
+  /* Sky blue tint shadow */
+  --glass-blur: none;
+  /* No blur needed for solid backgrounds, improves perf */
   --glass-radius: 24px;
-  --glass-radius-sm: 16px;
-  --glass-radius-xs: 12px;
+  --glass-radius-sm: 12px;
+  --glass-radius-xs: 8px;
 
-  /* ── Text ───────────────────────────────── */
-  --text-primary: rgba(255, 255, 255, 0.95);
-  --text-secondary: rgba(255, 255, 255, 0.65);
-  --text-muted: rgba(255, 255, 255, 0.4);
+  /* ── Text (Maximum Contrast) ────────────── */
+  --text-primary: #020617;
+  /* Slate 950 - Almost Black */
+  --text-secondary: #475569;
+  /* Slate 600 */
+  --text-muted: #94a3b8;
+  /* Slate 400 */
 
   /* ── Spacing ────────────────────────────── */
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -51,17 +63,17 @@
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ── Light theme override (Telegram) ─────── */
-[data-theme="light"] {
-  --bg-gradient: linear-gradient(135deg, #e8f4fd 0%, #dbeafe 30%, #e0f2fe 60%, #ede9fe 100%);
-  --bg-color: #f0f7ff;
-  --glass-bg: rgba(255, 255, 255, 0.65);
-  --glass-bg-hover: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(0, 0, 0, 0.08);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  --text-primary: rgba(0, 0, 0, 0.9);
-  --text-secondary: rgba(0, 0, 0, 0.6);
-  --text-muted: rgba(0, 0, 0, 0.35);
+/* ── Dark Theme Override (Only if explicitly requested) ── */
+[data-theme="dark"] {
+  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  --bg-color: #0f172a;
+  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
 }
 
 /* ── Reset ────────────────────────────────── */
@@ -95,47 +107,30 @@ body {
   flex-direction: column;
 }
 
-/* ── Glass Card ───────────────────────────── */
+/* ── Glass Card (High Visibility) ────────── */
 .glass-card {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 28px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--glass-radius);
+  box-shadow: var(--glass-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* Remove backdrop-filter for solid cards to avoid rendering artifacts */
 }
 
-/* Dark mode override for Glass Card */
-@media (prefers-color-scheme: dark) {
-  .glass-card {
-    background: rgba(20, 20, 20, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  }
-}
-
+/* Remove separate static/hover classes, simplify */
 .glass-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.15);
+  /* Blue tinted hover shadow */
 }
 
-.glass-card-static {
-  background: rgba(255, 255, 255, 0.6);
+[data-theme="dark"] .glass-card {
+  background: rgba(30, 41, 59, 0.7);
+  /* Keep semi-transparent for dark mode */
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 28px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-}
-
-/* Dark mode override for Static Glass Card */
-@media (prefers-color-scheme: dark) {
-  .glass-card-static {
-    background: rgba(20, 20, 20, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  }
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
 }
 
 /* Fallback for older WebViews */
