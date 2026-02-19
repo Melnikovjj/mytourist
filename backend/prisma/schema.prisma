@@ -27,6 +27,7 @@ model User {
   memberships      ProjectMember[]
   assignedEquipment ProjectEquipment[] @relation("AssignedEquipment")
   notifications    Notification[]
+  messages         Message[]
 
   @@map("users")
 }
@@ -48,6 +49,7 @@ model Project {
   equipment ProjectEquipment[]
   meals     Meal[]
   notifications Notification[]
+  messages  Message[]
 
   @@index([ownerId])
   @@map("projects")
@@ -141,4 +143,19 @@ model Notification {
   @@index([userId])
   @@index([projectId])
   @@map("notifications")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  projectId String   @map("project_id")
+  senderId  String   @map("sender_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sender  User    @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([senderId])
+  @@map("messages")
 }

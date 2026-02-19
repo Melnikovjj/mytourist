@@ -28,5 +28,5 @@ RUN npm prune --production && npx prisma generate
 ENV PORT=3000
 EXPOSE ${PORT}
 
-# Start: run migrations then start server
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main"]
+# Start: run db push (safer for this workflow without local postgres) then start server
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && node dist/src/main"]

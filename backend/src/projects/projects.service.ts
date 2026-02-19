@@ -111,6 +111,26 @@ export class ProjectsService {
         return { message: 'Project deleted' };
     }
 
+    async updateProject(projectId: string, userId: string, data: any) {
+        const project = await this.prisma.project.findUnique({ where: { id: projectId } });
+        if (!project) throw new NotFoundException();
+        if (project.ownerId !== userId) throw new ForbiddenException('Only the owner can update');
+
+        const updated = await this.prisma.project.update({
+            where: { id: projectId },
+            data: {
+                title: data.title,
+                description: data.description,
+                type: data.type,
+                season: data.season,
+                startDate: data.startDate ? new Date(data.startDate) : undefined,
+                endDate: data.endDate ? new Date(data.endDate) : undefined,
+            },
+            include: { members: { include: { user: true } } },
+        });
+        return this.serializeProject(updated);
+    }
+
     private serializeProject(project: any) {
         return {
             ...project,

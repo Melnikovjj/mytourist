@@ -97,28 +97,62 @@ body {
 
 /* ── Glass Card ───────────────────────────── */
 .glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--glass-radius);
-  box-shadow: var(--glass-shadow);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 28px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
 }
 
+/* Dark mode override for Glass Card */
+@media (prefers-color-scheme: dark) {
+  .glass-card {
+    background: rgba(20, 20, 20, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+}
+
 .glass-card:hover {
-  background: var(--glass-bg-hover);
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
 }
 
 .glass-card-static {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--glass-radius);
-  box-shadow: var(--glass-shadow);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 28px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark mode override for Static Glass Card */
+@media (prefers-color-scheme: dark) {
+  .glass-card-static {
+    background: rgba(20, 20, 20, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Fallback for older WebViews */
+@supports not (backdrop-filter: blur(1px)) {
+
+  .glass-card,
+  .glass-card-static {
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  @media (prefers-color-scheme: dark) {
+
+    .glass-card,
+    .glass-card-static {
+      background: #1c1c1e;
+    }
+  }
 }
 
 /* ── Buttons ──────────────────────────────── */

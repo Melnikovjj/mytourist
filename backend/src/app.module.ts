@@ -12,6 +12,7 @@ import { ChecklistModule } from './checklist/checklist.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { BotModule } from './bot/bot.module';
 import { EventsGateway } from './gateway/events.gateway';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { EventsGateway } from './gateway/events.gateway';
         ChecklistModule,
         NotificationsModule,
         BotModule,
+        MessagesModule,
     ],
     providers: [
         { provide: APP_GUARD, useClass: ThrottlerGuard },

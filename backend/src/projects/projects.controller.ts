@@ -35,4 +35,9 @@ export class ProjectsController {
     delete(@Param('projectId') projectId: string, @CurrentUser() user: any) {
         return this.projectsService.deleteProject(projectId, user.id);
     }
+
+    @Post(':projectId')
+    update(@Param('projectId') projectId: string, @CurrentUser() user: any, @Body() data: any) {
+        return this.projectsService.updateProject(projectId, user.id, data);
+    }
 }

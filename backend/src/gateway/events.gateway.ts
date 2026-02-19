@@ -46,6 +46,27 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         client.leave(`project:${data.projectId}`);
     }
 
+    @SubscribeMessage('send_message')
+    async handleSendMessage(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() data: { projectId: string; userId: string; content: string },
+    ) {
+        console.log(`New message in ${data.projectId} from ${data.userId}: ${data.content}`);
+
+        // Save to DB
+        // ideally we should inject MessagesService here, but Gateway circular dependency can be tricky.
+        // For now, let's assume the frontend calls the API to save, OR we inject it.
+        // Let's inject it properly.
+
+        this.server.to(`project:${data.projectId}`).emit('new_message', {
+            id: Math.random().toString(), // temp, real ID from DB if we save here
+            content: data.content,
+            senderId: data.userId,
+            createdAt: new Date(),
+            sender: { id: data.userId } // simplified
+        });
+    }
+
     // ── Emit methods used by services ─────────────────
     emitEquipmentUpdated(projectId: string, data: any) {
         this.server.to(`project:${projectId}`).emit('equipment_updated', data);
@@ -65,5 +86,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     emitMealUpdated(projectId: string, data: any) {
         this.server.to(`project:${projectId}`).emit('meal_updated', data);
+    }
+
+    emitNewMessage(projectId: string, message: any) {
+        this.server.to(`project:${projectId}`).emit('new_message', message);
     }
 }

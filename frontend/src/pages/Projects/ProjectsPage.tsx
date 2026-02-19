@@ -164,30 +164,30 @@ export function ProjectsPage() {
                 {/* Create Modal */}
                 <AnimatePresence>
                     {showCreate && (
-                        <motion.div className="modal-overlay fixed inset-0 bg-black/50 z-50 flex items-end"
+                        <motion.div className="modal-overlay fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end"
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                             onClick={() => setShowCreate(false)}>
                             <motion.div
-                                className="bg-white rounded-t-[32px] w-full p-6 pb-12"
+                                className="bg-white/90 dark:bg-[#1c1c1e]/90 backdrop-blur-xl border-t border-white/20 rounded-t-[32px] w-full p-6 pb-12 shadow-2xl"
                                 initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
                                 transition={{ type: 'spring', damping: 25 }}
                                 onClick={(e) => e.stopPropagation()}
                             >
-                                <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6" />
-                                <h2 className="text-xl font-bold mb-6">Создать Новый Поход</h2>
+                                <div className="w-12 h-1 bg-gray-300/50 rounded-full mx-auto mb-6" />
+                                <h2 className="text-xl font-bold mb-6 text-[var(--text-primary)]">Создать Новый Поход</h2>
 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="text-sm font-medium text-gray-500 mb-1 block">Название</label>
-                                        <input className="input w-full p-3 rounded-xl bg-gray-50 border border-gray-200"
+                                        <label className="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Название</label>
+                                        <input className="input w-full p-3 rounded-xl bg-gray-50/50 dark:bg-black/20 border border-black/5 dark:border-white/10 text-[var(--text-primary)] focus:bg-white/80 dark:focus:bg-black/40 transition-colors"
                                             placeholder="Например: Эльбрус 2024"
                                             value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label className="text-sm font-medium text-gray-500 mb-1 block">Тип</label>
-                                            <select className="input w-full p-3 rounded-xl bg-gray-50 border border-gray-200"
+                                            <label className="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Тип</label>
+                                            <select className="input w-full p-3 rounded-xl bg-gray-50/50 dark:bg-black/20 border border-black/5 dark:border-white/10 text-[var(--text-primary)] focus:bg-white/80 dark:focus:bg-black/40 transition-colors"
                                                 value={formData.type} onChange={(e) => setFormData({ ...formData, type: e.target.value })}>
                                                 <option value="hiking">Пеший</option>
                                                 <option value="ski">Лыжный</option>
@@ -195,8 +195,8 @@ export function ProjectsPage() {
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="text-sm font-medium text-gray-500 mb-1 block">Сезон</label>
-                                            <select className="input w-full p-3 rounded-xl bg-gray-50 border border-gray-200"
+                                            <label className="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Сезон</label>
+                                            <select className="input w-full p-3 rounded-xl bg-gray-50/50 dark:bg-black/20 border border-black/5 dark:border-white/10 text-[var(--text-primary)] focus:bg-white/80 dark:focus:bg-black/40 transition-colors"
                                                 value={formData.season} onChange={(e) => setFormData({ ...formData, season: e.target.value })}>
                                                 <option value="summer">Лето</option>
                                                 <option value="winter">Зима</option>
@@ -217,22 +217,22 @@ export function ProjectsPage() {
                 {/* Join Modal */}
                 <AnimatePresence>
                     {showJoin && (
-                        <motion.div className="modal-overlay fixed inset-0 bg-black/50 z-50 flex items-end"
+                        <motion.div className="modal-overlay fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end"
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                             onClick={() => setShowJoin(false)}>
                             <motion.div
-                                className="bg-white rounded-t-[32px] w-full p-6 pb-12"
+                                className="bg-white/90 dark:bg-[#1c1c1e]/90 backdrop-blur-xl border-t border-white/20 rounded-t-[32px] w-full p-6 pb-12 shadow-2xl"
                                 initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
                                 transition={{ type: 'spring', damping: 25 }}
                                 onClick={(e) => e.stopPropagation()}
                             >
-                                <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6" />
-                                <h2 className="text-xl font-bold mb-6">Вступить в Поход</h2>
+                                <div className="w-12 h-1 bg-gray-300/50 rounded-full mx-auto mb-6" />
+                                <h2 className="text-xl font-bold mb-6 text-[var(--text-primary)]">Вступить в Поход</h2>
 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="text-sm font-medium text-gray-500 mb-1 block">Код Приглашения</label>
-                                        <input className="input w-full p-3 rounded-xl bg-gray-50 border border-gray-200"
+                                        <label className="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Код Приглашения</label>
+                                        <input className="input w-full p-3 rounded-xl bg-gray-50/50 dark:bg-black/20 border border-black/5 dark:border-white/10 text-[var(--text-primary)] focus:bg-white/80 dark:focus:bg-black/40 transition-colors"
                                             placeholder="Введите код"
                                             value={inviteCode} onChange={(e) => setInviteCode(e.target.value)}
                                         />

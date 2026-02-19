@@ -165,3 +165,12 @@ export interface Notification {
     isRead: boolean;
     createdAt: string;
 }
+
+export interface Message {
+    id: string;
+    content: string;
+    projectId: string;
+    senderId: string;
+    createdAt: string;
+    sender: User;
+}
