@@ -9,6 +9,7 @@ interface AuthState {
     error: string | null;
     login: () => Promise<void>;
     updateProfile: (data: Partial<User>) => Promise<void>;
+    completeOnboarding: (data: { weight: number; username: string; experienceLevel: string }) => Promise<void>;
     logout: () => void;
 }
 
@@ -46,6 +47,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             set({ user: res.data });
         } catch (error: any) {
             set({ error: error.message });
+        }
+    },
+
+    completeOnboarding: async (data) => {
+        set({ loading: true, error: null });
+        try {
+            const res = await api.patch('/users/complete-onboarding', data);
+            set({ user: res.data, loading: false });
+        } catch (error: any) {
+            set({ error: error.message, loading: false });
+            throw error;
         }
     },
 

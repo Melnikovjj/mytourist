@@ -56,6 +56,9 @@ export interface User {
     lastName: string | null;
     avatarUrl: string | null;
     weight: number | null;
+    isOnboarded: boolean;
+    experienceLevel: string | null;
+    inviteCode?: string;
 }
 
 export interface Project {

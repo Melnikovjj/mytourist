@@ -10,11 +10,13 @@ import { WeightPage } from './pages/Weight/WeightPage';
 import { ChecklistPage } from './pages/Checklist/ChecklistPage';
 import { ReferencePage } from './pages/Reference/ReferencePage';
 import { ProfilePage } from './pages/Profile/ProfilePage';
+import OnboardingPage from './pages/Onboarding/OnboardingPage';
 import { LoadingScreen } from './components/ui/LoadingScreen';
 
 function AppContent() {
     const { user, loading, login } = useAuthStore();
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Init Telegram WebApp
@@ -35,19 +37,26 @@ function AppContent() {
         }
     }, []);
 
+    // Onboarding redirection
+    useEffect(() => {
+        if (!loading && user && !user.isOnboarded && location.pathname !== '/onboarding') {
+            navigate('/onboarding', { replace: true });
+        }
+    }, [user, loading, location.pathname, navigate]);
+
     if (loading) return <LoadingScreen />;
 
-    const showNav = !location.pathname.includes('/project/');
+    const showNav = !location.pathname.includes('/project/') && location.pathname !== '/onboarding';
 
     return (
         <>
             <Routes>
+                <Route path="/onboarding" element={<OnboardingPage />} />
                 <Route path="/" element={<ProjectsPage />} />
                 <Route path="/project/:projectId" element={<ProjectDetailPage />} />
                 <Route path="/project/:projectId/equipment" element={<EquipmentPage />} />
                 <Route path="/project/:projectId/meals" element={<MealsPage />} />
                 <Route path="/project/:projectId/weight" element={<WeightPage />} />
-                <Route path="/project/:projectId/checklist" element={<ChecklistPage />} />
                 <Route path="/project/:projectId/checklist" element={<ChecklistPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/reference" element={<ReferencePage />} />
