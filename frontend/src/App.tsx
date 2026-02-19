@@ -37,9 +37,33 @@ function AppContent() {
         }
     }, []);
 
-    // Onboarding redirection
+    // Onboarding & Project Invite redirection
     useEffect(() => {
-        if (!loading && user && !user.isOnboarded && location.pathname !== '/onboarding') {
+        if (loading || !user) return;
+
+        // Check for project invite in start_param
+        const tg = window.Telegram?.WebApp;
+        const startParam = tg?.initDataUnsafe?.start_param;
+
+        if (startParam?.startsWith('proj_')) {
+            const inviteCode = startParam.replace('proj_', '');
+            // We use a small delay to ensure stores are ready
+            setTimeout(async () => {
+                try {
+                    // Try to join project
+                    const res = await useProjectStore.getState().joinProject(inviteCode);
+                    if (res.projectId) {
+                        navigate(`/project/${res.projectId}`, { replace: true });
+                        return;
+                    }
+                } catch (err) {
+                    console.error('Failed to join project via deep link:', err);
+                }
+            }, 500);
+            return;
+        }
+
+        if (!user.isOnboarded && location.pathname !== '/onboarding') {
             navigate('/onboarding', { replace: true });
         }
     }, [user, loading, location.pathname, navigate]);

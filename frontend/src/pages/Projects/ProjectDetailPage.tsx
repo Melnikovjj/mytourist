@@ -80,12 +80,29 @@ export function ProjectDetailPage() {
                     </div>
                 </div>
 
-                {/* Invite code */}
+                {/* Invite section */}
                 {currentProject.inviteCode && (
-                    <button className="btn btn-ghost btn-sm mt-3" onClick={handleCopyInvite}>
-                        <LinkSimple size={16} />
-                        Код: {currentProject.inviteCode}
-                    </button>
+                    <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+                        <div className="flex items-center gap-2 mb-3">
+                            <LinkSimple size={16} className="text-secondary" />
+                            <span className="text-sm font-semibold">Поделиться планом</span>
+                        </div>
+                        <div className="flex gap-2">
+                            <div style={{
+                                flex: 1, background: 'rgba(0,0,0,0.2)', padding: '8px 12px', borderRadius: '8px',
+                                fontSize: '12px', color: 'var(--color-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+                            }}>
+                                {`t.me/TuristProPlanner_bot?start=proj_${currentProject.inviteCode}`}
+                            </div>
+                            <button className="btn btn-primary btn-sm" onClick={() => {
+                                const link = `https://t.me/TuristProPlanner_bot?start=proj_${currentProject.inviteCode}`;
+                                navigator.clipboard.writeText(link);
+                                window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');
+                            }}>
+                                📋
+                            </button>
+                        </div>
+                    </div>
                 )}
             </div>
 

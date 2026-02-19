@@ -97,50 +97,23 @@ export function ProfilePage() {
                 </p>
             </div>
 
-            {/* Referral Section */}
-            <div className="glass-card-static" style={{ padding: 20, marginBottom: 16 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                    <span style={{ fontSize: 20 }}>🎁</span>
-                    <h2 style={{ fontSize: 16, fontWeight: 600 }}>Пригласить друзей</h2>
-                </div>
-
-                <div style={{ marginBottom: 16 }}>
-                    <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>Ваша ссылка:</div>
-                    <div style={{
-                        display: 'flex', gap: 8, background: 'rgba(255,255,255,0.05)',
-                        padding: '8px 12px', borderRadius: 12, border: '1px solid var(--glass-border)'
-                    }}>
-                        <div style={{
-                            flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                            fontSize: 13, color: 'var(--color-primary)'
-                        }}>
-                            {inviteLink}
+            {/* Referral Section (Mini) */}
+            <div className="glass-card-static" style={{ padding: '16px 20px', marginBottom: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span style={{ fontSize: 20 }}>🎁</span>
+                        <div>
+                            <div style={{ fontSize: 14, fontWeight: 600 }}>Ваш ID: {profile.inviteCode}</div>
+                            <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Используйте для приглашения в команду</div>
                         </div>
-                        <button
-                            onClick={() => handleCopy(inviteLink, 'link')}
-                            style={{ background: 'none', border: 'none', color: 'var(--color-primary)', fontSize: 18, cursor: 'pointer', padding: 0 }}
-                        >
-                            {copied === 'link' ? '✅' : '📋'}
-                        </button>
                     </div>
-                </div>
-
-                <div>
-                    <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>Код приглашения:</div>
-                    <div style={{
-                        display: 'flex', gap: 8, background: 'rgba(255,255,255,0.05)',
-                        padding: '8px 12px', borderRadius: 12, border: '1px solid var(--glass-border)'
-                    }}>
-                        <div style={{ flex: 1, fontWeight: 700, letterSpacing: '2px', color: 'var(--color-accent)' }}>
-                            {profile.inviteCode || '--------'}
-                        </div>
-                        <button
-                            onClick={() => profile.inviteCode && handleCopy(profile.inviteCode, 'code')}
-                            style={{ background: 'none', border: 'none', color: 'var(--color-accent)', fontSize: 18, cursor: 'pointer', padding: 0 }}
-                        >
-                            {copied === 'code' ? '✅' : '📋'}
-                        </button>
-                    </div>
+                    <button
+                        onClick={() => profile.inviteCode && handleCopy(profile.inviteCode, 'code')}
+                        className="btn btn-ghost btn-sm"
+                        style={{ padding: '4px 8px' }}
+                    >
+                        {copied === 'code' ? '✅' : '📋'}
+                    </button>
                 </div>
             </div>
 
