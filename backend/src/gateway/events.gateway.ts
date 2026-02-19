@@ -8,6 +8,7 @@ import {
     MessageBody,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { MessagesService } from '../messages/messages.service';
 
 @WebSocketGateway({
     cors: { origin: '*' },
@@ -46,6 +47,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         client.leave(`project:${data.projectId}`);
     }
 
+    constructor(
+        private readonly messagesService: MessagesService,
+    ) { }
+
     @SubscribeMessage('send_message')
     async handleSendMessage(
         @ConnectedSocket() client: Socket,
@@ -53,18 +58,13 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {
         console.log(`New message in ${data.projectId} from ${data.userId}: ${data.content}`);
 
-        // Save to DB
-        // ideally we should inject MessagesService here, but Gateway circular dependency can be tricky.
-        // For now, let's assume the frontend calls the API to save, OR we inject it.
-        // Let's inject it properly.
-
-        this.server.to(`project:${data.projectId}`).emit('new_message', {
-            id: Math.random().toString(), // temp, real ID from DB if we save here
-            content: data.content,
-            senderId: data.userId,
-            createdAt: new Date(),
-            sender: { id: data.userId } // simplified
-        });
+        try {
+            const message = await this.messagesService.create(data.userId, data.projectId, data.content);
+            this.server.to(`project:${data.projectId}`).emit('new_message', message);
+        } catch (error) {
+            console.error('Error saving message:', error);
+            // Optionally emit error back to sender
+        }
     }
 
     // ── Emit methods used by services ─────────────────
