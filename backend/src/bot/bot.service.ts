@@ -22,10 +22,19 @@ export class BotService implements OnModuleInit {
 
         this.bot.command('start', async (ctx) => {
             const webAppUrl = process.env.WEBAPP_URL || 'https://yourdomain.com';
+            const payload = ctx.payload; // telegraf parses '/start payload' into ctx.payload
+
+            let url = webAppUrl;
+            if (payload) {
+                // If payload exists, pass it as query param so frontend can read it
+                // We use 'start_param' to match Telegram's native naming convention
+                url += `?start_param=${payload}`;
+            }
+
             await ctx.reply(
                 '🏔 Добро пожаловать в «Походный Сборщик»!\n\nПланируйте походы, управляйте снаряжением и питанием вместе с командой.',
                 Markup.inlineKeyboard([
-                    Markup.button.webApp('🎒 Открыть приложение', webAppUrl),
+                    Markup.button.webApp('🎒 Открыть приложение', url),
                 ]),
             );
         });
