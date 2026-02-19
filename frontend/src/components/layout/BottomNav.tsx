@@ -28,16 +28,16 @@ const NavItem = ({ to, icon, label }: { to: string; icon: React.ReactNode; label
                 )
             }
         >
-            ({isActive}) => (
-            <>
-                <span className={cn('transition-transform duration-300', isActive ? '-translate-y-1' : 'translate-y-0')}>
-                    {icon}
-                </span>
-                {isActive && (
-                    <span className="absolute bottom-1.5 w-1 h-1 rounded-full bg-[#2F80ED]" />
-                )}
-            </>
-      )}
+            {({ isActive }) => (
+                <>
+                    <span className={cn('transition-transform duration-300', isActive ? '-translate-y-1' : 'translate-y-0')}>
+                        {icon}
+                    </span>
+                    {isActive && (
+                        <span className="absolute bottom-1.5 w-1 h-1 rounded-full bg-[#2F80ED]" />
+                    )}
+                </>
+            )}
         </NavLink>
     );
 };

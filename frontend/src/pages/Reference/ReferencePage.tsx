@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FirstAid, Drop, Notebook } from '@phosphor-icons/react';
+import { GlassCard } from '../../components/ui/GlassCard';
+import { Button } from '../../components/ui/Button';
 
 const firstAidItems = [
-    'Бинт стерильный', 'Бинт эластичный', 'Пластыри разные', 'Антисептик',
-    'Перекись водорода', 'Обезболивающее', 'Жаропонижающее', 'Антигистаминное',
-    'Противодиарейное', 'Активированный уголь', 'Спасательное одеяло',
-    'Ножницы медицинские', 'Пинцет', 'Перчатки одноразовые',
+    'Sterile Bandage', 'Elastic Bandage', 'Plasters (Assorted)', 'Antiseptic',
+    'Hydrogen Peroxide', 'Painkillers', 'Antipyretic', 'Antihistamine',
+    'Anti-diarrheal', 'Activated Charcoal', 'Thermal Blanket',
+    'Medical Scissors', 'Tweezers', 'Disposable Gloves',
 ];
 
 export function ReferencePage() {
@@ -28,108 +30,167 @@ export function ReferencePage() {
     const addDiaryEntry = () => {
         if (!diaryText.trim()) return;
         setDiaryEntries([
-            { text: diaryText, date: new Date().toLocaleString('ru') },
+            { text: diaryText, date: new Date().toLocaleString() },
             ...diaryEntries,
         ]);
         setDiaryText('');
     };
 
     return (
-        <div className="page">
-            <div className="page-header">
-                <h1 className="page-title">📚 Справочник</h1>
+        <div className="min-h-screen pb-24 pt-6 px-4 space-y-6">
+            <header>
+                <h1 className="text-2xl font-bold text-[#1C1C1E]">Guidebook</h1>
+                <p className="text-[#1C1C1E]/60 text-sm">Useful tools & Reference</p>
+            </header>
+
+            <div className="flex p-1 bg-gray-100/50 backdrop-blur-sm rounded-[14px]">
+                <button
+                    onClick={() => setActiveTab('aid')}
+                    className={`flex-1 py-2 text-sm font-semibold rounded-[10px] transition-all flex items-center justify-center gap-1.5 ${activeTab === 'aid'
+                            ? 'bg-white text-[#2F80ED] shadow-sm'
+                            : 'text-gray-500 hover:text-gray-700'
+                        }`}
+                >
+                    <FirstAid size={18} weight={activeTab === 'aid' ? 'fill' : 'regular'} />
+                    First Aid
+                </button>
+                <button
+                    onClick={() => setActiveTab('water')}
+                    className={`flex-1 py-2 text-sm font-semibold rounded-[10px] transition-all flex items-center justify-center gap-1.5 ${activeTab === 'water'
+                            ? 'bg-white text-[#2F80ED] shadow-sm'
+                            : 'text-gray-500 hover:text-gray-700'
+                        }`}
+                >
+                    <Drop size={18} weight={activeTab === 'water' ? 'fill' : 'regular'} />
+                    Water
+                </button>
+                <button
+                    onClick={() => setActiveTab('diary')}
+                    className={`flex-1 py-2 text-sm font-semibold rounded-[10px] transition-all flex items-center justify-center gap-1.5 ${activeTab === 'diary'
+                            ? 'bg-white text-[#2F80ED] shadow-sm'
+                            : 'text-gray-500 hover:text-gray-700'
+                        }`}
+                >
+                    <Notebook size={18} weight={activeTab === 'diary' ? 'fill' : 'regular'} />
+                    Diary
+                </button>
             </div>
 
-            <div className="tabs">
-                <button className={`tab ${activeTab === 'aid' ? 'active' : ''}`} onClick={() => setActiveTab('aid')}>
-                    <FirstAid size={16} style={{ verticalAlign: 'middle', marginRight: 4 }} /> Аптечка
-                </button>
-                <button className={`tab ${activeTab === 'water' ? 'active' : ''}`} onClick={() => setActiveTab('water')}>
-                    <Drop size={16} style={{ verticalAlign: 'middle', marginRight: 4 }} /> Вода
-                </button>
-                <button className={`tab ${activeTab === 'diary' ? 'active' : ''}`} onClick={() => setActiveTab('diary')}>
-                    <Notebook size={16} style={{ verticalAlign: 'middle', marginRight: 4 }} /> Дневник
-                </button>
-            </div>
-
-            {activeTab === 'aid' && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <div className="glass-card-static" style={{ padding: '16px' }}>
-                        <h3 className="font-semibold mb-3">🏥 Базовая аптечка туриста</h3>
-                        <p className="text-xs text-muted mb-3">Рекомендуемый набор. Не является медицинской рекомендацией.</p>
-                        <div className="list-gap">
-                            {firstAidItems.map((item, i) => (
-                                <div key={i} className="flex items-center gap-2" style={{ padding: '8px 0', borderBottom: '1px solid var(--glass-border)' }}>
-                                    <span style={{ color: 'var(--color-accent)' }}>•</span>
-                                    <span className="text-sm">{item}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </motion.div>
-            )}
-
-            {activeTab === 'water' && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <div className="glass-card-static" style={{ padding: '20px' }}>
-                        <h3 className="font-semibold mb-3">💧 Калькулятор воды</h3>
-                        <div className="form-group">
-                            <label className="input-label">Вес (кг)</label>
-                            <input className="input" type="number" value={waterWeight}
-                                onChange={(e) => setWaterWeight(parseFloat(e.target.value))} />
-                        </div>
-                        <div className="form-group">
-                            <label className="input-label">Температура воздуха (°C)</label>
-                            <input className="input" type="number" value={waterTemp}
-                                onChange={(e) => setWaterTemp(parseFloat(e.target.value))} />
-                        </div>
-                        <div className="form-group">
-                            <label className="input-label">Интенсивность</label>
-                            <div className="tabs">
-                                {(['light', 'medium', 'heavy'] as const).map((val) => (
-                                    <button key={val} className={`tab ${waterIntensity === val ? 'active' : ''}`}
-                                        onClick={() => setWaterIntensity(val)}>
-                                        {val === 'light' ? 'Лёгкая' : val === 'medium' ? 'Средняя' : 'Тяжёлая'}
-                                    </button>
+            <AnimatePresence mode="wait">
+                {activeTab === 'aid' && (
+                    <motion.div
+                        key="aid"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                    >
+                        <GlassCard className="p-5">
+                            <h3 className="font-semibold mb-2 text-lg">🏥 Basic First Aid Kit</h3>
+                            <p className="text-xs text-gray-400 mb-4 bg-yellow-50 text-yellow-700 p-2 rounded-lg">
+                                Warning: Basic recommendation only. Not medical advice.
+                            </p>
+                            <div className="space-y-2">
+                                {firstAidItems.map((item, i) => (
+                                    <div key={i} className="flex items-center gap-3 py-2 border-b border-gray-100 last:border-0">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                                        <span className="text-sm text-gray-700">{item}</span>
+                                    </div>
                                 ))}
                             </div>
-                        </div>
-                        <div className="glass-card-static" style={{ padding: '16px', textAlign: 'center', marginTop: '16px', background: 'rgba(14, 165, 233, 0.1)' }}>
-                            <div className="text-sm text-secondary">Рекомендуемый объём</div>
-                            <div className="font-bold" style={{ fontSize: '32px', color: 'var(--color-primary)' }}>
-                                {waterCalc()} л/день
-                            </div>
-                        </div>
-                    </div>
-                </motion.div>
-            )}
+                        </GlassCard>
+                    </motion.div>
+                )}
 
-            {activeTab === 'diary' && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <div className="glass-card-static" style={{ padding: '20px', marginBottom: '16px' }}>
-                        <h3 className="font-semibold mb-3">📝 Походный дневник</h3>
-                        <textarea className="input" rows={3} placeholder="Запишите впечатления дня..."
-                            value={diaryText} onChange={(e) => setDiaryText(e.target.value)}
-                            style={{ resize: 'vertical' }} />
-                        <button className="btn btn-primary btn-sm btn-full mt-2" onClick={addDiaryEntry}>
-                            Добавить запись
-                        </button>
-                    </div>
-                    <div className="list-gap">
-                        {diaryEntries.map((entry, i) => (
-                            <div key={i} className="glass-card-static" style={{ padding: '14px' }}>
-                                <div className="text-xs text-muted mb-1">{entry.date}</div>
-                                <div className="text-sm">{entry.text}</div>
+                {activeTab === 'water' && (
+                    <motion.div
+                        key="water"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                    >
+                        <GlassCard className="p-6 space-y-6">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="p-3 bg-blue-100 rounded-full text-blue-500">
+                                    <Drop size={24} weight="fill" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-lg">Water Calculator</h3>
+                                    <p className="text-xs text-gray-500">Daily intake estimation</p>
+                                </div>
                             </div>
-                        ))}
-                        {diaryEntries.length === 0 && (
-                            <p className="text-sm text-muted" style={{ textAlign: 'center', padding: '20px' }}>
-                                Пока нет записей
-                            </p>
-                        )}
-                    </div>
-                </motion.div>
-            )}
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">Weight (kg)</label>
+                                    <input className="input w-full p-3 rounded-xl bg-gray-50 border-gray-200" type="number"
+                                        value={waterWeight} onChange={(e) => setWaterWeight(parseFloat(e.target.value))} />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">Temperature (°C)</label>
+                                    <input className="input w-full p-3 rounded-xl bg-gray-50 border-gray-200" type="number"
+                                        value={waterTemp} onChange={(e) => setWaterTemp(parseFloat(e.target.value))} />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">Activity Level</label>
+                                    <div className="flex p-1 bg-gray-100 rounded-lg">
+                                        {(['light', 'medium', 'heavy'] as const).map((val) => (
+                                            <button key={val}
+                                                className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${waterIntensity === val ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500'
+                                                    }`}
+                                                onClick={() => setWaterIntensity(val)}
+                                            >
+                                                {val.charAt(0).toUpperCase() + val.slice(1)}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-blue-50 p-6 rounded-2xl text-center border border-blue-100">
+                                <div className="text-sm text-blue-600 mb-1">Recommended Intake</div>
+                                <div className="text-4xl font-bold text-blue-500">
+                                    {waterCalc()} <span className="text-lg font-medium text-blue-400">L/day</span>
+                                </div>
+                            </div>
+                        </GlassCard>
+                    </motion.div>
+                )}
+
+                {activeTab === 'diary' && (
+                    <motion.div
+                        key="diary"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                    >
+                        <GlassCard className="p-5 mb-4">
+                            <h3 className="font-semibold mb-3">📝 Trip Diary</h3>
+                            <textarea
+                                className="input w-full p-3 rounded-xl bg-gray-50 border-gray-200 min-h-[100px] mb-3"
+                                placeholder="Write about your day..."
+                                value={diaryText} onChange={(e) => setDiaryText(e.target.value)}
+                            />
+                            <Button fullWidth onClick={addDiaryEntry} disabled={!diaryText.trim()}>
+                                Add Entry
+                            </Button>
+                        </GlassCard>
+
+                        <div className="space-y-3">
+                            {diaryEntries.map((entry, i) => (
+                                <GlassCard key={i} className="p-4">
+                                    <div className="text-xs text-gray-400 mb-1">{entry.date}</div>
+                                    <div className="text-sm text-gray-800 whitespace-pre-wrap">{entry.text}</div>
+                                </GlassCard>
+                            ))}
+                            {diaryEntries.length === 0 && (
+                                <div className="text-center py-8 text-gray-400 italic">
+                                    No entries yet. Start writing!
+                                </div>
+                            )}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

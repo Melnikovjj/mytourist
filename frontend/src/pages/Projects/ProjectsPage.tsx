@@ -1,15 +1,30 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Mountains, Snowflake, Waves, Users, CalendarBlank, CaretRight } from '@phosphor-icons/react';
+import { Plus, Mountains, Snowflake, Waves, Users, CalendarBlank as Calendar, CaretRight } from '@phosphor-icons/react';
 import { useProjectStore } from '../../store/projectStore';
+import { useAuthStore } from '../../store/authStore';
+import { GlassCard } from '../../components/ui/GlassCard';
+import { Button } from '../../components/ui/Button';
+import { Avatar } from '../../components/ui/Avatar';
 import type { Project } from '../../types';
+import { Badge } from '../../components/ui/Badge';
+import { ProgressBar } from '../../components/ui/ProgressBar';
 
 const typeIcons: Record<string, any> = { hiking: Mountains, ski: Snowflake, water: Waves };
 const typeLabels: Record<string, string> = { hiking: 'Пеший', ski: 'Лыжный', water: 'Водный' };
 const seasonLabels: Record<string, string> = { winter: 'Зима', spring: 'Весна', summer: 'Лето', autumn: 'Осень' };
 
+const getProjectImage = (type: string) => {
+    switch (type) {
+        case 'ski': return 'https://images.unsplash.com/photo-1551524559-8af4e6624178?auto=format&fit=crop&q=80&w=800';
+        case 'water': return 'https://images.unsplash.com/photo-1544551763-46a813d9ca9d?auto=format&fit=crop&q=80&w=800';
+        default: return 'https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=800';
+    }
+};
+
 export function ProjectsPage() {
+    const { user } = useAuthStore();
     const { projects, loading, fetchProjects, createProject, joinProject } = useProjectStore();
     const [showCreate, setShowCreate] = useState(false);
     const [showJoin, setShowJoin] = useState(false);
@@ -212,5 +227,6 @@ export function ProjectsPage() {
                     )}
                 </AnimatePresence>
             </div>
-            );
+        </div>
+    );
 }
