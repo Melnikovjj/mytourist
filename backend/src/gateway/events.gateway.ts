@@ -88,12 +88,10 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     const safeContent = escapeHtml(data.content);
                     const safeName = escapeHtml(message.sender.firstName || 'Участника');
 
-                    // Use Telegram's native direct link format for Mini Apps so it opens in-app instead of an external browser
-                    const appLink = `https://t.me/TuristProPlanner_bot/app?startapp=proj_${member.project.inviteCode}`;
-                    const notifyText = `💬 <b>Новое сообщение</b> в походе «${escapeHtml(member.project.title)}»\n\nОт ${safeName}:\n<i>${safeContent}</i>\n\n<a href="${appLink}">Открыть чат</a>`;
+                    const notifyText = `💬 <b>Новое сообщение</b> в походе «${escapeHtml(member.project.title)}»\n\nОт ${safeName}:\n<i>${safeContent}</i>`;
 
                     console.log(`Sending notification to telegramId: ${member.user.telegramId}`);
-                    await this.botService.sendNotification(member.user.telegramId, notifyText);
+                    await this.botService.sendNotification(member.user.telegramId, notifyText, member.project.inviteCode);
                 }
             }
 

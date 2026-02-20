@@ -76,12 +76,19 @@ export class BotService implements OnModuleInit {
         // this.logger.warn('⚠️ Bot launch SKIPPED for debugging 502 error');
     }
 
-    async sendNotification(telegramId: bigint, message: string) {
+    async sendNotification(telegramId: bigint, message: string, inviteCode?: string | null) {
         if (!this.bot) return;
         try {
-            await this.bot.telegram.sendMessage(telegramId.toString(), message, {
-                parse_mode: 'HTML',
-            });
+            const options: any = { parse_mode: 'HTML' };
+
+            if (inviteCode) {
+                const webAppUrl = process.env.WEBAPP_URL || 'https://yourdomain.com';
+                Object.assign(options, Markup.inlineKeyboard([
+                    Markup.button.webApp('💬 Ответить в чате', `${webAppUrl}?startapp=proj_${inviteCode}`)
+                ]));
+            }
+
+            await this.bot.telegram.sendMessage(telegramId.toString(), message, options);
         } catch (error) {
             this.logger.error(`Failed to send notification to ${telegramId}:`, error);
         }
