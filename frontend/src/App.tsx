@@ -46,7 +46,7 @@ function AppContent() {
         const tg = window.Telegram?.WebApp;
         // Priority: 1. Native initData (Direct Link) 2. URL Query Param (Bot Button)
         const urlParams = new URLSearchParams(window.location.search);
-        const startParam = tg?.initDataUnsafe?.start_param || urlParams.get('start_param') || urlParams.get('invite');
+        const startParam = tg?.initDataUnsafe?.start_param || urlParams.get('start_param') || urlParams.get('startapp') || urlParams.get('invite');
 
         if (startParam?.startsWith('proj_')) {
             const inviteCode = startParam.replace('proj_', '');
