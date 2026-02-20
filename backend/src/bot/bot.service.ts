@@ -21,20 +21,19 @@ export class BotService implements OnModuleInit {
         }
 
         this.bot.command('start', async (ctx) => {
-            const webAppUrl = process.env.WEBAPP_URL || 'https://yourdomain.com';
+            const botUsername = this.bot.botInfo?.username || 'TuristProPlanner_bot';
             const payload = ctx.payload; // telegraf parses '/start payload' into ctx.payload
 
-            let url = webAppUrl;
+            let url = `https://t.me/${botUsername}/app`;
             if (payload) {
-                // If payload exists, pass it as query param so frontend can read it
-                // We use 'start_param' to match Telegram's native naming convention
-                url += `?start_param=${payload}`;
+                // native Telegram miniapp deep links use startapp parameter
+                url += `?startapp=${payload}`;
             }
 
             await ctx.reply(
                 '🏔 Добро пожаловать в «Походный Сборщик»!\n\nПланируйте походы, управляйте снаряжением и питанием вместе с командой.',
                 Markup.inlineKeyboard([
-                    Markup.button.webApp('🎒 Открыть приложение', url),
+                    Markup.button.url('🎒 Открыть приложение', url),
                 ]),
             );
         });
@@ -98,7 +97,7 @@ export class BotService implements OnModuleInit {
 
     async sendProjectInvite(telegramId: bigint, projectTitle: string, inviteCode: string) {
         if (!this.bot) return;
-        const webAppUrl = process.env.WEBAPP_URL || 'https://yourdomain.com';
+        const botUsername = this.bot.botInfo?.username || 'TuristProPlanner_bot';
         try {
             await this.bot.telegram.sendMessage(
                 telegramId.toString(),
@@ -106,7 +105,7 @@ export class BotService implements OnModuleInit {
                 {
                     parse_mode: 'HTML',
                     ...Markup.inlineKeyboard([
-                        Markup.button.webApp('Присоединиться', `${webAppUrl}?invite=${inviteCode}`),
+                        Markup.button.url('Присоединиться', `https://t.me/${botUsername}/app?startapp=proj_${inviteCode}`),
                     ]),
                 },
             );
