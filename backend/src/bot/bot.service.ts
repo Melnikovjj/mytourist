@@ -82,9 +82,11 @@ export class BotService implements OnModuleInit {
             const options: any = { parse_mode: 'HTML' };
 
             if (inviteCode) {
-                const webAppUrl = process.env.WEBAPP_URL || 'https://yourdomain.com';
+                // We use a regular URL button pointing to the Telegram deep link. 
+                // Using .webApp() with a t.me link breaks initData inheritance and forces test-user credentials.
+                const botUsername = this.bot.botInfo?.username || 'TuristProPlanner_bot';
                 Object.assign(options, Markup.inlineKeyboard([
-                    Markup.button.webApp('💬 Ответить в чате', `${webAppUrl}?startapp=proj_${inviteCode}`)
+                    Markup.button.url('💬 Ответить в чате', `https://t.me/${botUsername}/app?startapp=proj_${inviteCode}`)
                 ]));
             }
 
