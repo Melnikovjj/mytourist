@@ -161,9 +161,16 @@ export function ProjectDetailPage() {
                     >
                         <ChatTeardropText size={22} weight={activeTab === 'chat' ? 'fill' : 'duotone'} />
                         {unreadCount > 0 && (
-                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-[#1c1c1e]">
-                                {unreadCount > 9 ? '9+' : unreadCount}
-                            </span>
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                className="absolute -top-1 -right-1"
+                            >
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                                <span className="relative flex h-[18px] min-w-[18px] px-1 items-center justify-center rounded-full bg-gradient-to-tr from-red-500 to-rose-400 text-[10px] font-bold text-white shadow-md ring-2 ring-white dark:ring-[#1c1c1e]">
+                                    {unreadCount > 9 ? '9+' : unreadCount}
+                                </span>
+                            </motion.div>
                         )}
                     </button>
                     <button
