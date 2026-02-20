@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Prisma needs openssl and libc6-compat on Alpine
 RUN apk add --no-cache openssl libc6-compat
