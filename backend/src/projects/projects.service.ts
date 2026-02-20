@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { v4 as uuid } from 'uuid';
+import { equipmentTemplates, defaultEquipment } from './equipment.templates';
 
 @Injectable()
 export class ProjectsService {
@@ -32,6 +33,29 @@ export class ProjectsService {
             },
             include: { members: { include: { user: true } } },
         });
+
+        // Auto-generate project equipment based on type and season
+        const templateKey = `${project.type}_${project.season}`;
+        const templateItems = equipmentTemplates[templateKey] || defaultEquipment;
+
+        const projectEquipmentData = [];
+        for (const item of templateItems) {
+            let eq = await this.prisma.equipmentItem.findFirst({ where: { name: item.name, category: item.category } });
+            if (!eq) {
+                eq = await this.prisma.equipmentItem.create({
+                    data: { name: item.name, weight: item.weight, category: item.category, isGroupItem: item.isGroupItem }
+                });
+            }
+            projectEquipmentData.push({
+                projectId: project.id,
+                equipmentId: eq.id,
+                status: 'planned'
+            });
+        }
+
+        if (projectEquipmentData.length > 0) {
+            await this.prisma.projectEquipment.createMany({ data: projectEquipmentData });
+        }
 
         return this.serializeProject(project);
     }

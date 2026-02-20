@@ -1,6 +1,18 @@
 import { create } from 'zustand';
 import api from '../api/client';
 import type { ProjectEquipment, EquipmentItem } from '../types';
+import { useProjectStore } from './projectStore';
+
+const syncReadiness = (projectId: string, equipmentList: ProjectEquipment[]) => {
+    const totalEq = equipmentList.length;
+    const packedEq = equipmentList.filter(e => e.status === 'packed').length;
+    const readiness = totalEq > 0 ? Math.round((packedEq / totalEq) * 100) : 0;
+
+    useProjectStore.setState((pState) => ({
+        projects: pState.projects.map(p => p.id === projectId ? { ...p, readiness } : p),
+        currentProject: pState.currentProject?.id === projectId ? { ...pState.currentProject, readiness } : pState.currentProject
+    }));
+};
 
 interface EquipmentState {
     catalog: EquipmentItem[];
@@ -34,19 +46,28 @@ export const useEquipmentStore = create<EquipmentState>((set) => ({
     autoGenerate: async (projectId) => {
         set({ loading: true });
         const res = await api.post(`/equipment/project/${projectId}/auto-generate`);
-        set({ projectEquipment: res.data, loading: false });
+        const nextEq = res.data;
+        syncReadiness(projectId, nextEq);
+        set({ projectEquipment: nextEq, loading: false });
     },
 
     addToProject: async (projectId, equipmentId) => {
         const res = await api.post(`/equipment/project/${projectId}/add`, { equipmentId });
-        set((s) => ({ projectEquipment: [...s.projectEquipment, res.data] }));
+        set((s) => {
+            const nextEq = [...s.projectEquipment, res.data];
+            syncReadiness(projectId, nextEq);
+            return { projectEquipment: nextEq };
+        });
     },
 
     removeFromProject: async (id) => {
         await api.delete(`/equipment/${id}`);
-        set((s) => ({
-            projectEquipment: s.projectEquipment.filter((e) => e.id !== id),
-        }));
+        set((s) => {
+            const targetEq = s.projectEquipment.find(e => e.id === id);
+            const nextEq = s.projectEquipment.filter((e) => e.id !== id);
+            if (targetEq) syncReadiness(targetEq.projectId, nextEq);
+            return { projectEquipment: nextEq };
+        });
     },
 
     assignToUser: async (id, userId, projectId) => {
@@ -58,10 +79,13 @@ export const useEquipmentStore = create<EquipmentState>((set) => ({
 
     updateStatus: async (id, status) => {
         const res = await api.patch(`/equipment/${id}/status`, { status });
-        set((s) => ({
-            projectEquipment: s.projectEquipment.map((e) =>
+        set((s) => {
+            const nextEq = s.projectEquipment.map((e) =>
                 e.id === id ? { ...e, status: res.data.status } : e,
-            ),
-        }));
+            );
+            const targetEq = s.projectEquipment.find(e => e.id === id);
+            if (targetEq) syncReadiness(targetEq.projectId, nextEq);
+            return { projectEquipment: nextEq };
+        });
     },
 }));

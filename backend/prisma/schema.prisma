@@ -40,6 +40,7 @@ model Project {
   season      String   @default("summer")
   startDate   DateTime? @map("start_date")
   endDate     DateTime? @map("end_date")
+  isCompleted Boolean   @default(false) @map("is_completed")
   inviteCode  String?   @unique @map("invite_code")
   ownerId     String    @map("owner_id")
   createdAt   DateTime  @default(now()) @map("created_at")
