@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ShareNetwork, Trash, Gear, ForkKnife, CheckSquare, Users, Calendar, ChatTeardropText, PencilSimple } from '@phosphor-icons/react';
+import { ArrowLeft, ShareNetwork, Trash, Gear, ForkKnife, CheckSquare, Users, Calendar, ChatTeardropText, PencilSimple, BookBookmark, Notebook } from '@phosphor-icons/react';
 import { useProjectStore } from '../../store/projectStore';
 import { useAuthStore } from '../../store/authStore';
 import { GlassCard } from '../../components/ui/GlassCard';
@@ -13,11 +13,13 @@ import { ChecklistTab } from './Tabs/ChecklistTab';
 import { ChatTab } from './Tabs/ChatTab';
 import { CalendarTab } from './Tabs/CalendarTab';
 import { ParticipantsTab } from './Tabs/ParticipantsTab';
+import { GuideTab } from './Tabs/GuideTab';
+import { DiaryTab } from './Tabs/DiaryTab';
 import api from '../../api/client';
 import { getSocket } from '../../api/socket';
 import type { Message } from '../../types';
 
-type TabType = 'gear' | 'food' | 'checklist' | 'chat' | 'calendar' | 'participants';
+type TabType = 'gear' | 'food' | 'checklist' | 'chat' | 'calendar' | 'participants' | 'guide' | 'diary';
 
 export function ProjectDetailPage() {
     const { projectId } = useParams<{ projectId: string }>();
@@ -126,6 +128,8 @@ export function ProjectDetailPage() {
         { id: 'checklist', label: 'Чек-лист', icon: CheckSquare },
         { id: 'calendar', label: 'Календарь', icon: Calendar },
         { id: 'participants', label: 'Участники', icon: Users },
+        { id: 'guide', label: 'Справочник', icon: BookBookmark },
+        { id: 'diary', label: 'Дневник', icon: Notebook },
     ];
 
     return (
@@ -274,6 +278,8 @@ export function ProjectDetailPage() {
                     {activeTab === 'chat' && <ChatTab />}
                     {activeTab === 'calendar' && <CalendarTab />}
                     {activeTab === 'participants' && <ParticipantsTab />}
+                    {activeTab === 'guide' && <GuideTab />}
+                    {activeTab === 'diary' && <DiaryTab />}
                 </motion.div>
             </AnimatePresence>
 

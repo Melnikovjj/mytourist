@@ -154,6 +154,7 @@ export interface MemberWeight {
     maxWeight: number;
     isOverloaded: boolean;
     loadPercentage: number;
+    smartTip?: string | null;
 }
 
 export interface Notification {

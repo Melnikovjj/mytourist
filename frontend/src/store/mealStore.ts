@@ -12,6 +12,7 @@ interface MealState {
     addProduct: (mealId: string, data: any) => Promise<void>;
     deleteProduct: (productId: string) => Promise<void>;
     fetchNutrition: (projectId: string) => Promise<void>;
+    applyTemplate: (projectId: string) => Promise<void>;
 }
 
 export const useMealStore = create<MealState>((set) => ({
@@ -46,5 +47,11 @@ export const useMealStore = create<MealState>((set) => ({
     fetchNutrition: async (projectId) => {
         const res = await api.get(`/meals/project/${projectId}/nutrition`);
         set({ nutrition: res.data });
+    },
+
+    applyTemplate: async (projectId) => {
+        set({ loading: true });
+        const res = await api.post(`/meals/project/${projectId}/template`);
+        set({ meals: res.data, loading: false });
     },
 }));

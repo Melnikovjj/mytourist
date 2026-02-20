@@ -44,4 +44,9 @@ export class MealsController {
     getNutrition(@Param('projectId') projectId: string) {
         return this.mealsService.getNutritionSummary(projectId);
     }
+
+    @Post('project/:projectId/template')
+    applyTemplate(@Param('projectId') projectId: string) {
+        return this.mealsService.applyTemplate(projectId);
+    }
 }

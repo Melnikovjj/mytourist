@@ -25,6 +25,7 @@ interface EquipmentState {
     removeFromProject: (id: string) => Promise<void>;
     assignToUser: (id: string, userId: string, projectId: string) => Promise<void>;
     updateStatus: (id: string, status: 'planned' | 'packed') => Promise<void>;
+    redistribute: (projectId: string) => Promise<void>;
 }
 
 export const useEquipmentStore = create<EquipmentState>((set) => ({
@@ -87,5 +88,11 @@ export const useEquipmentStore = create<EquipmentState>((set) => ({
             if (targetEq) syncReadiness(targetEq.projectId, nextEq);
             return { projectEquipment: nextEq };
         });
+    },
+
+    redistribute: async (projectId) => {
+        set({ loading: true });
+        const res = await api.get(`/equipment/project/${projectId}/redistribute`);
+        set({ projectEquipment: res.data, loading: false });
     },
 }));

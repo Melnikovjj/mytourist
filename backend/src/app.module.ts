@@ -14,6 +14,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { BotModule } from './bot/bot.module';
 import { EventsGateway } from './gateway/events.gateway';
 import { MessagesModule } from './messages/messages.module';
+import { DiaryModule } from './diary/diary.module';
 
 @Module({
     imports: [
@@ -30,6 +31,7 @@ import { MessagesModule } from './messages/messages.module';
         NotificationsModule,
         BotModule,
         MessagesModule,
+        DiaryModule,
     ],
     providers: [
         { provide: APP_GUARD, useClass: ThrottlerGuard },

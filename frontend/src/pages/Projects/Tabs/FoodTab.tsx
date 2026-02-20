@@ -13,7 +13,7 @@ const mealTypeLabels: Record<string, string> = {
 
 export function FoodTab() {
     const { projectId } = useParams<{ projectId: string }>();
-    const { meals, nutrition, loading, fetchMeals, createMeal, deleteMeal, addProduct, deleteProduct, fetchNutrition } = useMealStore();
+    const { meals, nutrition, loading, fetchMeals, createMeal, deleteMeal, addProduct, deleteProduct, fetchNutrition, applyTemplate } = useMealStore();
     const [showAddMeal, setShowAddMeal] = useState(false);
     const [showAddProduct, setShowAddProduct] = useState<string | null>(null);
     const [mealForm, setMealForm] = useState({ dayNumber: 1, mealType: 'breakfast' });
@@ -30,6 +30,16 @@ export function FoodTab() {
         if (projectId) {
             await createMeal(projectId, mealForm);
             setShowAddMeal(false);
+        }
+    };
+
+    const handleApplyTemplate = async () => {
+        if (projectId) {
+            if (window.confirm('Это удалит текущие приемы пищи и сгенерирует стандартное меню. Продолжить?')) {
+                await applyTemplate(projectId);
+                await fetchNutrition(projectId);
+                window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');
+            }
         }
     };
 
@@ -86,9 +96,14 @@ export function FoodTab() {
                 </GlassCard>
             )}
 
-            <Button size="sm" fullWidth onClick={() => setShowAddMeal(true)}>
-                <Plus size={16} className="mr-2" /> Добавить прием
-            </Button>
+            <div className="flex gap-2">
+                <Button size="sm" variant="secondary" className="flex-1" onClick={() => setShowAddMeal(true)}>
+                    <Plus size={16} className="mr-2" /> Добавить прием
+                </Button>
+                <Button size="sm" variant="secondary" className="flex-1 bg-orange-500/10 text-orange-600 border border-orange-500/20 hover:bg-orange-500/20 dark:bg-orange-900/40 dark:text-orange-400" onClick={handleApplyTemplate}>
+                    Сгенерировать шаблон
+                </Button>
+            </div>
 
             {/* Meals by day */}
             {Array.from(days.entries()).sort(([a], [b]) => a - b).map(([day, dayMeals]) => (

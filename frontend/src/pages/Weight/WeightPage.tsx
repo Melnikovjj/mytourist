@@ -6,6 +6,7 @@ import api from '../../api/client';
 import type { WeightReport } from '../../types';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { Badge } from '../../components/ui/Badge';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 
 export function WeightPage() {
     const { projectId } = useParams<{ projectId: string }>();
@@ -41,18 +42,50 @@ export function WeightPage() {
 
             {/* Summary */}
             <GlassCard className="p-4 mb-4">
+                <div className="flex flex-col mb-4 items-center">
+                    <div className="h-48 w-full mb-2">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={[
+                                        { name: 'Снаряжение', value: report.summary.totalEquipmentWeight, color: '#2F80ED' },
+                                        { name: 'Еда', value: report.summary.totalFoodWeight, color: '#34C759' }
+                                    ]}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={45}
+                                    outerRadius={65}
+                                    paddingAngle={5}
+                                    dataKey="value"
+                                    stroke="none"
+                                >
+                                    {[
+                                        { name: 'Снаряжение', value: report.summary.totalEquipmentWeight, color: '#2F80ED' },
+                                        { name: 'Еда', value: report.summary.totalFoodWeight, color: '#34C759' }
+                                    ].map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                    ))}
+                                </Pie>
+                                <RechartsTooltip
+                                    formatter={(value: any) => [`${value} кг`, '']}
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                                />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
                 <div className="grid grid-cols-2 gap-3">
                     <div className="text-center">
                         <div className="text-xs text-gray-500">Снаряжение</div>
-                        <div className="font-bold text-xl">{report.summary.totalEquipmentWeight} кг</div>
+                        <div className="font-bold text-xl text-[#2F80ED]">{report.summary.totalEquipmentWeight} кг</div>
                     </div>
                     <div className="text-center">
                         <div className="text-xs text-gray-500">Еда</div>
-                        <div className="font-bold text-xl">{report.summary.totalFoodWeight} кг</div>
+                        <div className="font-bold text-xl text-[#34C759]">{report.summary.totalFoodWeight} кг</div>
                     </div>
                     <div className="text-center">
                         <div className="text-xs text-gray-500">Общий вес</div>
-                        <div className="font-bold text-xl text-[#2F80ED]">{report.summary.totalWeight} кг</div>
+                        <div className="font-bold text-xl">{report.summary.totalWeight} кг</div>
                     </div>
                     <div className="text-center">
                         <div className="text-xs text-gray-500">Среднее/чел</div>
@@ -103,6 +136,17 @@ export function WeightPage() {
                             <div className="text-xs text-gray-400 mt-1 text-right">
                                 {member.loadPercentage}% нагрузки
                             </div>
+
+                            {member.smartTip && (
+                                <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+                                    <div className="flex gap-2 items-start">
+                                        <Warning size={16} className="text-red-500 shrink-0 mt-0.5" weight="fill" />
+                                        <p className="text-sm text-red-600 dark:text-red-400 leading-tight">
+                                            {member.smartTip}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
                         </GlassCard>
                     </motion.div>
                 ))}

@@ -11,7 +11,7 @@ import type { ProjectEquipment } from '../../../types';
 
 export function GearTab() {
     const { projectId } = useParams<{ projectId: string }>();
-    const { projectEquipment, loading, fetchProjectEquipment, autoGenerate, updateStatus, removeFromProject } = useEquipmentStore();
+    const { projectEquipment, loading, fetchProjectEquipment, autoGenerate, redistribute, updateStatus, removeFromProject } = useEquipmentStore();
     const { currentProject, fetchProject } = useProjectStore();
     const [filter, setFilter] = useState('all');
 
@@ -32,6 +32,13 @@ export function GearTab() {
         }
     };
 
+    const handleRedistribute = async () => {
+        if (projectId) {
+            await redistribute(projectId);
+            window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');
+        }
+    };
+
     const toggleStatus = async (item: ProjectEquipment) => {
         const newStatus = item.status === 'packed' ? 'planned' : 'packed';
         await updateStatus(item.id, newStatus);
@@ -40,9 +47,14 @@ export function GearTab() {
 
     return (
         <div className="space-y-4">
-            <Button variant="secondary" size="sm" className="w-full gap-2" onClick={handleAutoGenerate}>
-                <Lightning size={16} /> Авто-генерация
-            </Button>
+            <div className="flex gap-2">
+                <Button variant="secondary" size="sm" className="flex-1 gap-2" onClick={handleAutoGenerate}>
+                    <Lightning size={16} /> Сгенерировать
+                </Button>
+                <Button variant="secondary" size="sm" className="flex-1 gap-2 bg-[#2F80ED]/10 text-[#2F80ED] border border-[#2F80ED]/20 hover:bg-[#2F80ED]/20" onClick={handleRedistribute}>
+                    Умное распределение
+                </Button>
+            </div>
 
             {/* Category tabs */}
             <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">

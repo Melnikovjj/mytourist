@@ -11,6 +11,10 @@ export class WeightService {
             include: { user: true },
         });
 
+        const project = await this.prisma.project.findUnique({
+            where: { id: projectId }
+        });
+
         const equipment = await this.prisma.projectEquipment.findMany({
             where: { projectId },
             include: { equipment: true },
@@ -28,8 +32,29 @@ export class WeightService {
                 0,
             );
             const totalWeight = equipmentWeight + foodPerPerson;
-            const maxWeight = (m.user.weight || 70) * 0.25;
+            const projectType = project?.type || 'hiking';
+            let modifier = 0.25; // default 25% of body weight for hiking
+
+            if (projectType === 'water') {
+                modifier = 0.50; // water paths carry weight on boats, higher limit
+            } else if (projectType === 'ski') {
+                modifier = 0.35; // sleds/skis make it slightly easier than pure hiking
+            }
+
+            const maxWeight = (m.user.weight || 70) * modifier;
             const isOverloaded = totalWeight > maxWeight;
+
+            let smartTip = null;
+            if (isOverloaded && userEquipment.length > 0) {
+                // Find heaviest item assigned to this user
+                const heaviestItem = userEquipment.reduce((prev, current) => {
+                    const prevW = prev.customWeight || prev.equipment.weight;
+                    const curW = current.customWeight || current.equipment.weight;
+                    return (prevW > curW) ? prev : current;
+                });
+                const itemW = heaviestItem.customWeight || heaviestItem.equipment.weight;
+                smartTip = `У ${m.user.firstName || 'участника'} перевес! Самый тяжелый предмет: ${heaviestItem.equipment.name} (${itemW} кг). Попробуйте раздать его другим.`;
+            }
 
             return {
                 userId: m.userId,
@@ -40,6 +65,7 @@ export class WeightService {
                 totalWeight: Math.round(totalWeight * 100) / 100,
                 maxWeight: Math.round(maxWeight * 100) / 100,
                 isOverloaded,
+                smartTip,
                 loadPercentage: Math.round((totalWeight / maxWeight) * 100),
                 breakdown: {
                     equipment: userEquipment.map((e) => ({
@@ -74,9 +100,33 @@ export class WeightService {
         const products = await this.prisma.mealProduct.findMany({
             where: { meal: { projectId } },
         });
-        const members = await this.prisma.projectMember.count({ where: { projectId } });
+
+        const members = await this.prisma.projectMember.findMany({
+            where: { projectId },
+            include: { user: true }
+        });
+
+        let totalPortions = 0;
+        for (const m of members) {
+            let multiplier = 1.0;
+            const genderStr = m.user.gender?.toLowerCase() || '';
+            // Base gender modifier
+            if (genderStr === 'female' || genderStr === 'женский' || genderStr === 'ж') {
+                multiplier *= 0.85;
+            }
+
+            // Age modifier
+            if (m.user.birthDate) {
+                const age = new Date().getFullYear() - new Date(m.user.birthDate).getFullYear();
+                if (age < 18) multiplier *= 0.9;
+                if (age > 50) multiplier *= 0.9;
+            }
+            totalPortions += multiplier;
+        }
+        if (totalPortions === 0) totalPortions = members.length || 1;
+
         const totalWeightGrams = products.reduce(
-            (sum, p) => sum + p.gramsPerPerson * members,
+            (sum, p) => sum + p.gramsPerPerson * totalPortions,
             0,
         );
         return { totalWeightGrams };

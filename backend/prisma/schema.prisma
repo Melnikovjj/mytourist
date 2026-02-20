@@ -22,12 +22,15 @@ model User {
   isOnboarded    Boolean @default(false) @map("is_onboarded")
   inviteCode String?  @unique @map("invite_code")
   createdAt  DateTime @default(now()) @map("created_at")
+  gender     String?
+  birthDate  DateTime? @map("birth_date")
 
   ownedProjects    Project[]          @relation("ProjectOwner")
   memberships      ProjectMember[]
   assignedEquipment ProjectEquipment[] @relation("AssignedEquipment")
   notifications    Notification[]
   messages         Message[]
+  diaryEntries     DiaryEntry[]
 
   @@map("users")
 }
@@ -41,6 +44,7 @@ model Project {
   startDate   DateTime? @map("start_date")
   endDate     DateTime? @map("end_date")
   isCompleted Boolean   @default(false) @map("is_completed")
+  startNotified Boolean @default(false) @map("start_notified")
   inviteCode  String?   @unique @map("invite_code")
   ownerId     String    @map("owner_id")
   createdAt   DateTime  @default(now()) @map("created_at")
@@ -51,6 +55,7 @@ model Project {
   meals     Meal[]
   notifications Notification[]
   messages  Message[]
+  diaryEntries DiaryEntry[]
 
   @@index([ownerId])
   @@map("projects")
@@ -159,4 +164,20 @@ model Message {
   @@index([projectId])
   @@index([senderId])
   @@map("messages")
+}
+
+model DiaryEntry {
+  id        String   @id @default(uuid())
+  projectId String   @map("project_id")
+  userId    String   @map("user_id")
+  content   String
+  imageUrl  String?  @map("image_url")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([userId])
+  @@map("diary_entries")
 }
