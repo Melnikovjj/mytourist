@@ -72,9 +72,19 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 include: { user: true, project: true },
             });
 
+            console.log(`Found ${members.length} members for project ${data.projectId}`);
             for (const member of members) {
+                console.log(`Checking member ${member.userId} vs sender ${data.userId}. TelegramId: ${member.user.telegramId}`);
                 if (member.userId !== data.userId && member.user.telegramId) {
-                    const notifyText = `💬 <b>Новое сообщение</b> в походе «${member.project.title}»\n\nОт ${message.sender.firstName || 'Участника'}:\n<i>${data.content}</i>\n\n<a href="${process.env.WEBAPP_URL}?start_param=proj_${member.project.inviteCode}">Открыть чат</a>`;
+
+                    // Escape basic HTML characters to prevent Telegram API errors with parse_mode: HTML
+                    const escapeHtml = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    const safeContent = escapeHtml(data.content);
+                    const safeName = escapeHtml(message.sender.firstName || 'Участника');
+
+                    const notifyText = `💬 <b>Новое сообщение</b> в походе «${escapeHtml(member.project.title)}»\n\nОт ${safeName}:\n<i>${safeContent}</i>\n\n<a href="${process.env.WEBAPP_URL}?start_param=proj_${member.project.inviteCode}">Открыть чат</a>`;
+
+                    console.log(`Sending notification to telegramId: ${member.user.telegramId}`);
                     await this.botService.sendNotification(member.user.telegramId, notifyText);
                 }
             }
