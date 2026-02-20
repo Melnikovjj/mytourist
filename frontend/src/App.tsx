@@ -66,7 +66,7 @@ function AppContent() {
             return;
         }
 
-        if (!user.isOnboarded && location.pathname !== '/onboarding') {
+        if (user.isOnboarded === false && location.pathname !== '/onboarding') {
             navigate('/onboarding', { replace: true });
         }
     }, [user, loading, location.pathname, navigate]);

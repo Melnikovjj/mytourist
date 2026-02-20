@@ -21,7 +21,7 @@ export function ChatTab() {
     const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
         setTimeout(() => {
             messagesEndRef.current?.scrollIntoView({ behavior });
-        }, 50);
+        }, 150); // Increased from 50ms to 150ms for slower mobile DOM patching
     };
 
     useEffect(() => {
