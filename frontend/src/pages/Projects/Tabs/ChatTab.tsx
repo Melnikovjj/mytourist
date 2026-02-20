@@ -16,13 +16,19 @@ export function ChatTab() {
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(true);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const isFirstScrollRef = useRef(true);
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+        setTimeout(() => {
+            messagesEndRef.current?.scrollIntoView({ behavior });
+        }, 50);
     };
 
     useEffect(() => {
-        scrollToBottom();
+        if (messages.length > 0) {
+            scrollToBottom(isFirstScrollRef.current ? 'auto' : 'smooth');
+            isFirstScrollRef.current = false;
+        }
     }, [messages]);
 
     useEffect(() => {
@@ -95,7 +101,7 @@ export function ChatTab() {
 
 
     return (
-        <div className="flex flex-col h-[60vh]">
+        <div className="flex flex-col h-[calc(100dvh-280px)] min-h-[350px]">
             <div className="flex-1 overflow-y-auto space-y-4 p-1 no-scrollbar">
                 {loading ? (
                     <div className="text-center py-4 text-gray-500">Загрузка...</div>
@@ -110,10 +116,8 @@ export function ChatTab() {
                         const showAvatar = !isMe && (i === 0 || messages[i - 1].senderId !== msg.senderId);
 
                         return (
-                            <motion.div
+                            <div
                                 key={msg.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
                                 className={`flex gap-2 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}
                             >
                                 {!isMe && (
@@ -140,7 +144,7 @@ export function ChatTab() {
                                         {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </div>
                                 </div>
-                            </motion.div>
+                            </div>
                         );
                     })
                 )}

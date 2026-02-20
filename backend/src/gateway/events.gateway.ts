@@ -82,7 +82,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                     const safeContent = escapeHtml(data.content);
                     const safeName = escapeHtml(message.sender.firstName || 'Участника');
 
-                    const notifyText = `💬 <b>Новое сообщение</b> в походе «${escapeHtml(member.project.title)}»\n\nОт ${safeName}:\n<i>${safeContent}</i>\n\n<a href="${process.env.WEBAPP_URL}?start_param=proj_${member.project.inviteCode}">Открыть чат</a>`;
+                    const baseUrl = process.env.WEBAPP_URL || 'https://t.me/TuristProPlanner_bot/app';
+                    const notifyText = `💬 <b>Новое сообщение</b> в походе «${escapeHtml(member.project.title)}»\n\nОт ${safeName}:\n<i>${safeContent}</i>\n\n<a href="${baseUrl}?start_param=proj_${member.project.inviteCode}">Открыть чат</a>`;
 
                     console.log(`Sending notification to telegramId: ${member.user.telegramId}`);
                     await this.botService.sendNotification(member.user.telegramId, notifyText);
