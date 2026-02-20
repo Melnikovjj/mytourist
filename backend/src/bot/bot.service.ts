@@ -21,19 +21,18 @@ export class BotService implements OnModuleInit {
         }
 
         this.bot.command('start', async (ctx) => {
-            const botUsername = this.bot.botInfo?.username || 'TuristProPlanner_bot';
+            const webAppUrl = process.env.WEBAPP_URL || 'https://yourdomain.com';
             const payload = ctx.payload; // telegraf parses '/start payload' into ctx.payload
 
-            let url = `https://t.me/${botUsername}/app`;
+            let url = webAppUrl;
             if (payload) {
-                // native Telegram miniapp deep links use startapp parameter
-                url += `?startapp=${payload}`;
+                url += `?start_param=${payload}`;
             }
 
             await ctx.reply(
                 '🏔 Добро пожаловать в «Походный Сборщик»!\n\nПланируйте походы, управляйте снаряжением и питанием вместе с командой.',
                 Markup.inlineKeyboard([
-                    Markup.button.url('🎒 Открыть приложение', url),
+                    Markup.button.webApp('🎒 Открыть приложение', url),
                 ]),
             );
         });
@@ -81,11 +80,9 @@ export class BotService implements OnModuleInit {
             const options: any = { parse_mode: 'HTML' };
 
             if (inviteCode) {
-                // We use a regular URL button pointing to the Telegram deep link. 
-                // Using .webApp() with a t.me link breaks initData inheritance and forces test-user credentials.
-                const botUsername = this.bot.botInfo?.username || 'TuristProPlanner_bot';
+                const webAppUrl = process.env.WEBAPP_URL || 'https://yourdomain.com';
                 Object.assign(options, Markup.inlineKeyboard([
-                    Markup.button.url('💬 Ответить в чате', `https://t.me/${botUsername}/app?startapp=proj_${inviteCode}`)
+                    Markup.button.webApp('💬 Ответить в чате', `${webAppUrl}?invite=${inviteCode}`)
                 ]));
             }
 
@@ -97,7 +94,7 @@ export class BotService implements OnModuleInit {
 
     async sendProjectInvite(telegramId: bigint, projectTitle: string, inviteCode: string) {
         if (!this.bot) return;
-        const botUsername = this.bot.botInfo?.username || 'TuristProPlanner_bot';
+        const webAppUrl = process.env.WEBAPP_URL || 'https://yourdomain.com';
         try {
             await this.bot.telegram.sendMessage(
                 telegramId.toString(),
@@ -105,7 +102,7 @@ export class BotService implements OnModuleInit {
                 {
                     parse_mode: 'HTML',
                     ...Markup.inlineKeyboard([
-                        Markup.button.url('Присоединиться', `https://t.me/${botUsername}/app?startapp=proj_${inviteCode}`),
+                        Markup.button.webApp('Присоединиться', `${webAppUrl}?invite=${inviteCode}`),
                     ]),
                 },
             );
