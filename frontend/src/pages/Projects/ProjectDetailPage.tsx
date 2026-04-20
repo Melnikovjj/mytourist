@@ -103,19 +103,16 @@ export function ProjectDetailPage() {
         }
     };
 
-    const handleShare = () => {
+    const handleCopyInviteLink = () => {
         if (!currentProject?.inviteCode) return;
 
-        const link = `https://t.me/TuristProPlanner_bot?start=proj_${currentProject.inviteCode}`;
-        const text = `Присоединяйся к походу «${currentProject.title}»! 🏔`;
-        const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
-
-        const tg = window.Telegram?.WebApp as any;
-        if (tg && tg.openTelegramLink) {
-            tg.openTelegramLink(shareUrl);
-        } else {
-            window.open(shareUrl, '_blank');
-        }
+        const link = `${window.location.origin}/join/${currentProject.inviteCode}`;
+        const text = `Присоединяйся к моему походу «${currentProject.title}» в «Походном Сборщике»! 🏔\n\nСсылка для вступления: ${link}\nКод похода: ${currentProject.inviteCode}`;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');
+            alert('Ссылка-приглашение скопирована в буфер обмена!');
+        });
     };
 
     if (!currentProject) return null;
@@ -178,8 +175,9 @@ export function ProjectDetailPage() {
                         )}
                     </button>
                     <button
-                        onClick={handleShare}
+                        onClick={handleCopyInviteLink}
                         className="p-2 rounded-full bg-white/20 backdrop-blur-md text-[var(--text-primary)] hover:bg-white/30 transition-colors"
+                        title="Копировать приглашение"
                     >
                         <ShareNetwork size={20} weight="bold" />
                     </button>

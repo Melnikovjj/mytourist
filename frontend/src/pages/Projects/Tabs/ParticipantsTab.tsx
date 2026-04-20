@@ -58,9 +58,24 @@ export function ParticipantsTab() {
                 </div>
             </GlassCard>
 
-            <div className="text-center">
-                <p className="text-xs text-[var(--text-secondary)]">
-                    Код приглашения: <span className="font-mono font-bold text-[var(--text-primary)] select-all">{currentProject.inviteCode}</span>
+            <div className="flex flex-col gap-3 items-center">
+                <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 w-full text-center">
+                    <p className="text-xs text-[var(--text-secondary)] mb-1">Код приглашения:</p>
+                    <p className="font-mono font-bold text-[var(--text-primary)] text-lg select-all mb-2">{currentProject.inviteCode}</p>
+                    <button 
+                        onClick={() => {
+                            const link = `${window.location.origin}/join/${currentProject.inviteCode}`;
+                            navigator.clipboard.writeText(link);
+                            window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');
+                            alert('Ссылка для вступления скопирована!');
+                        }}
+                        className="text-xs text-blue-500 font-bold uppercase tracking-wider hover:underline"
+                    >
+                        Копировать ссылку для вступления
+                    </button>
+                </div>
+                <p className="text-[10px] text-[var(--text-muted)] text-center px-4">
+                    Отправьте этот код или ссылку друзьям, чтобы они могли присоединиться к вашему походу.
                 </p>
             </div>
         </div>
