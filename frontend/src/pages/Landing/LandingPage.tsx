@@ -105,7 +105,10 @@ export function LandingPage() {
                             style={{...socialButtonStyle, background: '#fff', color: '#000', border: '1px solid #e5e5e5'}}
                             onClick={() => window.location.href = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') : '/api') + '/auth/yandex'}
                         >
-                            <img src="https://yastatic.net/s3/home/icons/favicon/yandex.ico" alt="Yandex" style={{ width: '20px', height: '20px' }} />
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24Z" fill="#FC3F1D"/>
+                                <path d="M14.5367 17.5V6.78667H12.5833V13.8867C12.5833 14.5667 12.35 14.9333 11.96 14.9333C11.5767 14.9333 11.1233 14.7333 11.1233 13.8867L11.11 6.78667H9.15668V11.2C9.15668 12.6333 8.35668 13.4333 6.92334 13.4333H6.46334V15.1133H6.92334C7.75668 15.1133 8.31668 14.9 8.79668 14.3333L12.0233 10.4533V15.7133C10.7433 15.7133 9.4 15.82 8.12334 16.0333V17.7C10.2367 17.38 12.3767 17.26 14.5167 17.26H14.5367V17.5Z" fill="white"/>
+                            </svg>
                             Войти через Яндекс
                         </button>
 
@@ -114,9 +117,11 @@ export function LandingPage() {
                             style={{...socialButtonStyle, background: '#005ff9', color: '#fff', border: 'none'}}
                             onClick={() => window.location.href = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') : '/api') + '/auth/mailru'}
                         >
-                            <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#005ff9' }}></div>
-                            </div>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="12" fill="white"/>
+                                <circle cx="12" cy="12" r="10" fill="#005FF9"/>
+                                <circle cx="12" cy="12" r="5" fill="#FFCF00"/>
+                            </svg>
                             Войти через Mail.ru
                         </button>
 
