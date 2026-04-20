@@ -15,6 +15,7 @@ import { BotModule } from './bot/bot.module';
 import { EventsGateway } from './gateway/events.gateway';
 import { MessagesModule } from './messages/messages.module';
 import { DiaryModule } from './diary/diary.module';
+import { MailModule } from './common/mail/mail.module';
 
 @Module({
     imports: [
@@ -32,6 +33,7 @@ import { DiaryModule } from './diary/diary.module';
         BotModule,
         MessagesModule,
         DiaryModule,
+        MailModule,
     ],
     providers: [
         { provide: APP_GUARD, useClass: ThrottlerGuard },

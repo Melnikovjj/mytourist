@@ -3,7 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { createHmac } from 'crypto';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../common/prisma/prisma.service';
-import { LoginDto, RegisterDto } from './dto/auth.dto';
+import { LoginDto, RegisterDto, RequestCodeDto } from './dto/auth.dto';
+import { MailService } from '../common/mail/mail.service';
 
 interface TelegramUser {
     id: number;
@@ -18,6 +19,7 @@ export class AuthService {
     constructor(
         private prisma: PrismaService,
         private jwtService: JwtService,
+        private mailService: MailService,
     ) { }
 
     validateInitData(initData: string): TelegramUser {
@@ -54,6 +56,36 @@ export class AuthService {
             code += chars.charAt(Math.floor(Math.random() * chars.length));
         }
         return code;
+    }
+
+    async requestCode(dto: RequestCodeDto) {
+        const { email } = dto;
+        const lowercaseEmail = email.toLowerCase();
+        
+        // Check if user already exists
+        const existingUser = await this.prisma.user.findUnique({ where: { email: lowercaseEmail } });
+        if (existingUser) {
+            throw new BadRequestException('User with this email already exists');
+        }
+
+        // Generate 6-digit code
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+        // Upsert verification code
+        await this.prisma.emailVerification.deleteMany({ where: { email: lowercaseEmail } });
+        await this.prisma.emailVerification.create({
+            data: {
+                email: lowercaseEmail,
+                code,
+                expiresAt,
+            }
+        });
+
+        // Send email
+        await this.mailService.sendVerificationCode(lowercaseEmail, code);
+        
+        return { message: 'Verification code sent' };
     }
 
     async authenticateUser(initData: string) {
@@ -102,10 +134,26 @@ export class AuthService {
     }
 
     async register(registerDto: RegisterDto) {
-        const { email, password, firstName, lastName } = registerDto;
+        const { email, password, firstName, lastName, code } = registerDto;
         const lowercaseEmail = email.toLowerCase();
-        const existingUser = await this.prisma.user.findUnique({ where: { email: lowercaseEmail } });
 
+        // Verify code
+        const verification = await this.prisma.emailVerification.findFirst({
+            where: {
+                email: lowercaseEmail,
+                code,
+                expiresAt: { gt: new Date() }
+            }
+        });
+
+        if (!verification) {
+            throw new BadRequestException('Invalid or expired verification code');
+        }
+
+        // Cleanup code
+        await this.prisma.emailVerification.deleteMany({ where: { email: lowercaseEmail } });
+
+        const existingUser = await this.prisma.user.findUnique({ where: { email: lowercaseEmail } });
         if (existingUser) {
             throw new BadRequestException('User with this email already exists');
         }

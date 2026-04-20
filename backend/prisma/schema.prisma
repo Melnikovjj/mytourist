@@ -185,3 +185,14 @@ model DiaryEntry {
   @@index([userId])
   @@map("diary_entries")
 }
+
+model EmailVerification {
+  id        String   @id @default(uuid())
+  email     String
+  code      String
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([email])
+  @@map("email_verifications")
+}

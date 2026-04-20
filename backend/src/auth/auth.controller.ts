@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, UseGuards, Req, Res } from '@nestjs/common
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { RegisterDto, LoginDto } from './dto/auth.dto';
+import { RegisterDto, LoginDto, RequestCodeDto } from './dto/auth.dto';
 import { Request, Response } from 'express';
 
 @ApiTags('Auth')
@@ -14,7 +14,11 @@ export class AuthController {
         return process.env.WEBAPP_URL || 'https://mytourist-navy.vercel.app';
     }
 
-
+    @Post('request-code')
+    @ApiOperation({ summary: 'Request a verification code to be sent via email' })
+    async requestCode(@Body() requestCodeDto: RequestCodeDto) {
+        return this.authService.requestCode(requestCodeDto);
+    }
 
     @Get('yandex')
     @UseGuards(AuthGuard('yandex'))
