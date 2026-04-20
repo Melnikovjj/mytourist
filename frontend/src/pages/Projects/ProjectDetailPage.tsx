@@ -188,9 +188,6 @@ export function ProjectDetailPage() {
 
             {/* Project Card */}
             <GlassCard className="p-6 relative overflow-hidden shadow-2xl">
-                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                    <Gear size={160} weight="duotone" className="text-[var(--text-primary)]" />
-                </div>
 
                 <div className="relative z-10">
                     <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2 tracking-tight">{currentProject.title}</h1>
