@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 // Always use relative '/api' to leverage Vercel rewrites/proxy and bypass VPN issues
 const API_URL = '/api';
 
