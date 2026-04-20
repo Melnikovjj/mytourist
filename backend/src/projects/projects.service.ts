@@ -160,7 +160,7 @@ export class ProjectsService {
             ...project,
             members: project.members?.map((m: any) => ({
                 ...m,
-                user: m.user ? { ...m.user, telegramId: m.user.telegramId.toString() } : m.user,
+                user: m.user ? { ...m.user, telegramId: m.user.telegramId?.toString() } : m.user,
             })),
         };
     }

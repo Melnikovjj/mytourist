@@ -17,7 +17,7 @@ export class MessagesController {
             ...msg,
             sender: {
                 ...msg.sender,
-                telegramId: msg.sender.telegramId.toString(),
+                telegramId: msg.sender.telegramId?.toString(),
             }
         }));
     }
