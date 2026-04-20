@@ -7,10 +7,14 @@ import { AuthService } from '../auth.service';
 @Injectable()
 export class YandexStrategy extends PassportStrategy(Strategy, 'yandex') {
     constructor(private authService: AuthService) {
+        const baseUrl = process.env.RAILWAY_PUBLIC_DOMAIN 
+            ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` 
+            : (process.env.BACKEND_URL || 'http://localhost:3000');
+
         super({
             clientID: process.env.YANDEX_CLIENT_ID || 'dummy_client_id_for_dev',
             clientSecret: process.env.YANDEX_CLIENT_SECRET || 'dummy_secret',
-            callbackURL: 'http://localhost:3000/api/auth/yandex/callback', // local dev default
+            callbackURL: `${baseUrl}/api/auth/yandex/callback`,
         });
     }
 

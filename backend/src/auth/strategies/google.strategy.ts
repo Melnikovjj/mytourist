@@ -7,10 +7,14 @@ import { AuthService } from '../auth.service';
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     constructor(private authService: AuthService) {
+        const baseUrl = process.env.RAILWAY_PUBLIC_DOMAIN 
+            ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` 
+            : (process.env.BACKEND_URL || 'http://localhost:3000');
+
         super({
             clientID: process.env.GOOGLE_CLIENT_ID || 'dummy_client_id_for_dev',
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'dummy_secret',
-            callbackURL: 'http://localhost:3000/api/auth/google/callback', // local dev default
+            callbackURL: `${baseUrl}/api/auth/google/callback`,
             scope: ['email', 'profile'],
         });
     }
