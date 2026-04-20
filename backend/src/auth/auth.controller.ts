@@ -14,18 +14,7 @@ export class AuthController {
         return process.env.WEBAPP_URL || 'https://mytourist-navy.vercel.app';
     }
 
-    @Get('google')
-    @UseGuards(AuthGuard('google'))
-    @ApiOperation({ summary: 'Initiate Google OAuth' })
-    async googleAuth() {}
 
-    @Get('google/callback')
-    @UseGuards(AuthGuard('google'))
-    @ApiOperation({ summary: 'Google OAuth callback' })
-    async googleAuthCallback(@Req() req: Request, @Res() res: Response) {
-        const { access_token } = this.authService.buildOAuthResponse(req.user);
-        res.redirect(`${this.getFrontendUrl()}/?token=${access_token}`);
-    }
 
     @Get('yandex')
     @UseGuards(AuthGuard('yandex'))
