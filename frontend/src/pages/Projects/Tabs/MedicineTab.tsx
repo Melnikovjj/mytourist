@@ -58,7 +58,7 @@ export function MedicineTab() {
                                         <span className="text-sm font-medium text-[var(--text-primary)]">{item.name}</span>
                                         <span className="text-[10px] text-[var(--text-secondary)]">{item.desc}</span>
                                     </div>
-                                    <Badge size="sm" variant="outline">Рекомендовано</Badge>
+                                    <Badge variant="outline">Рекомендовано</Badge>
                                 </GlassCard>
                             ))}
                         </div>

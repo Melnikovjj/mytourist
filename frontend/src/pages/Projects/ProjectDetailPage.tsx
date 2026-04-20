@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ShareNetwork, Trash, Gear, ForkKnife, CheckSquare, Users, Calendar, ChatTeardropText, PencilSimple, BookBookmark, Notebook } from '@phosphor-icons/react';
+import { ArrowLeft, ShareNetwork, Trash, Gear, ForkKnife, CheckSquare, Users, Calendar, ChatTeardropText, PencilSimple, BookBookmark, Notebook, FirstAid } from '@phosphor-icons/react';
 import { useProjectStore } from '../../store/projectStore';
 import { useAuthStore } from '../../store/authStore';
 import { GlassCard } from '../../components/ui/GlassCard';
