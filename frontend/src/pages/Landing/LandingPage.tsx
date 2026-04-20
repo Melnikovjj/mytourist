@@ -105,9 +105,9 @@ export function LandingPage() {
                             style={{...socialButtonStyle, background: '#fff', color: '#000', border: '1px solid #e5e5e5'}}
                             onClick={() => window.location.href = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') : '/api') + '/auth/yandex'}
                         >
-                            <svg width="20" height="20" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="50" cy="50" r="50" fill="#FC3F1D"/>
-                                <path d="M59 74V28.3h-7.8v29.6c0 2.8-1 4.5-2.6 4.3-1.6-.2-1.9-2.1-1.9-5.7V28.3H38.8v18.4c0 6 3.3 9.3 9.3 9.3h2.3v7c-3.4 0-5.7-.9-7.7-3.3l-8 10h12.8c4.2 0 5.4.1 7.2-.6 1.8-.7 3.5-1.9 4-4.1.5-2.2-.3-4.3-3.6-6.6l4-5.3V74H59z" fill="white"/>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.04 12c0-5.523 4.476-10 10-10 5.522 0 10 4.477 10 10s-4.478 10-10 10c-5.524 0-10-4.477-10-10z" fill="#FC3F1D"/>
+                                <path d="M13.32 7.666h-.924c-1.694 0-2.585.858-2.585 2.123 0 1.43.616 2.1 1.881 2.959l1.045.704-3.003 4.487H7.49l2.695-4.014c-1.55-1.111-2.42-2.19-2.42-4.015 0-2.288 1.595-3.85 4.62-3.85h3.003v11.868H13.32V7.666z" fill="#fff"/>
                             </svg>
                             Войти через Яндекс
                         </button>
@@ -117,10 +117,8 @@ export function LandingPage() {
                             style={{...socialButtonStyle, background: '#005ff9', color: '#fff', border: 'none'}}
                             onClick={() => window.location.href = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') : '/api') + '/auth/mailru'}
                         >
-                            <svg width="20" height="20" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="80" cy="80" r="80" fill="white"/>
-                                <path d="M124.6 35.4c-24.6-24.6-64.6-24.6-89.2 0s-24.6 64.6 0 89.2 64.6 24.6 89.2 0 24.6-64.6 0-89.2zm-44.6 74.6c-16.6 0-30-13.4-30-30s13.4-30 30-30 30 13.4 30 30-13.4 30-30 30z" fill="#005FF9"/>
-                                <circle cx="80" cy="80" r="16" fill="#FDD700"/>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15.61 12c0 1.99-1.62 3.61-3.61 3.61-1.99 0-3.61-1.62-3.61-3.61 0-1.99 1.62-3.61 3.61-3.61 1.99 0 3.61 1.62 3.61 3.61M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12c2.424 0 4.761-.722 6.76-2.087l.034-.024-1.617-1.879-.027.017A9.494 9.494 0 0 1 12 21.54c-5.26 0-9.54-4.28-9.54-9.54 0-5.26 4.28-9.54 9.54-9.54 5.26 0 9.54 4.28 9.54 9.54a9.63 9.63 0 0 1-.225 2.05c-.301 1.239-1.169 1.618-1.82 1.568-.654-.053-1.42-.52-1.426-1.661V12A6.076 6.076 0 0 0 12 5.93 6.076 6.076 0 0 0 5.93 12 6.076 6.076 0 0 0 12 18.07a6.02 6.02 0 0 0 4.3-1.792 3.9 3.9 0 0 0 3.32 1.805c.874 0 1.74-.292 2.437-.821.719-.547 1.256-1.336 1.553-2.285.047-.154.135-.504.135-.507l.002-.013c.175-.76.253-1.52.253-2.457 0-6.617-5.383-12-12-12"/>
                             </svg>
                             Войти через Mail.ru
                         </button>
