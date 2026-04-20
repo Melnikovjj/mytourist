@@ -74,13 +74,12 @@ export function LandingPage() {
             }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                     <img 
-                        src="/icon.png" 
+                        src="/icon-transparent.png" 
                         alt="Походный Сборщик Logo" 
                         style={{
-                            width: '84px',
-                            height: '84px',
-                            borderRadius: '22px',
-                            boxShadow: '0 12px 36px rgba(47,128,237,0.25)',
+                            width: '96px',
+                            height: '96px',
+                            filter: 'drop-shadow(0 8px 16px rgba(47,128,237,0.2))',
                             marginBottom: '0.5rem'
                         }}
                     />
