@@ -135,19 +135,31 @@ export class EquipmentService {
             include: { user: true },
         });
 
-        // Get group equipment (assigned to someone)
-        const equipment = await this.prisma.projectEquipment.findMany({
-            where: { projectId, assignedToId: { not: null } },
+        // Get group equipment
+        const groupEquipment = await this.prisma.projectEquipment.findMany({
+            where: { projectId, equipment: { isGroupItem: true } },
             include: { equipment: true },
         });
 
-        // Calculate current loads
+        // Get personal equipment to calculate base load for everyone
+        const personalEquipment = await this.prisma.projectEquipment.findMany({
+            where: { projectId, equipment: { isGroupItem: false } },
+            include: { equipment: true },
+        });
+
+        const basePersonalWeight = personalEquipment.reduce(
+            (sum, e) => sum + (e.customWeight || e.equipment.weight),
+            0,
+        );
+
+        // First pass: Calculate current loads and capacities
         let memberStats = members.map((m) => {
-            const userEq = equipment.filter((e) => e.assignedToId === m.userId);
-            const currentWeight = userEq.reduce(
+            const userEq = groupEquipment.filter((e) => e.assignedToId === m.userId);
+            const userGroupWeight = userEq.reduce(
                 (sum, e) => sum + (e.customWeight || e.equipment.weight),
                 0,
             );
+            const currentWeight = basePersonalWeight + userGroupWeight;
             const maxWeight = (m.user.weight || 70) * modifier;
             return {
                 userId: m.userId,
@@ -158,11 +170,30 @@ export class EquipmentService {
             };
         });
 
+        const updates: { id: string; assignedToId: string }[] = [];
+
+        // Distribute completely unassigned group items first
+        const unassignedGroupItems = groupEquipment.filter(e => e.assignedToId === null).sort((a, b) => {
+            const wA = a.customWeight || a.equipment.weight;
+            const wB = b.customWeight || b.equipment.weight;
+            return wB - wA; // Heaviest first
+        });
+
+        for (const item of unassignedGroupItems) {
+            // Find member with most available capacity
+            memberStats.sort((a, b) => b.availableCapacity - a.availableCapacity);
+            const bestReceiver = memberStats[0];
+            if (bestReceiver) {
+                const itemWeight = item.customWeight || item.equipment.weight;
+                updates.push({ id: item.id, assignedToId: bestReceiver.userId });
+                bestReceiver.availableCapacity -= itemWeight;
+                bestReceiver.equipmentItems.push(item);
+            }
+        }
+
         // Separate into overloaded and underloaded
         const overloaded = memberStats.filter(m => m.availableCapacity < 0).sort((a, b) => a.availableCapacity - b.availableCapacity); // Most overloaded first
         const underloaded = memberStats.filter(m => m.availableCapacity > 0).sort((a, b) => b.availableCapacity - a.availableCapacity); // Most capacity first
-
-        const updates: { id: string; assignedToId: string }[] = [];
 
         // Try to move items from overloaded to underloaded
         for (const over of overloaded) {
@@ -181,7 +212,12 @@ export class EquipmentService {
                 // Find someone with enough capacity
                 const receiver = underloaded.find(u => u.availableCapacity >= itemWeight);
                 if (receiver) {
-                    updates.push({ id: item.id, assignedToId: receiver.userId });
+                    const existingUpdate = updates.find(u => u.id === item.id);
+                    if (existingUpdate) {
+                        existingUpdate.assignedToId = receiver.userId;
+                    } else {
+                        updates.push({ id: item.id, assignedToId: receiver.userId });
+                    }
                     // Update running totals
                     receiver.availableCapacity -= itemWeight;
                     over.availableCapacity += itemWeight;

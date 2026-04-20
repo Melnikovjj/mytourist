@@ -24,7 +24,9 @@ export function GearTab() {
         }
     }, [projectId]);
 
-    const myEquipment = projectEquipment.filter(item => item.assignedToId === currentUser?.id);
+    const myEquipment = projectEquipment.filter(item => 
+        item.assignedToId === currentUser?.id || item.equipment.isGroupItem === false
+    );
     const myTotalWeight = myEquipment.reduce((sum, item) => sum + (item.customWeight || item.equipment.weight), 0);
     const userWeight = currentUser?.weight || 70;
     const weightPercentage = (myTotalWeight / userWeight) * 100;
