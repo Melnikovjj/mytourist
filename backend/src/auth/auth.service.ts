@@ -195,7 +195,9 @@ export class AuthService {
 
         // Find by providerId first
         let user = await this.prisma.user.findUnique({
-            where: provider === 'google' ? { googleId: providerId } : { yandexId: providerId }
+            where: provider === 'google' ? { googleId: providerId } : 
+                   provider === 'yandex' ? { yandexId: providerId } :
+                   { mailruId: providerId }
         });
 
         if (!user && lowercaseEmail) {
@@ -210,6 +212,7 @@ export class AuthService {
                     email: lowercaseEmail,
                     googleId: provider === 'google' ? providerId : undefined,
                     yandexId: provider === 'yandex' ? providerId : undefined,
+                    mailruId: provider === 'mailru' ? providerId : undefined,
                     firstName,
                     lastName,
                     avatarUrl,
@@ -221,6 +224,7 @@ export class AuthService {
             const updateData: any = {};
             if (provider === 'google' && !user.googleId) updateData.googleId = providerId;
             if (provider === 'yandex' && !user.yandexId) updateData.yandexId = providerId;
+            if (provider === 'mailru' && !user.mailruId) updateData.mailruId = providerId;
             
             if (Object.keys(updateData).length > 0) {
                 user = await this.prisma.user.update({

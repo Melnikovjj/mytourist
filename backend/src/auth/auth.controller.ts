@@ -33,23 +33,35 @@ export class AuthController {
         res.redirect(`${this.getFrontendUrl()}/?token=${access_token}`);
     }
 
+    @Get('mailru')
+    @UseGuards(AuthGuard('mailru'))
+    @ApiOperation({ summary: 'Initiate Mail.ru OAuth' })
+    async mailruAuth() {}
+
+    @Get('mailru/callback')
+    @UseGuards(AuthGuard('mailru'))
+    @ApiOperation({ summary: 'Mail.ru OAuth callback' })
+    async mailruAuthCallback(@Req() req: Request, @Res() res: Response) {
+        const { access_token } = this.authService.buildOAuthResponse(req.user);
+        res.redirect(`${this.getFrontendUrl()}/?token=${access_token}`);
+    }
+
     @Post('demo')
     @ApiOperation({ summary: 'Guest/Demo Login' })
     async demoLogin() {
         return this.authService.demoLogin();
     }
 
-    @Post('register')
-    @ApiOperation({ summary: 'Register a new user with email and password' })
-    async register(@Body() registerDto: RegisterDto) {
-        return this.authService.register(registerDto);
-    }
-
-    @Post('login')
-    @ApiOperation({ summary: 'Login with email and password' })
-    async login(@Body() loginDto: LoginDto) {
-        return this.authService.login(loginDto);
-    }
+    /* 
+     * Manual registration disabled as per security policy 
+     * (Passwords are not stored in this application)
+     */
+    // @Post('request-code')
+    // ...
+    // @Post('register')
+    // ...
+    // @Post('login')
+    // ...
 
     @Post('telegram')
     @ApiOperation({ summary: 'Authenticate via Telegram initData (Legacy)' })

@@ -15,11 +15,12 @@ import { CalendarTab } from './Tabs/CalendarTab';
 import { ParticipantsTab } from './Tabs/ParticipantsTab';
 import { GuideTab } from './Tabs/GuideTab';
 import { DiaryTab } from './Tabs/DiaryTab';
+import { MedicineTab } from './Tabs/MedicineTab';
 import api from '../../api/client';
 import { getSocket } from '../../api/socket';
 import type { Message } from '../../types';
 
-type TabType = 'gear' | 'food' | 'checklist' | 'chat' | 'calendar' | 'participants' | 'guide' | 'diary';
+type TabType = 'gear' | 'food' | 'checklist' | 'chat' | 'calendar' | 'participants' | 'guide' | 'diary' | 'medicine';
 
 export function ProjectDetailPage() {
     const { projectId } = useParams<{ projectId: string }>();
@@ -123,6 +124,7 @@ export function ProjectDetailPage() {
         { id: 'gear', label: 'Снаряжение', icon: Gear },
         { id: 'food', label: 'Еда', icon: ForkKnife },
         { id: 'checklist', label: 'Чек-лист', icon: CheckSquare },
+        { id: 'medicine', label: 'Медицина', icon: FirstAid },
         { id: 'calendar', label: 'Календарь', icon: Calendar },
         { id: 'participants', label: 'Участники', icon: Users },
         { id: 'guide', label: 'Справочник', icon: BookBookmark },
@@ -278,6 +280,7 @@ export function ProjectDetailPage() {
                     {activeTab === 'participants' && <ParticipantsTab />}
                     {activeTab === 'guide' && <GuideTab />}
                     {activeTab === 'diary' && <DiaryTab />}
+                    {activeTab === 'medicine' && <MedicineTab />}
                 </motion.div>
             </AnimatePresence>
 

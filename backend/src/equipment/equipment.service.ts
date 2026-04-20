@@ -32,10 +32,18 @@ export class EquipmentService {
             },
         });
 
-        // Filter out winter-specific items for summer
+        // Define core gear by project type
         const filteredItems = items.filter((item) => {
+            // Seasonal filters
             if (project.season === 'summer' && item.name.includes('зима')) return false;
             if (project.season === 'winter' && item.name.includes('лето')) return false;
+            
+            // Type filters
+            if (project.type === 'hiking') {
+                if (item.category === 'Водное' || item.category === 'Зимнее') return false;
+            }
+            if (project.type === 'water' && item.category === 'Зимнее') return false;
+            
             return true;
         });
 

@@ -8,7 +8,8 @@ interface AuthState {
     loading: boolean;
     error: string | null;
     loginWithEmail: (email: string, password: string) => Promise<void>;
-    registerWithEmail: (email: string, password: string, firstName?: string, lastName?: string) => Promise<void>;
+    requestCode: (email: string) => Promise<void>;
+    registerWithEmail: (email: string, password: string, code: string, firstName?: string, lastName?: string) => Promise<void>;
     demoLogin: () => Promise<void>;
     updateProfile: (data: Partial<User>) => Promise<void>;
     completeOnboarding: (data: { weight: number; username: string; experienceLevel: string }) => Promise<void>;
@@ -51,10 +52,21 @@ export const useAuthStore = create<AuthState>((set) => ({
         }
     },
 
-    registerWithEmail: async (email, password, firstName, lastName) => {
+    requestCode: async (email) => {
         set({ loading: true, error: null });
         try {
-            const res = await api.post('/auth/register', { email, password, firstName, lastName });
+            await api.post('/auth/request-code', { email });
+            set({ loading: false });
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Ошибка отправки кода', loading: false });
+            throw error;
+        }
+    },
+
+    registerWithEmail: async (email, password, code, firstName, lastName) => {
+        set({ loading: true, error: null });
+        try {
+            const res = await api.post('/auth/register', { email, password, code, firstName, lastName });
             const { access_token, user } = res.data;
             localStorage.setItem('token', access_token);
             set({ user, token: access_token, loading: false });

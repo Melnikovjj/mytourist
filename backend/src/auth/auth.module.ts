@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 
 import { YandexStrategy } from './strategies/yandex.strategy';
+import { MailruStrategy } from './strategies/mailru.strategy';
 
 @Module({
     imports: [
@@ -16,7 +17,7 @@ import { YandexStrategy } from './strategies/yandex.strategy';
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService, JwtStrategy, YandexStrategy],
+    providers: [AuthService, JwtStrategy, YandexStrategy, MailruStrategy],
     exports: [AuthService, JwtModule],
 })
 export class AuthModule { }

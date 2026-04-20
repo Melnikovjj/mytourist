@@ -5,7 +5,7 @@ import { User, Mail, Lock, AlertCircle, ChevronRight, Mountain } from 'lucide-re
 import '../../styles/theme.css';
 
 export function LandingPage() {
-    const { loginWithEmail, registerWithEmail, demoLogin, loading, error } = useAuthStore();
+    const { loginWithEmail, requestCode, registerWithEmail, demoLogin, loading, error } = useAuthStore();
     const navigate = useNavigate();
     
     const [isLogin, setIsLogin] = useState(true);
@@ -13,6 +13,8 @@ export function LandingPage() {
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [verificationCode, setVerificationCode] = useState('');
+    const [verificationStep, setVerificationStep] = useState(false);
     const [localError, setLocalError] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -27,10 +29,22 @@ export function LandingPage() {
         try {
             if (isLogin) {
                 await loginWithEmail(email, password);
+                navigate('/', { replace: true });
             } else {
-                await registerWithEmail(email, password, firstName, lastName);
+                if (!verificationStep) {
+                    // Step 1: Request Code
+                    await requestCode(email);
+                    setVerificationStep(true);
+                } else {
+                    // Step 2: Finalize Registration
+                    if (!verificationCode) {
+                        setLocalError('Введите код из письма');
+                        return;
+                    }
+                    await registerWithEmail(email, password, verificationCode, firstName, lastName);
+                    navigate('/', { replace: true });
+                }
             }
-            navigate('/', { replace: true });
         } catch (err: any) {
             console.error('Auth error', err);
         }
@@ -80,149 +94,58 @@ export function LandingPage() {
                     </p>
                 </div>
 
-                {/* Form Elements */}
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    {(error || localError) && (
-                        <div style={{
-                            padding: '0.75rem',
-                            borderRadius: '12px',
-                            background: 'rgba(255, 59, 48, 0.1)',
-                            border: '1px solid rgba(255, 59, 48, 0.3)',
-                            color: 'var(--status-error)',
-                            fontSize: '0.85rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem'
-                        }}>
-                            <AlertCircle size={16} />
-                            <span>{localError || error}</span>
-                        </div>
-                    )}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', textAlign: 'center', lineHeight: 1.5 }}>
+                        Для обеспечения безопасности мы используем вход через доверенные сервисы. <b>Пароли в приложении не хранятся.</b>
+                    </p>
 
-                    {!isLogin && (
-                        <div style={{ display: 'flex', gap: '1rem' }}>
-                            <div style={{ position: 'relative', flex: 1 }}>
-                                <User size={18} color="var(--text-caption)" style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '1rem' }}/>
-                                <input
-                                    type="text"
-                                    placeholder="Имя"
-                                    value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
-                                    style={inputStyle}
-                                />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', marginTop: '0.5rem' }}>
+                        <button 
+                            type="button"
+                            style={{...socialButtonStyle, background: '#fff', color: '#000', border: '1px solid #e5e5e5'}}
+                            onClick={() => window.location.href = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') : '/api') + '/auth/yandex'}
+                        >
+                            <img src="https://yastatic.net/s3/home/icons/favicon/yandex.ico" alt="Yandex" style={{ width: '20px', height: '20px' }} />
+                            Войти через Яндекс
+                        </button>
+
+                        <button 
+                            type="button"
+                            style={{...socialButtonStyle, background: '#005ff9', color: '#fff', border: 'none'}}
+                            onClick={() => window.location.href = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') : '/api') + '/auth/mailru'}
+                        >
+                            <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#005ff9' }}></div>
                             </div>
-                            <div style={{ position: 'relative', flex: 1 }}>
-                                <input
-                                    type="text"
-                                    placeholder="Фамилия"
-                                    value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
-                                    style={{...inputStyle, paddingLeft: '1rem'}}
-                                />
-                            </div>
+                            Войти через Mail.ru
+                        </button>
+
+                        <div style={{ display: 'flex', alignItems: 'center', margin: '0.5rem 0' }}>
+                            <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }}></div>
+                            <span style={{ padding: '0 1rem', fontSize: '0.85rem', color: 'var(--text-caption)' }}>Или</span>
+                            <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }}></div>
                         </div>
-                    )}
 
-                    <div style={{ position: 'relative' }}>
-                        <Mail size={18} color="var(--text-caption)" style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '1rem' }}/>
-                        <input
-                            type="email"
-                            placeholder="Электронная почта"
-                            required
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            style={inputStyle}
-                        />
+                        <button 
+                            type="button"
+                            onClick={demoLogin}
+                            disabled={loading}
+                            style={{
+                                ...socialButtonStyle,
+                                background: 'rgba(52, 199, 89, 0.1)',
+                                border: '1px solid rgba(52, 199, 89, 0.3)',
+                                color: 'var(--status-success)',
+                                fontWeight: 600
+                            }}
+                        >
+                            Попробовать Beta-версию (без регистрации)
+                        </button>
                     </div>
-
-                    <div style={{ position: 'relative' }}>
-                        <Lock size={18} color="var(--text-caption)" style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '1rem' }}/>
-                        <input
-                            type="password"
-                            placeholder="Пароль"
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            style={inputStyle}
-                        />
-                    </div>
-
-                    <button 
-                        className="glass-button-primary"
-                        type="submit" 
-                        disabled={loading}
-                        style={{
-                            padding: '0.875rem',
-                            borderRadius: '12px',
-                            border: 'none',
-                            fontSize: '1rem',
-                            fontWeight: 600,
-                            cursor: loading ? 'not-allowed' : 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.5rem',
-                            marginTop: '0.5rem',
-                            transition: 'all 0.2s ease',
-                            opacity: loading ? 0.7 : 1,
-                        }}
-                    >
-                        {loading ? 'Загрузка...' : (isLogin ? 'Войти' : 'Зарегистрироваться')}
-                        {!loading && <ChevronRight size={18} />}
-                    </button>
-                </form>
-
-                <div style={{ display: 'flex', alignItems: 'center', margin: '0.5rem 0' }}>
-                    <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }}></div>
-                    <span style={{ padding: '0 1rem', fontSize: '0.85rem', color: 'var(--text-caption)' }}>Или</span>
-                    <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }}></div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    <button 
-                        type="button"
-                        onClick={demoLogin}
-                        disabled={loading}
-                        style={{
-                            ...socialButtonStyle,
-                            background: 'rgba(52, 199, 89, 0.1)',
-                            border: '1px solid rgba(52, 199, 89, 0.3)',
-                            color: 'var(--status-success)',
-                            fontWeight: 600
-                        }}
-                    >
-                        Попробовать Beta-версию (без регистрации)
-                    </button>
-
-                    <button 
-                        type="button"
-                        style={socialButtonStyle}
-                        onClick={() => window.location.href = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') : '/api') + '/auth/yandex'}
-                    >
-                        <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#FC3F1D', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '14px' }}>Я</div>
-                        Войти через Яндекс
-                    </button>
-                </div>
-
-                <div style={{ textAlign: 'center', marginTop: '0.5rem', fontSize: '0.9rem' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>
-                        {isLogin ? 'Нет аккаунта? ' : 'Уже есть аккаунт? '}
-                    </span>
-                    <button 
-                        type="button"
-                        onClick={() => { setIsLogin(!isLogin); setLocalError(''); }}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            color: 'var(--primary-start)',
-                            cursor: 'pointer',
-                            fontWeight: 600,
-                            padding: 0,
-                            fontSize: '0.9rem'
-                        }}
-                    >
-                        {isLogin ? 'Зарегистрироваться' : 'Войти'}
-                    </button>
+                <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.8rem', color: 'var(--text-caption)' }}>
+                    Нажимая кнопку входа, вы соглашаетесь с <br/>
+                    <a href="/data-management" style={{ color: 'var(--primary-start)', textDecoration: 'none' }}>правилами хранения данных</a>
                 </div>
             </div>
         </div>

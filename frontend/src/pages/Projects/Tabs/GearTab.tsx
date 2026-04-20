@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lightning, UserCircle, Trash } from '@phosphor-icons/react';
+import { Lightning, UserCircle, Trash, Warning, Scales } from '@phosphor-icons/react';
 import { useEquipmentStore } from '../../../store/equipmentStore';
 import { useProjectStore } from '../../../store/projectStore';
+import { useAuthStore } from '../../../store/authStore';
 import { GlassCard } from '../../../components/ui/GlassCard';
 import { Button } from '../../../components/ui/Button';
 import { Badge } from '../../../components/ui/Badge';
@@ -11,6 +12,7 @@ import type { ProjectEquipment } from '../../../types';
 
 export function GearTab() {
     const { projectId } = useParams<{ projectId: string }>();
+    const { user: currentUser } = useAuthStore();
     const { projectEquipment, loading, fetchProjectEquipment, autoGenerate, redistribute, updateStatus, removeFromProject } = useEquipmentStore();
     const { currentProject, fetchProject } = useProjectStore();
     const [filter, setFilter] = useState('all');
@@ -21,6 +23,12 @@ export function GearTab() {
             if (!currentProject) fetchProject(projectId);
         }
     }, [projectId]);
+
+    const myEquipment = projectEquipment.filter(item => item.assignedToId === currentUser?.id);
+    const myTotalWeight = myEquipment.reduce((sum, item) => sum + (item.customWeight || item.equipment.weight), 0);
+    const userWeight = currentUser?.weight || 70;
+    const weightPercentage = (myTotalWeight / userWeight) * 100;
+    const isOverweight = weightPercentage > 25;
 
     const categories = [...new Set(projectEquipment.map((e) => e.equipment.category))];
     const filtered = filter === 'all' ? projectEquipment : projectEquipment.filter((e) => e.equipment.category === filter);
@@ -47,6 +55,36 @@ export function GearTab() {
 
     return (
         <div className="space-y-4">
+            {/* Weight Dashboard */}
+            <GlassCard className={`p-4 border-l-4 transition-all ${isOverweight ? 'border-l-red-500 bg-red-500/5' : 'border-l-green-500 bg-green-500/5'}`}>
+                <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                        <Scales size={20} className={isOverweight ? 'text-red-500' : 'text-green-500'} />
+                        <span className="font-bold text-[var(--text-primary)]">Ваша нагрузка</span>
+                    </div>
+                    <Badge status={isOverweight ? 'error' : 'success'}>
+                        {weightPercentage.toFixed(1)}% от веса тела
+                    </Badge>
+                </div>
+                <div className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+                    <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.min(weightPercentage, 100)}%` }}
+                        className={`h-full ${isOverweight ? 'bg-red-500' : 'bg-green-500'}`}
+                    />
+                </div>
+                <div className="flex justify-between mt-2 text-[10px] text-[var(--text-secondary)] uppercase tracking-wider font-bold">
+                    <span>{myTotalWeight.toFixed(1)} кг</span>
+                    <span>Рекомендуемый лимит: {(userWeight * 0.25).toFixed(1)} кг (25%)</span>
+                </div>
+                {isOverweight && (
+                    <div className="mt-3 p-2 bg-red-500/10 rounded-lg flex items-center gap-2 text-[10px] text-red-600 font-medium">
+                        <Warning size={14} />
+                        Внимание! Вес рюкзака превышает рекомендуемую норму (25%). Рассмотрите возможность перераспределения группового снаряжения.
+                    </div>
+                )}
+            </GlassCard>
+
             <div className="flex gap-2">
                 <Button variant="secondary" size="sm" className="flex-1 gap-2" onClick={handleAutoGenerate}>
                     <Lightning size={16} /> Сгенерировать
