@@ -61,28 +61,35 @@ export function LandingPage() {
             // Defaulting to the global body gradient from theme.css
             overflow: 'hidden'
         }}>
-            <div className="glass-card" style={{
-                width: '100%',
-                maxWidth: '420px',
-                padding: '2.5rem',
-                zIndex: 10,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1.5rem',
-                margin: '1rem',
-                boxSizing: 'border-box'
-            }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                    <img 
-                        src="/icon-transparent.png" 
-                        alt="Походный Сборщик Logo" 
-                        style={{
-                            width: '96px',
-                            height: '96px',
-                            filter: 'drop-shadow(0 8px 16px rgba(47,128,237,0.2))',
-                            marginBottom: '0.5rem'
-                        }}
-                    />
+        {/* Scenic Background with Gradient Fade */}
+        <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '60vh',
+            backgroundImage: 'url(/landing-bg.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'top center',
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+            zIndex: 0,
+            opacity: 0.95
+        }} />
+
+        <div className="glass-card" style={{
+            width: '100%',
+            maxWidth: '420px',
+            padding: '2.5rem',
+            zIndex: 10,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.5rem',
+            margin: '1rem',
+            boxSizing: 'border-box',
+            marginTop: '20vh'
+        }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                     <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.5px', color: 'var(--text-primary)' }}>
                         Походный Сборщик
                     </h1>
