@@ -23,8 +23,8 @@ export class ProjectsService {
                 description: data.description,
                 type: (data.type as any) || 'hiking',
                 season: (data.season as any) || 'summer',
-                startDate: data.startDate ? new Date(data.startDate) : null,
-                endDate: data.endDate ? new Date(data.endDate) : null,
+                startDate: (data.startDate && !isNaN(Date.parse(data.startDate))) ? new Date(data.startDate) : null,
+                endDate: (data.endDate && !isNaN(Date.parse(data.endDate))) ? new Date(data.endDate) : null,
                 inviteCode,
                 ownerId: userId,
                 members: {

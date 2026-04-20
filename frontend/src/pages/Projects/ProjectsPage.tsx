@@ -42,7 +42,15 @@ export function ProjectsPage() {
 
     const handleCreate = async () => {
         if (!formData.title.trim()) return;
-        const project = await createProject(formData);
+        
+        // Ensure empty strings are treated as null for the backend
+        const submissionData = {
+            ...formData,
+            startDate: formData.startDate || null,
+            endDate: formData.endDate || null
+        };
+        
+        const project = await createProject(submissionData);
         setShowCreate(false);
         setFormData({ title: '', description: '', type: 'hiking', season: 'summer', startDate: '', endDate: '' });
         navigate(`/project/${project.id}`);
@@ -187,6 +195,20 @@ export function ProjectsPage() {
                                             placeholder="Например: Эльбрус 2024"
                                             value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label className="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Дата начала</label>
+                                            <input type="date" className="input w-full p-3 rounded-xl bg-gray-50/50 dark:bg-black/20 border border-black/5 dark:border-white/10 text-[var(--text-primary)] focus:bg-white/80 dark:focus:bg-black/40 transition-colors"
+                                                value={formData.startDate} onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium text-[var(--text-secondary)] mb-1 block">Дата конца</label>
+                                            <input type="date" className="input w-full p-3 rounded-xl bg-gray-50/50 dark:bg-black/20 border border-black/5 dark:border-white/10 text-[var(--text-primary)] focus:bg-white/80 dark:focus:bg-black/40 transition-colors"
+                                                value={formData.endDate} onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                                            />
+                                        </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
