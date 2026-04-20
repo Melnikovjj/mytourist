@@ -63,18 +63,7 @@
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ── Dark Theme Override (Only if explicitly requested) ── */
-[data-theme="dark"] {
-  --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  --bg-color: #0f172a;
-  --glass-bg: rgba(30, 41, 59, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
 
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-}
 
 /* ── Reset ────────────────────────────────── */
 *,
@@ -124,14 +113,7 @@ body {
   /* Blue tinted hover shadow */
 }
 
-[data-theme="dark"] .glass-card {
-  background: rgba(30, 41, 59, 0.7);
-  /* Keep semi-transparent for dark mode */
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-}
+
 
 /* Fallback for older WebViews */
 @supports not (backdrop-filter: blur(1px)) {
@@ -140,15 +122,9 @@ body {
   .glass-card-static {
     background: rgba(255, 255, 255, 0.95);
   }
-
-  @media (prefers-color-scheme: dark) {
-
-    .glass-card,
-    .glass-card-static {
-      background: #1c1c1e;
-    }
-  }
 }
+
+
 
 /* ── Buttons ──────────────────────────────── */
 .btn {
