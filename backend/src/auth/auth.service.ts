@@ -1,7 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { createHmac } from 'crypto';
+import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../common/prisma/prisma.service';
+import { LoginDto, RegisterDto } from './dto/auth.dto';
 
 interface TelegramUser {
     id: number;
@@ -57,7 +59,6 @@ export class AuthService {
     async authenticateUser(initData: string) {
         let tgUser: TelegramUser;
 
-        // Dev fallback for browser testing (outside Telegram)
         if (initData === 'dev_mode=true') {
             tgUser = {
                 id: 123456789,
@@ -85,7 +86,6 @@ export class AuthService {
                 },
             });
         } else {
-            // Update existing user data and generate inviteCode if missing
             user = await this.prisma.user.update({
                 where: { id: user.id },
                 data: {
@@ -98,14 +98,131 @@ export class AuthService {
             });
         }
 
-        const payload = { sub: user.id, telegramId: tgUser.id.toString() };
+        return this.buildAuthResponse(user);
+    }
+
+    async register(registerDto: RegisterDto) {
+        const { email, password, firstName, lastName } = registerDto;
+        const lowercaseEmail = email.toLowerCase();
+        const existingUser = await this.prisma.user.findUnique({ where: { email: lowercaseEmail } });
+
+        if (existingUser) {
+            throw new BadRequestException('User with this email already exists');
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await this.prisma.user.create({
+            data: {
+                email: lowercaseEmail,
+                password: hashedPassword,
+                firstName,
+                lastName,
+                inviteCode: this.generateInviteCode(),
+            },
+        });
+
+        return this.buildAuthResponse(user);
+    }
+
+    async login(loginDto: LoginDto) {
+        const { email, password } = loginDto;
+        const lowercaseEmail = email.toLowerCase();
+        const user = await this.prisma.user.findUnique({ where: { email: lowercaseEmail } });
+
+        if (!user || !user.password) {
+            throw new UnauthorizedException('Invalid email or password');
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            throw new UnauthorizedException('Invalid email or password');
+        }
+
+        return this.buildAuthResponse(user);
+    }
+
+    async validateOAuthUser(profile: any) {
+        const { email, firstName, lastName, avatarUrl, provider, providerId } = profile;
+        const lowercaseEmail = email?.toLowerCase();
+
+        // Find by providerId first
+        let user = await this.prisma.user.findUnique({
+            where: provider === 'google' ? { googleId: providerId } : { yandexId: providerId }
+        });
+
+        if (!user && lowercaseEmail) {
+            // Find by email to link accounts
+            user = await this.prisma.user.findUnique({ where: { email: lowercaseEmail } });
+        }
+
+        if (!user) {
+            // Register new user
+            user = await this.prisma.user.create({
+                data: {
+                    email: lowercaseEmail,
+                    googleId: provider === 'google' ? providerId : undefined,
+                    yandexId: provider === 'yandex' ? providerId : undefined,
+                    firstName,
+                    lastName,
+                    avatarUrl,
+                    inviteCode: this.generateInviteCode(),
+                },
+            });
+        } else {
+            // Update existing user with providerId if linking by email
+            const updateData: any = {};
+            if (provider === 'google' && !user.googleId) updateData.googleId = providerId;
+            if (provider === 'yandex' && !user.yandexId) updateData.yandexId = providerId;
+            
+            if (Object.keys(updateData).length > 0) {
+                user = await this.prisma.user.update({
+                    where: { id: user.id },
+                    data: updateData,
+                });
+            }
+        }
+
+        return user;
+    }
+
+    async demoLogin() {
+        const demoEmail = 'guest_demo@hiking.app';
+        const user = await this.prisma.user.upsert({
+            where: { email: demoEmail },
+            update: {
+                isOnboarded: true,
+                weight: 70,
+                experienceLevel: 'beginner',
+            },
+            create: {
+                email: demoEmail,
+                firstName: 'Гость',
+                lastName: '(Бета-тест)',
+                isOnboarded: true,
+                weight: 70,
+                experienceLevel: 'beginner',
+                inviteCode: this.generateInviteCode(),
+            }
+        });
+
+        return this.buildAuthResponse(user);
+    }
+
+
+    buildOAuthResponse(user: any) {
+        return this.buildAuthResponse(user);
+    }
+
+    private buildAuthResponse(user: any) {
+        const payload = { sub: user.id, email: user.email };
         const token = this.jwtService.sign(payload);
 
         return {
             access_token: token,
             user: {
                 id: user.id,
-                telegramId: user.telegramId.toString(),
+                telegramId: user.telegramId?.toString(),
+                email: user.email,
                 username: user.username,
                 firstName: user.firstName,
                 lastName: user.lastName,

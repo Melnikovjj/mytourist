@@ -20,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         if (!user) throw new UnauthorizedException();
         return {
             id: user.id,
-            telegramId: user.telegramId.toString(),
+            telegramId: user.telegramId?.toString(),
             username: user.username,
             firstName: user.firstName,
             weight: user.weight,

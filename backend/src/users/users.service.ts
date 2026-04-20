@@ -42,7 +42,7 @@ export class UsersService {
     private serializeUser(user: any) {
         return {
             ...user,
-            telegramId: user.telegramId.toString(),
+            telegramId: user.telegramId?.toString() || null,
             isOnboarded: user.isOnboarded,
             experienceLevel: user.experienceLevel,
             inviteCode: user.inviteCode,

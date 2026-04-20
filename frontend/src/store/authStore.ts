@@ -7,37 +7,73 @@ interface AuthState {
     token: string | null;
     loading: boolean;
     error: string | null;
-    login: () => Promise<void>;
+    loginWithEmail: (email: string, password: string) => Promise<void>;
+    registerWithEmail: (email: string, password: string, firstName?: string, lastName?: string) => Promise<void>;
+    demoLogin: () => Promise<void>;
     updateProfile: (data: Partial<User>) => Promise<void>;
     completeOnboarding: (data: { weight: number; username: string; experienceLevel: string }) => Promise<void>;
     logout: () => void;
+    checkAuth: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
     user: null,
     token: localStorage.getItem('token'),
-    loading: false,
+    loading: true, // Start loading true until checkAuth is done
     error: null,
 
-    login: async () => {
+    checkAuth: async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            set({ loading: false });
+            return;
+        }
+        try {
+            const res = await api.get('/users/me');
+            set({ user: res.data, token, loading: false });
+        } catch (error) {
+            // Token is invalid or expired
+            localStorage.removeItem('token');
+            set({ user: null, token: null, loading: false });
+        }
+    },
+
+    loginWithEmail: async (email, password) => {
         set({ loading: true, error: null });
         try {
-            const tg = (window as any).Telegram?.WebApp;
-            let initData = tg?.initData || '';
-
-            // Dev fallback — creates a test user
-            if (!initData) {
-                initData = 'dev_mode=true';
-            }
-
-            const res = await api.post('/auth/telegram', { initData });
+            const res = await api.post('/auth/login', { email, password });
             const { access_token, user } = res.data;
             localStorage.setItem('token', access_token);
             set({ user, token: access_token, loading: false });
         } catch (error: any) {
-            console.error('Login error:', error?.response?.data || error.message);
-            // Don't keep loading state forever — show the app even if login fails
-            set({ error: error.message, loading: false });
+            set({ error: error.response?.data?.message || error.message, loading: false });
+            throw error;
+        }
+    },
+
+    registerWithEmail: async (email, password, firstName, lastName) => {
+        set({ loading: true, error: null });
+        try {
+            const res = await api.post('/auth/register', { email, password, firstName, lastName });
+            const { access_token, user } = res.data;
+            localStorage.setItem('token', access_token);
+            set({ user, token: access_token, loading: false });
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || error.message, loading: false });
+            throw error;
+        }
+    },
+
+    demoLogin: async () => {
+        set({ loading: true, error: null });
+        try {
+            const res = await api.post('/auth/demo');
+            const { access_token, user } = res.data;
+            localStorage.setItem('token', access_token);
+            set({ user, token: access_token, loading: false });
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || 'Failed to start demo', loading: false });
+            throw error;
         }
     },
 
