@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../../store/authStore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { User, Mail, Lock, AlertCircle, ChevronRight, Mountain } from 'lucide-react';
 import '../../styles/theme.css';
 
@@ -145,7 +145,7 @@ export function LandingPage() {
 
                 <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.8rem', color: 'var(--text-caption)' }}>
                     Нажимая кнопку входа, вы соглашаетесь с <br/>
-                    <a href="/data-management" style={{ color: 'var(--primary-start)', textDecoration: 'none' }}>правилами хранения данных</a>
+                    <Link to="/data-management" style={{ color: 'var(--primary-start)', textDecoration: 'none' }}>правилами хранения данных</Link>
                 </div>
             </div>
         </div>

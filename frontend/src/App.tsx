@@ -13,6 +13,7 @@ import { ReferencePage } from './pages/Reference/ReferencePage';
 import { ProfilePage } from './pages/Profile/ProfilePage';
 import OnboardingPage from './pages/Onboarding/OnboardingPage';
 import { LandingPage } from './pages/Landing/LandingPage';
+import { DataManagementPage } from './pages/DataManagement/DataManagementPage';
 import { LoadingScreen } from './components/ui/LoadingScreen';
 
 function AppContent() {
@@ -68,6 +69,7 @@ function AppContent() {
     if (!user) {
         return (
             <Routes>
+                <Route path="/data-management" element={<DataManagementPage />} />
                 <Route path="/login" element={<LandingPage />} />
                 <Route path="/" element={<LandingPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
@@ -89,6 +91,7 @@ function AppContent() {
                 <Route path="/project/:projectId/checklist" element={<ChecklistPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/reference" element={<ReferencePage />} />
+                <Route path="/data-management" element={<DataManagementPage />} />
                 {/* Redirect any stray logins if already authenticated */}
                 <Route path="/login" element={<Navigate to="/" replace />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
