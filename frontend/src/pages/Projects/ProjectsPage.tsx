@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Mountains, Snowflake, Waves, Users, CalendarBlank as Calendar, CaretRight } from '@phosphor-icons/react';
+import { Plus, Mountains, Snowflake, Waves, Users, CalendarBlank as Calendar, CaretRight, Trash } from '@phosphor-icons/react';
 import { useProjectStore } from '../../store/projectStore';
 import { useAuthStore } from '../../store/authStore';
 import { GlassCard } from '../../components/ui/GlassCard';
@@ -31,7 +31,7 @@ const getProjectImage = (type: string, season: string) => {
 
 export function ProjectsPage() {
     const { user } = useAuthStore();
-    const { projects, loading, fetchProjects, createProject, joinProject } = useProjectStore();
+    const { projects, loading, fetchProjects, createProject, joinProject, deleteProject } = useProjectStore();
     const [showCreate, setShowCreate] = useState(false);
     const [showJoin, setShowJoin] = useState(false);
     const [inviteCode, setInviteCode] = useState('');
