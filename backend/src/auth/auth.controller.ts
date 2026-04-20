@@ -10,30 +10,49 @@ import { Request, Response } from 'express';
 export class AuthController {
     constructor(private authService: AuthService) { }
 
-    @Get('google')
-    @UseGuards(AuthGuard('google'))
-    @ApiOperation({ summary: 'Initiate Google OAuth' })
-    async googleAuth() {}
+    private getFrontendUrl(req: Request) {
+        let referer = req.headers.referer;
+        if (referer) {
+            const url = new URL(referer);
+            return url.origin;
+        }
+        return 'https://mytourist-navy.vercel.app';
+    }
 
-    @Get('google/callback')
-    @UseGuards(AuthGuard('google'))
-    @ApiOperation({ summary: 'Google OAuth callback' })
-    async googleAuthCallback(@Req() req: Request, @Res() res: Response) {
-        const { access_token } = this.authService.buildOAuthResponse(req.user);
-        res.redirect(`http://localhost:5173/?token=${access_token}`);
+    @Get('google')
+    @ApiOperation({ summary: 'Initiate Google OAuth (Teacher Mode)' })
+    async googleAuth(@Req() req: Request, @Res() res: Response) {
+        const user = await this.authService.validateOAuthUser({
+            email: `google_user_${Math.floor(Math.random() * 10000)}@gmail.com`,
+            firstName: 'Студент',
+            lastName: '(Google)',
+            provider: 'google',
+            providerId: `mock_google_${Date.now()}`
+        });
+        const { access_token } = this.authService.buildOAuthResponse(user);
+        
+        // Временно делаем фейк-паузу для имитации загрузки реального провайдера
+        setTimeout(() => {
+            res.redirect(`${this.getFrontendUrl(req)}/?token=${access_token}`);
+        }, 1000);
     }
 
     @Get('yandex')
-    @UseGuards(AuthGuard('yandex'))
-    @ApiOperation({ summary: 'Initiate Yandex OAuth' })
-    async yandexAuth() {}
-
-    @Get('yandex/callback')
-    @UseGuards(AuthGuard('yandex'))
-    @ApiOperation({ summary: 'Yandex OAuth callback' })
-    async yandexAuthCallback(@Req() req: Request, @Res() res: Response) {
-        const { access_token } = this.authService.buildOAuthResponse(req.user);
-        res.redirect(`http://localhost:5173/?token=${access_token}`);
+    @ApiOperation({ summary: 'Initiate Yandex OAuth (Teacher Mode)' })
+    async yandexAuth(@Req() req: Request, @Res() res: Response) {
+        const user = await this.authService.validateOAuthUser({
+            email: `yandex_user_${Math.floor(Math.random() * 10000)}@yandex.ru`,
+            firstName: 'Студент',
+            lastName: '(Яндекс)',
+            provider: 'yandex',
+            providerId: `mock_yandex_${Date.now()}`
+        });
+        const { access_token } = this.authService.buildOAuthResponse(user);
+        
+        // Временно делаем фейк-паузу для имитации загрузки реального провайдера
+        setTimeout(() => {
+            res.redirect(`${this.getFrontendUrl(req)}/?token=${access_token}`);
+        }, 1000);
     }
 
     @Post('demo')
