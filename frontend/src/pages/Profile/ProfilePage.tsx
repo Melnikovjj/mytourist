@@ -16,7 +16,7 @@ interface UserProfile {
 }
 
 export function ProfilePage() {
-    const { user } = useAuthStore();
+    const { user, logout } = useAuthStore();
     const navigate = useNavigate();
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
@@ -156,6 +156,23 @@ export function ProfilePage() {
                 onClick={() => navigate('/')}
             >
                 Вернуться к проектам
+            </button>
+
+            {/* Logout Button */}
+            <button
+                className="btn btn-full"
+                style={{ 
+                    marginTop: 12, 
+                    background: 'rgba(255, 59, 48, 0.1)', 
+                    color: 'var(--status-error)', 
+                    border: '1px solid rgba(255, 59, 48, 0.3)' 
+                }}
+                onClick={() => {
+                    logout();
+                    navigate('/');
+                }}
+            >
+                Выйти из аккаунта
             </button>
         </div>
     );
