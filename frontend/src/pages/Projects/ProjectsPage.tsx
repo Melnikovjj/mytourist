@@ -120,9 +120,24 @@ export function ProjectsPage() {
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                                         <div className="absolute bottom-3 left-4 text-white right-4">
                                             <div className="flex justify-between items-start mb-1">
-                                                <Badge status="neutral" className="backdrop-blur-md bg-white/20 border-white/30 text-white">
-                                                    {typeLabels[project.type] || project.type}
-                                                </Badge>
+                                                <div className="flex gap-2 items-center">
+                                                    <Badge status="neutral" className="backdrop-blur-md bg-white/20 border-white/30 text-white">
+                                                        {typeLabels[project.type] || project.type}
+                                                    </Badge>
+                                                    {project.ownerId === user?.id && (
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (window.confirm('Удалить этот поход?')) {
+                                                                    deleteProject(project.id);
+                                                                }
+                                                            }}
+                                                            className="p-1.5 rounded-full bg-red-500/20 hover:bg-red-500/40 text-red-100 transition-colors backdrop-blur-[4px] border border-red-500/30"
+                                                        >
+                                                            <Trash size={14} weight="bold" />
+                                                        </button>
+                                                    )}
+                                                </div>
                                                 {/* Facepile */}
                                                 <div className="flex -space-x-2">
                                                     {project.members?.slice(0, 3).map((m: any) => (
