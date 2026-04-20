@@ -1,0 +1,19 @@
+[build]
+builder = "nixpacks"
+watchPatterns = ["backend/**"]
+
+[deploy]
+startCommand = "npm run start:prod"
+restartPolicyType = "on_failure"
+
+[phases.setup]
+nixPkgs = ["nodejs"]
+
+[phases.install]
+cmds = ["cd backend && npm install"]
+
+[phases.build]
+cmds = ["cd backend && npm run build"]
+
+[phases.start]
+cmds = ["cd backend && npm run start:prod"]
