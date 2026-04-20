@@ -73,19 +73,17 @@ export function LandingPage() {
                 boxSizing: 'border-box'
             }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                    <div style={{
-                        width: '64px',
-                        height: '64px',
-                        borderRadius: '16px',
-                        background: 'linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 8px 32px rgba(47,128,237,0.4)',
-                        marginBottom: '0.5rem'
-                    }}>
-                        <Mountain size={36} color="white" />
-                    </div>
+                    <img 
+                        src="/icon.png" 
+                        alt="Походный Сборщик Logo" 
+                        style={{
+                            width: '84px',
+                            height: '84px',
+                            borderRadius: '22px',
+                            boxShadow: '0 12px 36px rgba(47,128,237,0.25)',
+                            marginBottom: '0.5rem'
+                        }}
+                    />
                     <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.5px', color: 'var(--text-primary)' }}>
                         Походный Сборщик
                     </h1>
