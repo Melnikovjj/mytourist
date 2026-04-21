@@ -81,11 +81,6 @@ function AppContent() {
 
     return (
         <>
-            <div className="liquid-background">
-                <div className="liquid-blob liquid-blob-1" />
-                <div className="liquid-blob liquid-blob-2" />
-                <div className="liquid-blob liquid-blob-3" />
-            </div>
             <Routes>
                 <Route path="/onboarding" element={<OnboardingPage />} />
                 <Route path="/" element={<ProjectsPage />} />

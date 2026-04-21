@@ -13,15 +13,15 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
     ({ children, className, variant = 'default', blur = 'md', ...props }, ref) => {
 
         const blurClasses = {
-            sm: 'backdrop-blur-[20px] saturate-[120%]',
-            md: 'backdrop-blur-[40px] saturate-[150%]',
-            lg: 'backdrop-blur-[60px] saturate-[200%]',
+            sm: 'backdrop-blur-[10px]',
+            md: 'backdrop-blur-[25px]',
+            lg: 'backdrop-blur-[40px]',
         };
 
         const variantClasses = {
-            default: 'bg-white/30 dark:bg-black/40 border border-white/50 dark:border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.9),inset_0_-1px_1px_rgba(255,255,255,0.3)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.1)]',
-            elevated: 'bg-white/40 dark:bg-black/50 border border-white/60 dark:border-white/30 shadow-[0_20px_50px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,1),inset_0_-1px_1px_rgba(255,255,255,0.5)]',
-            flat: 'bg-white/20 dark:bg-white/5 border border-white/30 dark:border-white/5 shadow-none',
+            default: 'bg-white/60 dark:bg-black/40 backdrop-blur-[25px] border border-white/30 dark:border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)]',
+            elevated: 'bg-white/70 dark:bg-black/50 backdrop-blur-[25px] border border-white/40 dark:border-white/15 shadow-[0_15px_50px_rgba(0,0,0,0.12)]',
+            flat: 'bg-white/30 dark:bg-white/5 backdrop-blur-[15px] border border-white/20 dark:border-white/5 shadow-none',
         };
 
         return (
