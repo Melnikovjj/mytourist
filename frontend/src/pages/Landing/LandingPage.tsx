@@ -67,15 +67,20 @@ export function LandingPage() {
             top: 0,
             left: 0,
             width: '100vw',
-            height: '60vh',
+            height: '100vh',
             backgroundImage: 'url(/landing-bg.jpg)',
             backgroundSize: 'cover',
-            backgroundPosition: 'top center',
-            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+            backgroundPosition: 'center',
             zIndex: 0,
-            opacity: 0.95
+            opacity: 0.35, // reduced opacity for dark theme
+            filter: 'brightness(0.6) contrast(1.2)'
         }} />
+        <div style={{
+            position: 'absolute',
+            top: 0, left: 0, right: 0, bottom: 0,
+            background: 'radial-gradient(circle at 50% 100%, rgba(34, 139, 34, 0.15) 0%, rgba(6, 14, 11, 0.95) 70%)',
+            zIndex: 1
+        }}/>
 
         <div className="glass-card" style={{
             width: '100%',
@@ -106,7 +111,14 @@ export function LandingPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', marginTop: '0.5rem' }}>
                         <button 
                             type="button"
-                            style={{...socialButtonStyle, background: '#fff', color: '#000', border: '1px solid #e5e5e5'}}
+                            style={{
+                                ...socialButtonStyle, 
+                                background: 'rgba(255, 255, 255, 0.05)', 
+                                color: '#fff', 
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.05)'
+                            }}
+                            className="hover:bg-white/10 transition-colors"
                             onClick={() => window.location.href = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') : '/api') + '/auth/yandex'}
                         >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -118,34 +130,44 @@ export function LandingPage() {
 
                         <button 
                             type="button"
-                            style={{...socialButtonStyle, background: '#005ff9', color: '#fff', border: 'none'}}
+                            style={{
+                                ...socialButtonStyle, 
+                                background: 'rgba(0, 95, 249, 0.15)', 
+                                color: '#fff', 
+                                border: '1px solid rgba(0, 95, 249, 0.4)',
+                                boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.1)'
+                            }}
+                            className="hover:bg-[rgba(0,95,249,0.25)] transition-colors"
                             onClick={() => window.location.href = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/+$/, '') : '/api') + '/auth/mailru'}
                         >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="#005ff9" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M15.61 12c0 1.99-1.62 3.61-3.61 3.61-1.99 0-3.61-1.62-3.61-3.61 0-1.99 1.62-3.61 3.61-3.61 1.99 0 3.61 1.62 3.61 3.61M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12c2.424 0 4.761-.722 6.76-2.087l.034-.024-1.617-1.879-.027.017A9.494 9.494 0 0 1 12 21.54c-5.26 0-9.54-4.28-9.54-9.54 0-5.26 4.28-9.54 9.54-9.54 5.26 0 9.54 4.28 9.54 9.54a9.63 9.63 0 0 1-.225 2.05c-.301 1.239-1.169 1.618-1.82 1.568-.654-.053-1.42-.52-1.426-1.661V12A6.076 6.076 0 0 0 12 5.93 6.076 6.076 0 0 0 5.93 12 6.076 6.076 0 0 0 12 18.07a6.02 6.02 0 0 0 4.3-1.792 3.9 3.9 0 0 0 3.32 1.805c.874 0 1.74-.292 2.437-.821.719-.547 1.256-1.336 1.553-2.285.047-.154.135-.504.135-.507l.002-.013c.175-.76.253-1.52.253-2.457 0-6.617-5.383-12-12-12"/>
                             </svg>
                             Войти через Mail.ru
                         </button>
 
                         <div style={{ display: 'flex', alignItems: 'center', margin: '0.5rem 0' }}>
-                            <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }}></div>
+                            <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.05)' }}></div>
                             <span style={{ padding: '0 1rem', fontSize: '0.85rem', color: 'var(--text-caption)' }}>Или</span>
-                            <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }}></div>
+                            <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.05)' }}></div>
                         </div>
 
                         <button 
                             type="button"
                             onClick={demoLogin}
                             disabled={loading}
+                            className="glass-button-primary"
                             style={{
                                 ...socialButtonStyle,
-                                background: 'rgba(52, 199, 89, 0.1)',
-                                border: '1px solid rgba(52, 199, 89, 0.3)',
-                                color: 'var(--status-success)',
-                                fontWeight: 600
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                color: '#fff',
+                                fontWeight: 600,
+                                margin: 0,
+                                background: 'linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%)',
+                                boxShadow: '0 8px 25px rgba(34, 139, 34, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2)'
                             }}
                         >
-                            Попробовать Beta-версию (без регистрации)
+                            Продолжить без регистрации
                         </button>
                     </div>
                 </div>
