@@ -8,8 +8,47 @@ export function LandingPage() {
     const { loginWithEmail, requestCode, registerWithEmail, demoLogin, loading, error } = useAuthStore();
     const navigate = useNavigate();
     
-    // UI states
-    const [showLoginOptions, setShowLoginOptions] = useState(false);
+    const [isLogin, setIsLogin] = useState(true);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [verificationCode, setVerificationCode] = useState('');
+    const [verificationStep, setVerificationStep] = useState(false);
+    const [localError, setLocalError] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLocalError('');
+        
+        if (!email || !password) {
+            setLocalError('Пожалуйста, заполните все обязательные поля');
+            return;
+        }
+
+        try {
+            if (isLogin) {
+                await loginWithEmail(email, password);
+                navigate('/', { replace: true });
+            } else {
+                if (!verificationStep) {
+                    // Step 1: Request Code
+                    await requestCode(email);
+                    setVerificationStep(true);
+                } else {
+                    // Step 2: Finalize Registration
+                    if (!verificationCode) {
+                        setLocalError('Введите код из письма');
+                        return;
+                    }
+                    await registerWithEmail(email, password, verificationCode, firstName, lastName);
+                    navigate('/', { replace: true });
+                }
+            }
+        } catch (err: any) {
+            console.error('Auth error', err);
+        }
+    };
 
     return (
         <div style={{
@@ -17,85 +56,59 @@ export function LandingPage() {
             width: '100vw',
             position: 'relative',
             display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-end',
-            overflow: 'hidden',
-            backgroundColor: '#060E0B'
+            alignItems: 'center',
+            justifyContent: 'center',
+            // Defaulting to the global body gradient from theme.css
+            overflow: 'hidden'
         }}>
-            {/* Fullscreen Background */}
-            <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                backgroundImage: 'url(/landing-bg.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                zIndex: 0,
-                opacity: 0.6,
-            }} />
-            
-            {/* Deep Dark Bottom Gradient to blend text */}
-            <div style={{
-                position: 'absolute',
-                bottom: 0, left: 0, right: 0, height: '70vh',
-                background: 'linear-gradient(to top, rgba(6, 14, 11, 1) 0%, rgba(6, 14, 11, 0.8) 40%, transparent 100%)',
-                zIndex: 1
-            }}/>
+        {/* Scenic Background with Gradient Fade */}
+        <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundImage: 'url(/landing-bg.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            zIndex: 0,
+            opacity: 0.35, // reduced opacity for dark theme
+            filter: 'brightness(0.6) contrast(1.2)'
+        }} />
+        <div style={{
+            position: 'absolute',
+            top: 0, left: 0, right: 0, bottom: 0,
+            background: 'radial-gradient(circle at 50% 100%, rgba(34, 139, 34, 0.15) 0%, rgba(6, 14, 11, 0.95) 70%)',
+            zIndex: 1
+        }}/>
 
-            <div style={{
-                position: 'relative',
-                zIndex: 10,
-                padding: '2rem',
-                paddingBottom: '3.5rem',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '2rem',
-                width: '100%',
-                maxWidth: '480px',
-                margin: '0 auto'
-            }}>
-                {/* Logo & Text Block */}
-                {!showLoginOptions && (
-                    <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                        <div style={{
-                            width: '4rem', height: '4rem',
-                            background: 'linear-gradient(135deg, #3AB54A, #125212)',
-                            borderRadius: '16px',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            boxShadow: '0 8px 25px rgba(34, 139, 34, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3)'
-                        }}>
-                            <Mountain size={36} color="white" weight="fill" />
-                        </div>
+        <div className="glass-card" style={{
+            width: '100%',
+            maxWidth: '420px',
+            padding: '2.5rem',
+            zIndex: 10,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.5rem',
+            margin: '1rem',
+            boxSizing: 'border-box',
+            marginTop: '20vh'
+        }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                    <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 700, letterSpacing: '-0.5px', color: 'var(--text-primary)' }}>
+                        Походный Сборщик
+                    </h1>
+                    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', textAlign: 'center' }}>
+                        Организуй свои приключения с легкостью
+                    </p>
+                </div>
 
-                        <h1 style={{
-                            fontSize: '2.5rem',
-                            fontWeight: 800,
-                            color: '#FFFFFF',
-                            lineHeight: 1.1,
-                            letterSpacing: '-1px',
-                            margin: 0
-                        }}>
-                            Походный<br/>Сборщик
-                        </h1>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', textAlign: 'center', lineHeight: 1.5 }}>
+                        Для обеспечения безопасности мы используем вход через доверенные сервисы. <b>Пароли в приложении не хранятся.</b>
+                    </p>
 
-                        <p style={{
-                            fontSize: '1.05rem',
-                            color: '#9AAFA5',
-                            lineHeight: 1.4,
-                            margin: 0,
-                            maxWidth: '80%'
-                        }}>
-                            Твой умный помощник<br/>в каждом походе
-                        </p>
-                    </div>
-                )}
-
-                {/* Login Options Block */}
-                {showLoginOptions && (
-                    <div className="flex flex-col gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500 glass-card p-6 border-white/10" style={{ background: 'rgba(13, 24, 20, 0.7)' }}>
-                        <h2 className="text-xl font-bold text-white mb-2 text-center">Вход в систему</h2>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', marginTop: '0.5rem' }}>
                         <button 
                             type="button"
                             style={{
@@ -114,7 +127,7 @@ export function LandingPage() {
                             </svg>
                             Войти через Яндекс
                         </button>
-                        
+
                         <button 
                             type="button"
                             style={{
@@ -132,61 +145,37 @@ export function LandingPage() {
                             </svg>
                             Войти через Mail.ru
                         </button>
-                        
-                        <button 
-                            type="button"
-                            onClick={() => setShowLoginOptions(false)}
-                            className="mt-2 text-sm text-[#9AAFA5] hover:text-white transition-colors py-2"
-                        >
-                            Назад
-                        </button>
-                    </div>
-                )}
 
-                {/* Buttons Block */}
-                {!showLoginOptions && (
-                    <div className="flex flex-col gap-4 mt-6 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
+                        <div style={{ display: 'flex', alignItems: 'center', margin: '0.5rem 0' }}>
+                            <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.05)' }}></div>
+                            <span style={{ padding: '0 1rem', fontSize: '0.85rem', color: 'var(--text-caption)' }}>Или</span>
+                            <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.05)' }}></div>
+                        </div>
+
                         <button 
                             type="button"
                             onClick={demoLogin}
                             disabled={loading}
                             className="glass-button-primary"
                             style={{
-                                padding: '1rem',
-                                borderRadius: '14px',
+                                ...socialButtonStyle,
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
                                 color: '#fff',
                                 fontWeight: 600,
-                                fontSize: '1.05rem',
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                margin: 0,
                                 background: 'linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%)',
-                                boxShadow: '0 8px 25px rgba(34, 139, 34, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.3)'
+                                boxShadow: '0 8px 25px rgba(34, 139, 34, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2)'
                             }}
                         >
-                            <span style={{flex: 1, textAlign: 'center', paddingLeft: '24px'}}>Начать</span>
-                            <ChevronRight size={24} color="rgba(255,255,255,0.8)" />
-                        </button>
-
-                        <button 
-                            type="button"
-                            onClick={() => setShowLoginOptions(true)}
-                            style={{
-                                background: 'transparent',
-                                border: 'none',
-                                color: '#FFFFFF',
-                                fontWeight: 500,
-                                fontSize: '1rem',
-                                padding: '0.75rem',
-                                cursor: 'pointer',
-                            }}
-                            className="hover:opacity-80 transition-opacity"
-                        >
-                            Войти
+                            Продолжить без регистрации
                         </button>
                     </div>
-                )}
+                </div>
+
+                <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.8rem', color: 'var(--text-caption)' }}>
+                    Нажимая кнопку входа, вы соглашаетесь с <br/>
+                    <Link to="/data-management" style={{ color: 'var(--primary-start)', textDecoration: 'none' }}>правилами хранения данных</Link>
+                </div>
             </div>
         </div>
     );
