@@ -63,6 +63,61 @@
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* ── Liquid Background ── */
+.liquid-background {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background: var(--bg-gradient-end);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.liquid-blob {
+  position: absolute;
+  filter: blur(90px);
+  opacity: 0.45;
+  border-radius: 50%;
+  animation: blob-float 15s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.liquid-blob-1 {
+  background: var(--blob-1);
+  width: 500px;
+  height: 500px;
+  top: -15%;
+  left: -20%;
+  animation-duration: 22s;
+}
+
+.liquid-blob-2 {
+  background: var(--blob-2);
+  width: 600px;
+  height: 600px;
+  bottom: -20%;
+  right: -15%;
+  animation-duration: 28s;
+  animation-direction: alternate-reverse;
+}
+
+.liquid-blob-3 {
+  background: var(--blob-3);
+  width: 450px;
+  height: 450px;
+  top: 35%;
+  left: 50%;
+  animation-duration: 20s;
+}
+
+@keyframes blob-float {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(120px, 80px) scale(1.15); }
+  66% { transform: translate(-80px, 150px) scale(0.9); }
+  100% { transform: translate(50px, -50px) scale(1.05); }
+}
+
 
 
 /* ── Reset ────────────────────────────────── */
