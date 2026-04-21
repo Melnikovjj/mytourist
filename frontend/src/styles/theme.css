@@ -1,23 +1,23 @@
 :root {
     /* Colors */
-    --bg-gradient-start: #060E0B;
-    --bg-gradient-mid: #0A1310;
-    --bg-gradient-end: #0D1A16;
+    --bg-gradient-start: #E8F0FE;
+    --bg-gradient-mid: #E4EEFB;
+    --bg-gradient-end: #DDE8F8;
 
-    --blob-1: #0A3A2C;
-    --blob-2: #164028;
-    --blob-3: #0B2516;
+    --blob-1: #4AC7FA;
+    --blob-2: #B388FF;
+    --blob-3: #2F80ED;
 
-    --primary-start: #3AB54A;
-    --primary-end: #228B22;
+    --primary-start: #4AC7FA;
+    --primary-end: #2F80ED;
 
-    --glass-bg: rgba(16, 25, 22, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.06);
-    --glass-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+    --glass-bg: rgba(255, 255, 255, 0.35);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(255, 255, 255, 0.3);
 
-    --text-primary: #FFFFFF;
-    --text-secondary: #9AAFA5;
-    --text-caption: #6B8076;
+    --text-primary: #1C1C1E;
+    --text-secondary: rgba(28, 28, 30, 0.7);
+    --text-caption: rgba(28, 28, 30, 0.6);
 
     --status-success: #34C759;
     --status-warning: #FF9F0A;
@@ -57,7 +57,7 @@ body {
 .glass-button-primary {
     background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
     color: white;
-    box-shadow: 0 8px 25px rgba(34, 139, 34, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 25px rgba(47, 128, 237, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
     position: relative;
     overflow: hidden;
 }
@@ -65,7 +65,7 @@ body {
     content: '';
     position: absolute;
     top: 0; left: -100%; width: 50%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     transform: skewX(-20deg);
     transition: left 0.7s ease;
 }
@@ -73,18 +73,18 @@ body {
     left: 200%;
 }
 .glass-button-primary:hover {
-    box-shadow: 0 10px 30px rgba(34, 139, 34, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(47, 128, 237, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.5);
 }
 
 .glass-button-secondary {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.8);
     color: var(--text-primary);
 }
 .glass-button-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.4);
 }
 
 .text-gradient {

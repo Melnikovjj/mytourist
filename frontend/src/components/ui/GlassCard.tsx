@@ -19,9 +19,9 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
         };
 
         const variantClasses = {
-            default: 'bg-[#0D1814]/60 border border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.05)]',
-            elevated: 'bg-[#15251F]/70 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.1)]',
-            flat: 'bg-[#060E0B]/40 border border-white/5 shadow-none',
+            default: 'bg-white/30 dark:bg-black/40 border border-white/50 dark:border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.9),inset_0_-1px_1px_rgba(255,255,255,0.3)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.1)]',
+            elevated: 'bg-white/40 dark:bg-black/50 border border-white/60 dark:border-white/30 shadow-[0_20px_50px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,1),inset_0_-1px_1px_rgba(255,255,255,0.5)]',
+            flat: 'bg-white/20 dark:bg-white/5 border border-white/30 dark:border-white/5 shadow-none',
         };
 
         return (
