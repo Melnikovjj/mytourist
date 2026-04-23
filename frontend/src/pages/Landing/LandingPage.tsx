@@ -135,7 +135,7 @@ export function LandingPage() {
 
                         <button 
                             type="button"
-                            onClick={demoLogin}
+                            onClick={async () => { await demoLogin(); navigate('/'); }}
                             disabled={loading}
                             style={{
                                 ...socialButtonStyle,
