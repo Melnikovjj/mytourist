@@ -6,9 +6,10 @@ import { AuthService } from '../auth.service';
 @Injectable()
 export class MailruStrategy extends PassportStrategy(Strategy, 'mailru') {
     constructor(private authService: AuthService) {
-        const baseUrl = process.env.WEBAPP_URL 
+        let baseUrl = process.env.WEBAPP_URL 
             ? process.env.WEBAPP_URL 
             : (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : 'http://localhost:3000');
+        baseUrl = baseUrl.replace(/\/+$/, ''); // Remove trailing slash
 
         super({
             clientID: process.env.MAILRU_CLIENT_ID,
