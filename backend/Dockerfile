@@ -22,11 +22,11 @@ COPY . .
 RUN npm run build
 
 # Remove dev dependencies to slim image
-RUN npm prune --production && npx prisma generate
+RUN npx prisma generate
 
 # Railway provides PORT env var dynamically
 ENV PORT=3000
 EXPOSE ${PORT}
 
 # Start: run db push (safer for this workflow without local postgres) then start server
-CMD ["sh", "-c", "npx prisma db push --accept-data-loss && node dist/src/main"]
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npx prisma db seed && node dist/src/main"]

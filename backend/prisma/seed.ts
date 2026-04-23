@@ -93,7 +93,12 @@ async function main() {
     ];
 
     for (const item of equipmentData) {
-        await prisma.equipmentItem.create({ data: item });
+        const existing = await prisma.equipmentItem.findFirst({
+            where: { name: item.name }
+        });
+        if (!existing) {
+            await prisma.equipmentItem.create({ data: item });
+        }
     }
 
     console.log(`✅ Created ${equipmentData.length} equipment items`);
