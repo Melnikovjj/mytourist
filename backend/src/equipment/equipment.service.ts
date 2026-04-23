@@ -32,28 +32,40 @@ export class EquipmentService {
         });
         if (!project) throw new NotFoundException('Project not found');
 
-        // Filter equipment by project type
-        const excludeCategories: string[] = [];
-        if (project.type !== 'ski') excludeCategories.push('Зимнее');
-        if (project.type !== 'water') excludeCategories.push('Водное');
+        const items = await this.prisma.equipmentItem.findMany();
 
-        const items = await this.prisma.equipmentItem.findMany({
-            where: {
-                category: { notIn: excludeCategories },
-            },
-        });
-
-        // Define core gear by project type
+        // Smart gear filtering logic
         const filteredItems = items.filter((item) => {
-            // Seasonal filters
-            if (project.season === 'summer' && item.name.includes('зима')) return false;
-            if (project.season === 'winter' && item.name.includes('лето')) return false;
-            
-            // Type filters
-            if (project.type === 'hiking') {
-                if (item.category === 'Водное' || item.category === 'Зимнее') return false;
+            const name = item.name.toLowerCase();
+
+            // --- Сон (Спальники) ---
+            if (name.includes('спальный мешок (лето)')) {
+                return project.season === 'summer';
             }
-            if (project.type === 'water' && item.category === 'Зимнее') return false;
+            if (name.includes('спальный мешок (зима)')) {
+                return project.season !== 'summer'; // Весной, осенью и зимой берем теплый спальник
+            }
+
+            // --- Водное снаряжение ---
+            if (item.category === 'Водное') {
+                return project.type === 'water';
+            }
+
+            // --- Зимнее снаряжение ---
+            if (item.category === 'Зимнее') {
+                if (name.includes('лыжи') || name.includes('снегоступы')) {
+                    return project.type === 'ski';
+                }
+                if (name.includes('термобельё')) {
+                    return project.season !== 'summer'; // Термобелье берем всегда, кроме лета
+                }
+                return project.type === 'ski' || project.season === 'winter';
+            }
+
+            // --- Специфичное для пешего (Hiking) ---
+            if (name.includes('треккинговые ботинки') || name.includes('треккинговые палки')) {
+                return project.type === 'hiking'; // В водном и лыжном они не нужны
+            }
             
             return true;
         });
