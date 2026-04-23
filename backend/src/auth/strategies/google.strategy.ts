@@ -7,9 +7,9 @@ import { AuthService } from '../auth.service';
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     constructor(private authService: AuthService) {
-        const baseUrl = process.env.RAILWAY_PUBLIC_DOMAIN 
-            ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` 
-            : (process.env.BACKEND_URL || 'http://localhost:3000');
+        const baseUrl = process.env.WEBAPP_URL 
+            ? process.env.WEBAPP_URL 
+            : (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : 'http://localhost:3000');
 
         super({
             clientID: process.env.GOOGLE_CLIENT_ID || 'dummy_client_id_for_dev',
