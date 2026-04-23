@@ -39,6 +39,25 @@ function AppContent() {
     useEffect(() => {
         if (loading || !user) return;
 
+        // Check for pending invite saved before login (from /join/ URL)
+        const pendingInvite = sessionStorage.getItem('pendingInvite');
+        if (pendingInvite) {
+            sessionStorage.removeItem('pendingInvite');
+            setTimeout(async () => {
+                try {
+                    const res = await useProjectStore.getState().joinProject(pendingInvite);
+                    if (res.projectId) {
+                        navigate(`/project/${res.projectId}`, { replace: true });
+                        return;
+                    }
+                } catch (err) {
+                    console.error('Failed to join pending invite:', err);
+                }
+                navigate('/', { replace: true });
+            }, 500);
+            return;
+        }
+
         // Check for project invite from standard URL params
         const urlParams = new URLSearchParams(window.location.search);
         const startParam = urlParams.get('invite') || urlParams.get('start_param');
@@ -59,6 +78,26 @@ function AppContent() {
             return;
         }
 
+        // Handle /join/:inviteCode deep link after login
+        if (location.pathname.startsWith('/join/')) {
+            const inviteCode = location.pathname.replace('/join/', '');
+            if (inviteCode) {
+                setTimeout(async () => {
+                    try {
+                        const res = await useProjectStore.getState().joinProject(inviteCode);
+                        if (res.projectId) {
+                            navigate(`/project/${res.projectId}`, { replace: true });
+                            return;
+                        }
+                    } catch (err) {
+                        console.error('Failed to join project via /join/ link:', err);
+                    }
+                    navigate('/', { replace: true });
+                }, 500);
+                return;
+            }
+        }
+
         if (user.isOnboarded === false && location.pathname !== '/onboarding') {
             navigate('/onboarding', { replace: true });
         }
@@ -67,10 +106,16 @@ function AppContent() {
     if (loading) return <LoadingScreen />;
 
     if (!user) {
+        // Save invite code before showing login so we can use it after auth
+        const joinMatch = window.location.pathname.match(/^\/join\/(.+)/);
+        if (joinMatch) {
+            sessionStorage.setItem('pendingInvite', joinMatch[1]);
+        }
         return (
             <Routes>
                 <Route path="/data-management" element={<DataManagementPage />} />
                 <Route path="/login" element={<LandingPage />} />
+                <Route path="/join/:inviteCode" element={<LandingPage />} />
                 <Route path="/" element={<LandingPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
