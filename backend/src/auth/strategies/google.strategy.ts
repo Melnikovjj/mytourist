@@ -9,7 +9,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     constructor(private authService: AuthService) {
         const baseUrl = process.env.NODE_ENV === 'development' 
             ? 'http://localhost:3000' 
-            : 'https://websborpohod.tech';
+            : process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : 'https://websborpohod.tech';
 
         super({
             clientID: process.env.GOOGLE_CLIENT_ID || 'dummy_client_id_for_dev',
