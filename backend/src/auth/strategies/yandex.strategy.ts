@@ -9,7 +9,7 @@ export class YandexStrategy extends PassportStrategy(Strategy, 'yandex') {
     constructor(private authService: AuthService) {
         const baseUrl = process.env.NODE_ENV === 'development' 
             ? 'http://localhost:3000' 
-            : process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : 'https://websborpohod.tech';
+            : 'https://websborpohod.tech';
 
         super({
             clientID: process.env.YANDEX_CLIENT_ID || 'dummy_client_id_for_dev',
