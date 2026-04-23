@@ -70,7 +70,8 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 typeof value === 'bigint' ? value.toString() : value
             ));
 
-            client.broadcast.to(`project:${data.projectId}`).emit('new_message', serializedMessage);
+            // Emit to ALL clients in the room including the sender (so sender's UI updates with the saved message)
+            this.server.to(`project:${data.projectId}`).emit('new_message', serializedMessage);
 
             // Notify offline members via Telegram
             const members = await this.prisma.projectMember.findMany({
