@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Always use relative '/api' to leverage Vercel rewrites/proxy and bypass VPN issues
-const API_URL = '/api';
+// Always use absolute URL to bypass unstable Nginx proxy timeout configurations on Railway
+const API_URL = 'https://mytourist-production-c45e.up.railway.app/api';
 
 const api = axios.create({
     baseURL: API_URL,
