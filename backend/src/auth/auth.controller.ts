@@ -33,18 +33,6 @@ export class AuthController {
         res.redirect(`${this.getFrontendUrl()}/?token=${access_token}`);
     }
 
-    @Get('mailru')
-    @UseGuards(AuthGuard('mailru'))
-    @ApiOperation({ summary: 'Initiate Mail.ru OAuth' })
-    async mailruAuth() {}
-
-    @Get('mailru/callback')
-    @UseGuards(AuthGuard('mailru'))
-    @ApiOperation({ summary: 'Mail.ru OAuth callback' })
-    async mailruAuthCallback(@Req() req: Request, @Res() res: Response) {
-        const { access_token } = this.authService.buildOAuthResponse(req.user);
-        res.redirect(`${this.getFrontendUrl()}/?token=${access_token}`);
-    }
 
     @Post('demo')
     @ApiOperation({ summary: 'Guest/Demo Login' })
