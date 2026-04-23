@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://mytourist-production-c45e.up.railway.app';
+const SOCKET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || '/';
 
 let socket: Socket | null = null;
 
