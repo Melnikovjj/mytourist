@@ -11,7 +11,7 @@ export class AuthController {
     constructor(private authService: AuthService) { }
 
     private getFrontendUrl() {
-        return process.env.WEBAPP_URL || 'https://mytourist-navy.vercel.app';
+        return process.env.WEBAPP_URL || 'https://websborpohod.tech';
     }
 
     @Post('request-code')
