@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Always use relative '/api' to leverage Vercel rewrites/proxy and bypass VPN issues
-const API_URL = '/api';
+// Always use absolute URL for the backend to allow hosting the frontend anywhere without proxy restrictions
+const API_URL = import.meta.env.VITE_API_URL || 'https://mytourist-production-c45e.up.railway.app/api';
 
 const api = axios.create({
     baseURL: API_URL,
