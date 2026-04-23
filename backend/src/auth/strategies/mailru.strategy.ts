@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+// @ts-ignore
 import { Strategy } from 'passport-mailru';
 import { AuthService } from '../auth.service';
 
