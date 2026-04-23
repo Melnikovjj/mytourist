@@ -22,6 +22,7 @@ interface EquipmentState {
     fetchProjectEquipment: (projectId: string) => Promise<void>;
     autoGenerate: (projectId: string) => Promise<void>;
     addToProject: (projectId: string, equipmentId: string) => Promise<void>;
+    addCustomItem: (projectId: string, data: { name: string, weight: number, category: string, isGroupItem: boolean }) => Promise<void>;
     removeFromProject: (id: string) => Promise<void>;
     assignToUser: (id: string, userId: string, projectId: string) => Promise<void>;
     updateStatus: (id: string, status: 'planned' | 'packed') => Promise<void>;
@@ -54,6 +55,16 @@ export const useEquipmentStore = create<EquipmentState>((set) => ({
 
     addToProject: async (projectId, equipmentId) => {
         const res = await api.post(`/equipment/project/${projectId}/add`, { equipmentId });
+        set((s) => {
+            const nextEq = [...s.projectEquipment, res.data];
+            syncReadiness(projectId, nextEq);
+            return { projectEquipment: nextEq };
+        });
+    },
+
+    addCustomItem: async (projectId, data) => {
+        const itemRes = await api.post('/equipment/catalog/custom', data);
+        const res = await api.post(`/equipment/project/${projectId}/add`, { equipmentId: itemRes.data.id });
         set((s) => {
             const nextEq = [...s.projectEquipment, res.data];
             syncReadiness(projectId, nextEq);

@@ -16,6 +16,11 @@ export class EquipmentController {
         return this.equipmentService.getCatalog();
     }
 
+    @Post('catalog/custom')
+    addCustomItem(@Body() data: { name: string, weight: number, category: string, isGroupItem: boolean }) {
+        return this.equipmentService.addCustomItem(data);
+    }
+
     @Post('project/:projectId/auto-generate')
     autoGenerate(@Param('projectId') projectId: string) {
         return this.equipmentService.autoGenerate(projectId);

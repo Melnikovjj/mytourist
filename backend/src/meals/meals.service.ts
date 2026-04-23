@@ -146,23 +146,38 @@ export class MealsService {
             {
                 dayNumber: 1, type: 'breakfast', products: [
                     { name: 'Овсянка с сухофруктами', gramsPerPerson: 80, caloriesPer100g: 350, protein: 12, fat: 6, carbs: 60 },
-                    { name: 'Сухое молоко', gramsPerPerson: 20, caloriesPer100g: 480, protein: 26, fat: 25, carbs: 38 },
+                    { name: 'Сухое молоко', gramsPerPerson: 30, caloriesPer100g: 480, protein: 26, fat: 25, carbs: 38 },
+                    { name: 'Печенье/Вафли', gramsPerPerson: 40, caloriesPer100g: 450, protein: 5, fat: 20, carbs: 65 },
+                    { name: 'Джем/Сгущенка', gramsPerPerson: 40, caloriesPer100g: 300, protein: 3, fat: 8, carbs: 55 },
                     { name: 'Чай черный', gramsPerPerson: 3, caloriesPer100g: 0, protein: 0, fat: 0, carbs: 0 },
-                    { name: 'Сахар', gramsPerPerson: 10, caloriesPer100g: 400, protein: 0, fat: 0, carbs: 100 }
+                    { name: 'Сахар', gramsPerPerson: 15, caloriesPer100g: 400, protein: 0, fat: 0, carbs: 100 }
                 ]
             },
             {
                 dayNumber: 1, type: 'lunch', products: [
-                    { name: 'Хлебцы', gramsPerPerson: 40, caloriesPer100g: 300, protein: 10, fat: 2, carbs: 60 },
-                    { name: 'Сыр сырокопченый', gramsPerPerson: 30, caloriesPer100g: 450, protein: 25, fat: 40, carbs: 0 },
-                    { name: 'Колбаса с/к', gramsPerPerson: 30, caloriesPer100g: 500, protein: 20, fat: 45, carbs: 0 }
+                    { name: 'Суп (основа сухая)', gramsPerPerson: 40, caloriesPer100g: 320, protein: 10, fat: 5, carbs: 55 },
+                    { name: 'Вермишель/Лапша', gramsPerPerson: 60, caloriesPer100g: 350, protein: 11, fat: 2, carbs: 70 },
+                    { name: 'Сухари/Хлебцы', gramsPerPerson: 40, caloriesPer100g: 350, protein: 11, fat: 3, carbs: 70 },
+                    { name: 'Колбаса сырокопченая', gramsPerPerson: 40, caloriesPer100g: 500, protein: 20, fat: 45, carbs: 0 },
+                    { name: 'Чай черный/Кофе', gramsPerPerson: 3, caloriesPer100g: 0, protein: 0, fat: 0, carbs: 0 }
+                ]
+            },
+            {
+                dayNumber: 1, type: 'snack', products: [
+                    { name: 'Орехи/Сухофрукты', gramsPerPerson: 40, caloriesPer100g: 500, protein: 15, fat: 40, carbs: 30 },
+                    { name: 'Шоколад (Сникерс и др.)', gramsPerPerson: 50, caloriesPer100g: 500, protein: 8, fat: 25, carbs: 60 },
+                    { name: 'Сыр сырокопченый', gramsPerPerson: 40, caloriesPer100g: 400, protein: 25, fat: 30, carbs: 0 },
+                    { name: 'Хлебцы', gramsPerPerson: 30, caloriesPer100g: 300, protein: 10, fat: 2, carbs: 60 }
                 ]
             },
             {
                 dayNumber: 1, type: 'dinner', products: [
-                    { name: 'Гречка', gramsPerPerson: 80, caloriesPer100g: 330, protein: 12, fat: 3, carbs: 64 },
-                    { name: 'Тушенка', gramsPerPerson: 50, caloriesPer100g: 220, protein: 15, fat: 17, carbs: 0 },
-                    { name: 'Чай черный', gramsPerPerson: 3, caloriesPer100g: 0, protein: 0, fat: 0, carbs: 0 }
+                    { name: 'Макароны/Гречка', gramsPerPerson: 100, caloriesPer100g: 360, protein: 12, fat: 2, carbs: 72 },
+                    { name: 'Тушенка мясная (говядина/курица)', gramsPerPerson: 100, caloriesPer100g: 250, protein: 16, fat: 18, carbs: 0 },
+                    { name: 'Масло топленое (Гхи)', gramsPerPerson: 15, caloriesPer100g: 900, protein: 0, fat: 99, carbs: 0 },
+                    { name: 'Сухари', gramsPerPerson: 30, caloriesPer100g: 350, protein: 11, fat: 3, carbs: 70 },
+                    { name: 'Чай черный', gramsPerPerson: 3, caloriesPer100g: 0, protein: 0, fat: 0, carbs: 0 },
+                    { name: 'Сладкое (конфеты)', gramsPerPerson: 30, caloriesPer100g: 400, protein: 2, fat: 10, carbs: 70 }
                 ]
             }
         ];

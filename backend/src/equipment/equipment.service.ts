@@ -13,6 +13,17 @@ export class EquipmentService {
         });
     }
 
+    async addCustomItem(data: { name: string, weight: number, category: string, isGroupItem: boolean }) {
+        return this.prisma.equipmentItem.create({
+            data: {
+                name: data.name,
+                weight: data.weight,
+                category: data.category,
+                isGroupItem: data.isGroupItem,
+            }
+        });
+    }
+
     // ── Auto-generate gear list based on project type/season ──
     async autoGenerate(projectId: string) {
         const project = await this.prisma.project.findUnique({

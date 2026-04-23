@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lightning, UserCircle, Trash, Warning, Scales } from '@phosphor-icons/react';
+import { Lightning, UserCircle, Trash, Warning, Scales, Plus } from '@phosphor-icons/react';
 import { useEquipmentStore } from '../../../store/equipmentStore';
 import { useProjectStore } from '../../../store/projectStore';
 import { useAuthStore } from '../../../store/authStore';
@@ -13,9 +13,13 @@ import type { ProjectEquipment } from '../../../types';
 export function GearTab() {
     const { projectId } = useParams<{ projectId: string }>();
     const { user: currentUser } = useAuthStore();
-    const { projectEquipment, loading, fetchProjectEquipment, autoGenerate, redistribute, updateStatus, removeFromProject } = useEquipmentStore();
+    const { projectEquipment, loading, fetchProjectEquipment, autoGenerate, redistribute, updateStatus, removeFromProject, addCustomItem } = useEquipmentStore();
     const { currentProject, fetchProject } = useProjectStore();
     const [filter, setFilter] = useState('all');
+
+    const [isAdding, setIsAdding] = useState(false);
+    const [customName, setCustomName] = useState('');
+    const [customWeight, setCustomWeight] = useState('');
 
     useEffect(() => {
         if (projectId) {
@@ -53,6 +57,21 @@ export function GearTab() {
         const newStatus = item.status === 'packed' ? 'planned' : 'packed';
         await updateStatus(item.id, newStatus);
         window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');
+    };
+
+    const handleAddCustom = async () => {
+        if (!customName.trim() || !projectId) return;
+        const weight = parseFloat(customWeight) || 0.1;
+        await addCustomItem(projectId, {
+            name: customName.trim(),
+            weight,
+            category: 'Свое снаряжение',
+            isGroupItem: false
+        });
+        setCustomName('');
+        setCustomWeight('');
+        setIsAdding(false);
+        window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');
     };
 
     return (
@@ -95,6 +114,43 @@ export function GearTab() {
                     Умное распределение
                 </Button>
             </div>
+
+            <Button variant="primary" size="sm" className="w-full gap-2 mt-2" onClick={() => setIsAdding(!isAdding)}>
+                <Plus size={16} /> {isAdding ? 'Отмена' : 'Добавить свою вещь'}
+            </Button>
+
+            <AnimatePresence>
+                {isAdding && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden"
+                    >
+                        <GlassCard className="p-3 mt-2 space-y-3 bg-white/40 dark:bg-white/5 border-dashed border-[#2F80ED]/50">
+                            <input
+                                type="text"
+                                placeholder="Название (например, Гитара)"
+                                className="w-full bg-transparent border-b border-gray-300 dark:border-gray-700 p-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#2F80ED]"
+                                value={customName}
+                                onChange={(e) => setCustomName(e.target.value)}
+                            />
+                            <div className="flex gap-2">
+                                <input
+                                    type="number"
+                                    placeholder="Вес в кг (напр. 2.5)"
+                                    className="flex-1 bg-transparent border-b border-gray-300 dark:border-gray-700 p-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#2F80ED]"
+                                    value={customWeight}
+                                    onChange={(e) => setCustomWeight(e.target.value)}
+                                />
+                                <Button variant="primary" size="sm" onClick={handleAddCustom}>
+                                    Добавить
+                                </Button>
+                            </div>
+                        </GlassCard>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Category tabs */}
             <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">

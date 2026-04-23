@@ -6,10 +6,14 @@ import { AuthService } from '../auth.service';
 @Injectable()
 export class MailruStrategy extends PassportStrategy(Strategy, 'mailru') {
     constructor(private authService: AuthService) {
+        const baseUrl = process.env.RAILWAY_PUBLIC_DOMAIN 
+            ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` 
+            : (process.env.BACKEND_URL || 'http://localhost:3000');
+
         super({
             clientID: process.env.MAILRU_CLIENT_ID,
             clientSecret: process.env.MAILRU_CLIENT_SECRET,
-            callbackURL: process.env.MAILRU_CALLBACK_URL || 'https://mytourist-production-c45e.up.railway.app/api/auth/mailru/callback',
+            callbackURL: process.env.MAILRU_CALLBACK_URL || `${baseUrl}/api/auth/mailru/callback`,
         });
     }
 

@@ -49,13 +49,37 @@ async function main() {
         { name: 'Рюкзак 60л', weight: 1.8, category: 'Разное', isGroupItem: false },
         { name: 'Фонарик налобный', weight: 0.1, category: 'Разное', isGroupItem: false },
         { name: 'Батарейки запасные', weight: 0.1, category: 'Разное', isGroupItem: false },
-        { name: 'Аптечка', weight: 0.5, category: 'Разное', isGroupItem: true },
         { name: 'Репеллент', weight: 0.15, category: 'Разное', isGroupItem: true },
         { name: 'Солнцезащитный крем', weight: 0.1, category: 'Разное', isGroupItem: true },
         { name: 'Верёвка 10м', weight: 0.3, category: 'Разное', isGroupItem: true },
         { name: 'Гермомешок', weight: 0.15, category: 'Разное', isGroupItem: false },
         { name: 'Треккинговые палки', weight: 0.5, category: 'Разное', isGroupItem: false },
         { name: 'Сидушка', weight: 0.05, category: 'Разное', isGroupItem: false },
+
+        // Аптечка (Групповая)
+        { name: 'Перчатки медицинские (4 пары)', weight: 0.05, category: 'Аптечка', isGroupItem: true },
+        { name: 'Маска медицинская (6 шт)', weight: 0.05, category: 'Аптечка', isGroupItem: true },
+        { name: 'Кровоостанавливающий жгут (Эсмарха)', weight: 0.1, category: 'Аптечка', isGroupItem: true },
+        { name: 'Бинты марлевые (5 шт разного размера)', weight: 0.15, category: 'Аптечка', isGroupItem: true },
+        { name: 'Косынка медицинская', weight: 0.05, category: 'Аптечка', isGroupItem: true },
+        { name: 'Салфетки стерильные (2 пачки)', weight: 0.05, category: 'Аптечка', isGroupItem: true },
+        { name: 'Спиртовые салфетки (20 шт)', weight: 0.05, category: 'Аптечка', isGroupItem: true },
+        { name: 'Бинт эластичный', weight: 0.05, category: 'Аптечка', isGroupItem: true },
+        { name: 'Гемостатическая губка', weight: 0.05, category: 'Аптечка', isGroupItem: true },
+        { name: 'Гипотермический охлаждающий пакет', weight: 0.1, category: 'Аптечка', isGroupItem: true },
+        { name: 'Термоодеяло', weight: 0.1, category: 'Аптечка', isGroupItem: true },
+        { name: 'Ножницы Листера', weight: 0.05, category: 'Аптечка', isGroupItem: true },
+        { name: 'Лейкопластырь рулонный / бактерицидный', weight: 0.1, category: 'Аптечка', isGroupItem: true },
+        { name: 'Хлоргексидин / Антисептик', weight: 0.2, category: 'Аптечка', isGroupItem: true },
+        { name: 'Обезболивающие (Анальгин/Цитрамон/Ибупрофен)', weight: 0.1, category: 'Аптечка', isGroupItem: true },
+        { name: 'Спазмолитики (Дротаверин/Но-шпа)', weight: 0.05, category: 'Аптечка', isGroupItem: true },
+        { name: 'ЖКТ (Лоперамид/Смекта/Полисорб)', weight: 0.1, category: 'Аптечка', isGroupItem: true },
+        { name: 'Мази (Вольтарен/Декспантенол)', weight: 0.1, category: 'Аптечка', isGroupItem: true },
+        { name: 'Антигистаминные (Лоратадин)', weight: 0.05, category: 'Аптечка', isGroupItem: true },
+        { name: 'Термометр медицинский', weight: 0.05, category: 'Аптечка', isGroupItem: true },
+
+        // Аптечка (Личная)
+        { name: 'Личная аптечка (Бинт, пластырь, таблетки)', weight: 0.2, category: 'Аптечка', isGroupItem: false },
 
         // Зимнее
         { name: 'Лыжи', weight: 3.5, category: 'Зимнее', isGroupItem: false },
