@@ -8,8 +8,7 @@ import { AuthService } from '../auth.service';
 export class YandexStrategy extends PassportStrategy(Strategy, 'yandex') {
     constructor(private authService: AuthService) {
         let baseUrl = process.env.WEBAPP_URL 
-            ? process.env.WEBAPP_URL 
-            : (process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : 'http://localhost:3000');
+            || 'https://websborpohod.tech';
         baseUrl = baseUrl.replace(/\/+$/, ''); // Remove trailing slash
 
         super({
