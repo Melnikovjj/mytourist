@@ -6,7 +6,15 @@ export const equipmentTemplates: Record<string, { category: string; name: string
         { category: 'Лагерь', name: 'Палатка 2-местная', weight: 2.5, isGroupItem: true },
         { category: 'Сон', name: 'Спальник (летний)', weight: 0.8, isGroupItem: false },
         { category: 'Снаряжение', name: 'Треккинговые палки', weight: 0.5, isGroupItem: false },
-        { category: 'Аптечка', name: 'Индивидуальная аптечка', weight: 0.3, isGroupItem: false },
+        { category: 'Аптечка', name: 'Перчатки медицинские (4 пары)', weight: 0.05, isGroupItem: true },
+        { category: 'Аптечка', name: 'Маска медицинская (6 шт)', weight: 0.05, isGroupItem: true },
+        { category: 'Аптечка', name: 'Кровоостанавливающий жгут (Эсмарха)', weight: 0.1, isGroupItem: true },
+        { category: 'Аптечка', name: 'Бинты марлевые (5 шт разного размера)', weight: 0.15, isGroupItem: true },
+        { category: 'Аптечка', name: 'Салфетки стерильные (2 пачки)', weight: 0.05, isGroupItem: true },
+        { category: 'Аптечка', name: 'Хлоргексидин (1 фл на 5 дней)', weight: 0.2, isGroupItem: true },
+        { category: 'Аптечка', name: 'Обезболивающие (Анальгин/Цитрамон/Ибупрофен)', weight: 0.1, isGroupItem: true },
+        { category: 'Аптечка', name: 'Личный бинт стерильный', weight: 0.05, isGroupItem: false },
+        { category: 'Аптечка', name: 'Личный пластырь рулонный', weight: 0.05, isGroupItem: false },
     ],
     // Hiking Winter
     'hiking_winter': [

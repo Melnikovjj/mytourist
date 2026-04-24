@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FirstAid, Drop, Notebook } from '@phosphor-icons/react';
+import { FirstAid, Drop, Notebook, Heart } from '@phosphor-icons/react';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { Button } from '../../components/ui/Button';
 
@@ -12,7 +12,7 @@ const firstAidItems = [
 ];
 
 export function ReferencePage() {
-    const [activeTab, setActiveTab] = useState<'aid' | 'water' | 'diary'>('aid');
+    const [activeTab, setActiveTab] = useState<'aid' | 'water' | 'diary' | 'firstaid'>('aid');
     const [waterWeight, setWaterWeight] = useState(70);
     const [waterTemp, setWaterTemp] = useState(25);
     const [waterIntensity, setWaterIntensity] = useState<'light' | 'medium' | 'heavy'>('medium');
@@ -59,6 +59,16 @@ export function ReferencePage() {
                 >
                     <FirstAid size={18} weight={activeTab === 'aid' ? 'fill' : 'regular'} />
                     Аптечка
+                </button>
+                <button
+                    onClick={() => setActiveTab('firstaid')}
+                    className={`flex-1 py-2 text-sm font-semibold rounded-[10px] transition-all flex items-center justify-center gap-1.5 ${activeTab === 'firstaid'
+                        ? 'bg-white text-[#2F80ED] shadow-sm'
+                        : 'text-gray-500 hover:text-gray-700'
+                        }`}
+                >
+                    <Heart size={18} weight={activeTab === 'firstaid' ? 'fill' : 'regular'} />
+                    Первая помощь
                 </button>
                 <button
                     onClick={() => setActiveTab('water')}
@@ -156,6 +166,75 @@ export function ReferencePage() {
                                 <div className="text-sm text-blue-600 mb-1">Рекомендуемая норма</div>
                                 <div className="text-4xl font-bold text-blue-500">
                                     {waterCalc()} <span className="text-lg font-medium text-blue-400">л/день</span>
+                                </div>
+                            </div>
+                        </GlassCard>
+                    </motion.div>
+                )}
+
+                {activeTab === 'firstaid' && (
+                    <motion.div
+                        key="firstaid"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                    >
+                        <GlassCard className="p-5">
+                            <h3 className="font-semibold mb-4">🚑 Алгоритмы первой помощи</h3>
+                            <div className="space-y-4">
+                                <div className="border-l-4 border-red-500 pl-4">
+                                    <h4 className="font-bold text-red-600 mb-2">1. Оценка обстановки и обеспечение безопасности</h4>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        <li>• Определение внешних факторов, представляющих угрозу</li>
+                                        <li>• Устранение повреждающих факторов</li>
+                                        <li>• Оценка количества пострадавших</li>
+                                        <li>• Информирование пострадавшего о начале помощи</li>
+                                        <li>• Обеспечение проходимости дыхательных путей</li>
+                                        <li>• Перемещение в безопасное место</li>
+                                    </ul>
+                                </div>
+                                <div className="border-l-4 border-orange-500 pl-4">
+                                    <h4 className="font-bold text-orange-600 mb-2">2. Остановка кровотечения</h4>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        <li>• Прямое давление на рану</li>
+                                        <li>• Давящая повязка</li>
+                                        <li>• Наложение жгута (при массивном повреждении)</li>
+                                    </ul>
+                                </div>
+                                <div className="border-l-4 border-blue-500 pl-4">
+                                    <h4 className="font-bold text-blue-600 mb-2">3. Определение признаков жизни</h4>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        <li>• Наличие сознания</li>
+                                        <li>• Дыхание и сердцебиение</li>
+                                        <li>• При отсутствии - сердечно-лёгочная реанимация</li>
+                                    </ul>
+                                </div>
+                                <div className="border-l-4 border-green-500 pl-4">
+                                    <h4 className="font-bold text-green-600 mb-2">4. Осмотр и опрос пострадавшего</h4>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        <li>• Голова, шея, грудь, спина, живот, конечности</li>
+                                        <li>• Наложение повязок при ранах</li>
+                                        <li>• Иммобилизация при переломах</li>
+                                        <li>• Придание оптимального положения</li>
+                                    </ul>
+                                </div>
+                                <div className="border-l-4 border-purple-500 pl-4">
+                                    <h4 className="font-bold text-purple-600 mb-2">5. Транспортировка</h4>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        <li>• Выбор способа в зависимости от травмы</li>
+                                        <li>• Фиксация к носилкам</li>
+                                        <li>• Защита от внешних факторов</li>
+                                    </ul>
+                                </div>
+                                <div className="border-l-4 border-indigo-500 pl-4">
+                                    <h4 className="font-bold text-indigo-600 mb-2">6. Связь с МЧС</h4>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        <li>• Телефон: 112</li>
+                                        <li>• Что случилось, нужна помощь</li>
+                                        <li>• Состав группы, местоположение</li>
+                                        <li>• Состояние пострадавшего</li>
+                                        <li>• Возможность транспортировки</li>
+                                    </ul>
                                 </div>
                             </div>
                         </GlassCard>
